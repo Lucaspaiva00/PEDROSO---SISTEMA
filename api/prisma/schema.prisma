@@ -1,13 +1,221 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  FUNCIONARIO
+  CLIENTE
+}
+
+enum StatusCliente {
+  ATIVO
+  INATIVO
+  BLOQUEADO
+}
+
+enum TipoConsorcio {
+  CARRO
+  MOTO
+  IMOVEL
+  CAMINHAO
+  SERVICO
+  OUTRO
+}
+
+enum StatusContrato {
+  ATIVO
+  CANCELADO
+  QUITADO
+  CONTEMPLADO
+  INADIMPLENTE
+}
+
+enum StatusParcela {
+  PENDENTE
+  PAGA
+  VENCIDA
+  CANCELADA
+  ESTORNADA
+}
+
+enum MetodoPagamento {
+  BOLETO
+  PIX
+  CARTAO
+}
+
+model Usuario {
+  id    Int     @id @default(autoincrement())
+  nome  String
+  email String  @unique
+  senha String
+  role  Role    @default(ADMIN)
+  ativo Boolean @default(true)
+
+  clienteId Int?
+  cliente   Cliente? @relation(fields: [clienteId], references: [id])
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Cliente {
+  id         Int       @id @default(autoincrement())
+  nome       String
+  cpfCnpj    String    @unique
+  rg         String?
+  nascimento DateTime?
+  email      String?
+  telefone   String?
+
+  cep    String?
+  rua    String?
+  numero String?
+  bairro String?
+  cidade String?
+  estado String?
+
+  observacoes String?
+  status      StatusCliente @default(ATIVO)
+
+  asaasCustomerId String? @unique
+
+  usuarios  Usuario[]
+  contratos Contrato[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Plano {
+  id                 Int           @id @default(autoincrement())
+  nome               String
+  tipo               TipoConsorcio
+  descricao          String?
+  valorCarta         Decimal       @db.Decimal(10, 2)
+  quantidadeParcelas Int
+  valorParcela       Decimal       @db.Decimal(10, 2)
+  ativo              Boolean       @default(true)
+  imagemUrl          String?
+
+  contratos Contrato[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Contrato {
+  id Int @id @default(autoincrement())
+
+  clienteId Int
+  cliente   Cliente @relation(fields: [clienteId], references: [id])
+
+  planoId Int?
+  plano   Plano? @relation(fields: [planoId], references: [id])
+
+  numeroContrato String?
+  administradora String?
+  grupo          String?
+  cota           String?
+  tipo           TipoConsorcio
+
+  valorCarta         Decimal  @db.Decimal(10, 2)
+  valorEntrada       Decimal? @db.Decimal(10, 2)
+  valorParcela       Decimal  @db.Decimal(10, 2)
+  quantidadeParcelas Int
+  parcelasPagas      Int      @default(0)
+
+  primeiroVencimento DateTime
+  diaVencimento      Int
+
+  status StatusContrato @default(ATIVO)
+
+  contratoPdfUrl String?
+  observacoes    String?
+
+  // ASAAS
+  asaasSubscriptionId String?         @unique
+  asaasBillingType    MetodoPagamento @default(BOLETO)
+  asaasStatus         String?
+  sincronizarAsaas    Boolean         @default(true)
+
+  parcelas Parcela[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model Parcela {
+  id Int @id @default(autoincrement())
+
+  contratoId Int
+  contrato   Contrato @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+
+  numero      Int
+  valor       Decimal   @db.Decimal(10, 2)
+  vencimento  DateTime
+  pagamentoEm DateTime?
+
+  status StatusParcela @default(PENDENTE)
+
+  // ASAAS
+  asaasPaymentId    String? @unique
+  asaasInvoiceUrl   String?
+  asaasBankSlipUrl  String?
+  asaasPixQrCode    String?
+  asaasPixCopiaCola String?
+  asaasNossoNumero  String?
+  asaasStatus       String?
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@unique([contratoId, numero])
+}
+
+model ConfiguracaoAsaas {
+  id Int @id @default(autoincrement())
+
+  nomeConta String?
+  apiKey    String
+  ambiente  String  @default("SANDBOX")
+
+  ativo Boolean @default(true)
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
+model WebhookAsaas {
+  id Int @id @default(autoincrement())
+
+  evento     String
+  paymentId  String?
+  customerId String?
+  payload    Json
+
+  processado Boolean @default(false)
+  erro       String?
+
+  criadoEm DateTime @default(now())
+}
+
+model LogIntegracaoAsaas {
+  id Int @id @default(autoincrement())
+
+  acao       String
+  entidade   String?
+  entidadeId Int?
+  sucesso    Boolean @default(false)
+  request    Json?
+  response   Json?
+  erro       String?
+
+  criadoEm DateTime @default(now())
 }

@@ -1,14 +1,17 @@
-
 require("dotenv").config();
 
-const express = require("express");
-const cors = require("cors");
+const app = require("./app");
 
-const app = express();
+const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
+app.listen(PORT, () => {
 
-app.listen(process.env.PORT, () => {
-    console.log(`Servidor rodando na porta ${process.env.PORT}`);
+    console.clear();
+
+    console.log("========================================");
+    console.log("🚀 GESTÃO DE CONSÓRCIOS");
+    console.log("========================================");
+    console.log(`Servidor iniciado na porta ${PORT}`);
+    console.log("========================================");
+
 });

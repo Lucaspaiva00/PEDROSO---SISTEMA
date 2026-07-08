@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Planos • Pedroso Consórcios</title>
+
+    <link rel="stylesheet" href="../css/app.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <!-- ==========================================
+        SIDEBAR
+        =========================================== -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+
+                <img src="../img/logo.png" alt="Pedroso Consórcios">
+
+            </div>
+
+            <ul>
+
+                <li>
+
+                    <a href="dashboard.html">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <span>Dashboard</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="clientes.html">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        <span>Clientes</span>
+
+                    </a>
+
+                </li>
+
+                <li class="active">
+
+                    <a href="planos.html">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        <span>Planos</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="contratos.html">
+
+                        <i class="fa-solid fa-file-signature"></i>
+
+                        <span>Contratos</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="parcelas.html">
+
+                        <i class="fa-solid fa-money-bill-wave"></i>
+
+                        <span>Parcelas</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="configuracoes.html">
+
+                        <i class="fa-solid fa-gears"></i>
+
+                        <span>Configurações</span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- ==========================================
+        CONTENT
+        =========================================== -->
+
+        <main class="content">
+
+            <header class="topbar">
+
+                <div>
+
+                    <h2>
+
+                        Planos
+
+                    </h2>
+
+                    <span>
+
+                        Gerencie todos os planos cadastrados.
+
+                    </span>
+
+                </div>
+
+                <button id="btnNovoPlano" class="btn btn-primary">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Novo Plano
+
+                </button>
+
+            </header>
+
+            <section class="page">
+
+                <!-- PESQUISA -->
+
+                <div class="search-bar">
+
+                    <input id="pesquisa" type="text" class="form-control" placeholder="Pesquisar plano...">
+
+                </div>
+
+                <!-- TABELA -->
+
+                <div class="box">
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Plano</th>
+
+                                    <th>Tipo</th>
+
+                                    <th>Valor da Carta</th>
+
+                                    <th>Parcelas</th>
+
+                                    <th>Valor da Parcela</th>
+
+                                    <th>Status</th>
+
+                                    <th width="120">
+
+                                        Ações
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="tbodyPlanos">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div> <!-- =======================================================
+    MODAL PLANO
+    ======================================================= -->
+
+    <div class="modal" id="modalPlano">
+
+        <div class="modal-content">
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h2 id="tituloModal">
+
+                    Novo Plano
+
+                </h2>
+
+                <button type="button" class="btn-close">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="modal-body">
+
+                <form id="formPlano">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="nome">
+
+                                Nome do Plano
+
+                            </label>
+
+                            <input type="text" id="nome" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="tipo">
+
+                                Tipo do Consórcio
+
+                            </label>
+
+                            <select id="tipo" class="form-control">
+
+                                <option value="">
+
+                                    Selecione
+
+                                </option>
+
+                                <option value="CARRO">
+
+                                    Carro
+
+                                </option>
+
+                                <option value="MOTO">
+
+                                    Moto
+
+                                </option>
+
+                                <option value="IMOVEL">
+
+                                    Imóvel
+
+                                </option>
+
+                                <option value="CAMINHAO">
+
+                                    Caminhão
+
+                                </option>
+
+                                <option value="SERVICO">
+
+                                    Serviço
+
+                                </option>
+
+                                <option value="OUTRO">
+
+                                    Outro
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="valorCarta">
+
+                                Valor da Carta
+
+                            </label>
+
+                            <input type="number" step="0.01" id="valorCarta" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="quantidadeParcelas">
+
+                                Quantidade de Parcelas
+
+                            </label>
+
+                            <input type="number" id="quantidadeParcelas" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="valorParcela">
+
+                                Valor da Parcela
+
+                            </label>
+
+                            <input type="number" step="0.01" id="valorParcela" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="imagemUrl">
+
+                                URL da Imagem
+
+                            </label>
+
+                            <input type="text" id="imagemUrl" class="form-control" placeholder="https://...">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group mt-20">
+
+                        <label for="descricao">
+
+                            Descrição
+
+                        </label>
+
+                        <textarea id="descricao" class="form-control" rows="5"></textarea>
+
+                    </div>
+
+                    <div class="form-group mt-20">
+
+                        <label>
+
+                            Status
+
+                        </label>
+
+                        <label class="d-flex align-center gap-10">
+
+                            <input type="checkbox" id="ativo" checked>
+
+                            Plano Ativo
+
+                        </label>
+
+                    </div>
+                    <div class="modal-footer">
+
+                        <!-- O JS PROCURA POR btnCancelar -->
+
+                        <button type="button" id="btnCancelar" class="btn btn-secondary">
+
+                            <i class="fa-solid fa-xmark"></i>
+
+                            Cancelar
+
+                        </button>
+
+                        <!-- O JS PROCURA POR btnSalvar -->
+
+                        <button type="submit" id="btnSalvar" class="btn btn-primary">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Salvar Plano
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="../js/planos.js"></script>
+
+</body>
+
+</html>

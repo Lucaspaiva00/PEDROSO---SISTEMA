@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel Administrativo • Pedroso Consórcios</title>
+
+    <link rel="stylesheet" href="../css/app.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+
+                <img src="../img/logo.png">
+
+            </div>
+
+            <ul>
+
+                <li class="active">
+
+                    <a href="dashboard.html">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        Dashboard
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="clientes.html">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        Clientes
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="planos.html">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        Planos
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="contratos.html">
+
+                        <i class="fa-solid fa-file-signature"></i>
+
+                        Contratos
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="parcelas.html">
+
+                        <i class="fa-solid fa-money-bill-wave"></i>
+
+                        Parcelas
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="configuracoes.html">
+
+                        <i class="fa-solid fa-gears"></i>
+
+                        Configurações
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- CONTEÚDO -->
+
+        <main class="content">
+
+            <!-- TOPO -->
+
+            <header class="topbar">
+
+                <div>
+
+                    <h2>
+
+                        Dashboard
+
+                    </h2>
+
+                    <span>
+
+                        Bem-vindo ao sistema.
+
+                    </span>
+
+                </div>
+
+                <button id="btnLogout">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Sair
+
+                </button>
+
+            </header>
+
+            <!-- CARDS -->
+
+            <section class="cards">
+
+                <div class="card">
+
+                    <h3 id="clientes">
+
+                        0
+
+                    </h3>
+
+                    <span>
+
+                        Clientes
+
+                    </span>
+
+                </div>
+
+                <div class="card">
+
+                    <h3 id="planos">
+
+                        0
+
+                    </h3>
+
+                    <span>
+
+                        Planos
+
+                    </span>
+
+                </div>
+
+                <div class="card">
+
+                    <h3 id="contratos">
+
+                        0
+
+                    </h3>
+
+                    <span>
+
+                        Contratos
+
+                    </span>
+
+                </div>
+
+                <div class="card">
+
+                    <h3 id="parcelas">
+
+                        0
+
+                    </h3>
+
+                    <span>
+
+                        Parcelas Pendentes
+
+                    </span>
+
+                </div>
+
+            </section>
+
+            <!-- GRÁFICOS -->
+
+            <section class="dashboard-grid">
+
+                <div class="box">
+
+                    <h3>
+
+                        Contratos por mês
+
+                    </h3>
+
+                    <canvas id="graficoContratos"></canvas>
+
+                </div>
+
+                <div class="box">
+
+                    <h3>
+
+                        Últimos contratos
+
+                    </h3>
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Cliente</th>
+
+                                <th>Plano</th>
+
+                                <th>Valor</th>
+
+                                <th>Status</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="ultimosContratos">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+
+</body>
+
+</html>

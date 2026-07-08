@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clientes • Pedroso Consórcios</title>
+
+    <link rel="stylesheet" href="../css/app.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+
+                <img src="../img/logo.png" alt="Pedroso Consórcios">
+
+            </div>
+
+            <ul>
+
+                <li>
+
+                    <a href="dashboard.html">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <span>Dashboard</span>
+
+                    </a>
+
+                </li>
+
+                <li class="active">
+
+                    <a href="clientes.html">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        <span>Clientes</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="planos.html">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        <span>Planos</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="contratos.html">
+
+                        <i class="fa-solid fa-file-signature"></i>
+
+                        <span>Contratos</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="parcelas.html">
+
+                        <i class="fa-solid fa-money-bill-wave"></i>
+
+                        <span>Parcelas</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="configuracoes.html">
+
+                        <i class="fa-solid fa-gears"></i>
+
+                        <span>Configurações</span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- CONTENT -->
+
+        <main class="content">
+
+            <header class="topbar">
+
+                <div>
+
+                    <h2>
+
+                        Clientes
+
+                    </h2>
+
+                    <span>
+
+                        Gerencie todos os clientes cadastrados.
+
+                    </span>
+
+                </div>
+
+                <!-- ID UTILIZADO NO JS -->
+
+                <button id="btnNovoCliente" class="btn btn-primary">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Novo Cliente
+
+                </button>
+
+            </header>
+
+            <section class="page">
+
+                <div class="search-bar">
+
+                    <!-- ID UTILIZADO NO JS -->
+
+                    <input id="pesquisa" type="text" class="form-control" placeholder="Pesquisar cliente...">
+
+                </div>
+
+                <div class="box">
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Nome</th>
+
+                                    <th>CPF/CNPJ</th>
+
+                                    <th>Telefone</th>
+
+                                    <th>E-mail</th>
+
+                                    <th>Status</th>
+
+                                    <th width="120">
+
+                                        Ações
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <!-- ID UTILIZADO NO JS -->
+
+                            <tbody id="tbodyClientes">
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <!-- =======================================================
+MODAL CLIENTE
+======================================================= -->
+
+    <div class="modal" id="modalCliente">
+
+        <div class="modal-content">
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h2 id="tituloModal">
+
+                    Novo Cliente
+
+                </h2>
+
+                <!-- O JS PROCURA POR .btn-close -->
+
+                <button type="button" class="btn-close">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="modal-body">
+
+                <!-- O JS PROCURA POR formCliente -->
+
+                <form id="formCliente">
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="nome">
+
+                                Nome Completo
+
+                            </label>
+
+                            <input type="text" id="nome" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="cpfCnpj">
+
+                                CPF / CNPJ
+
+                            </label>
+
+                            <input type="text" id="cpfCnpj" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="rg">
+
+                                RG
+
+                            </label>
+
+                            <input type="text" id="rg" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="nascimento">
+
+                                Data de Nascimento
+
+                            </label>
+
+                            <input type="date" id="nascimento" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="email">
+
+                                E-mail
+
+                            </label>
+
+                            <input type="email" id="email" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="telefone">
+
+                                Telefone
+
+                            </label>
+
+                            <input type="text" id="telefone" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="cep">
+
+                                CEP
+
+                            </label>
+
+                            <input type="text" id="cep" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="numero">
+
+                                Número
+
+                            </label>
+
+                            <input type="text" id="numero" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="rua">
+
+                                Rua
+
+                            </label>
+
+                            <input type="text" id="rua" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="bairro">
+
+                                Bairro
+
+                            </label>
+
+                            <input type="text" id="bairro" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="cidade">
+
+                                Cidade
+
+                            </label>
+
+                            <input type="text" id="cidade" class="form-control" autocomplete="off">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="estado">
+
+                                Estado
+
+                            </label>
+
+                            <input type="text" id="estado" class="form-control" autocomplete="off">
+
+                        </div>
+
+                    </div>
+
+                    <div class="form-group mt-20">
+
+                        <label for="observacoes">
+
+                            Observações
+
+                        </label>
+
+                        <textarea id="observacoes" class="form-control" rows="5"></textarea>
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <!-- O JS PROCURA POR btnCancelar -->
+
+                        <button type="button" id="btnCancelar" class="btn btn-secondary">
+
+                            <i class="fa-solid fa-xmark"></i>
+
+                            Cancelar
+
+                        </button>
+
+                        <!-- O JS PROCURA POR btnSalvar -->
+
+                        <button type="submit" id="btnSalvar" class="btn btn-primary">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Salvar Cliente
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="../js/clientes.js"></script>
+
+</body>
+
+</html>

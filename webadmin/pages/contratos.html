@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contratos • Pedroso Consórcios</title>
+
+    <link rel="stylesheet" href="../css/app.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <!-- ===========================================
+        SIDEBAR
+        ============================================ -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+
+                <img src="../img/logo.png" alt="Pedroso Consórcios">
+
+            </div>
+
+            <ul>
+
+                <li>
+
+                    <a href="dashboard.html">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <span>Dashboard</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="clientes.html">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        <span>Clientes</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="planos.html">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        <span>Planos</span>
+
+                    </a>
+
+                </li>
+
+                <li class="active">
+
+                    <a href="contratos.html">
+
+                        <i class="fa-solid fa-file-signature"></i>
+
+                        <span>Contratos</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="parcelas.html">
+
+                        <i class="fa-solid fa-money-bill-wave"></i>
+
+                        <span>Parcelas</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="configuracoes.html">
+
+                        <i class="fa-solid fa-gears"></i>
+
+                        <span>Configurações</span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- ===========================================
+        CONTENT
+        ============================================ -->
+
+        <main class="content">
+
+            <header class="topbar">
+
+                <div>
+
+                    <h2>
+
+                        Contratos
+
+                    </h2>
+
+                    <span>
+
+                        Gerencie todos os contratos cadastrados.
+
+                    </span>
+
+                </div>
+
+                <button id="btnNovoContrato" class="btn btn-primary">
+
+                    <i class="fa-solid fa-plus"></i>
+
+                    Novo Contrato
+
+                </button>
+
+            </header>
+
+            <section class="page">
+
+                <!-- PESQUISA -->
+
+                <div class="search-bar">
+
+                    <input id="pesquisa" type="text" class="form-control"
+                        placeholder="Pesquisar contrato, cliente, grupo ou administradora...">
+
+                </div>
+
+                <!-- TABELA -->
+
+                <div class="box">
+
+                    <div class="table-responsive">
+
+                        <table class="table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>Nº Contrato</th>
+
+                                    <th>Cliente</th>
+
+                                    <th>Administradora</th>
+
+                                    <th>Grupo / Cota</th>
+
+                                    <th>Plano</th>
+
+                                    <th>Valor Carta</th>
+
+                                    <th>Status</th>
+
+                                    <th width="120">
+
+                                        Ações
+
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="tbodyContratos">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+    <!-- =======================================================
+    MODAL CONTRATO
+    ======================================================= -->
+
+    <div class="modal" id="modalContrato">
+
+        <div class="modal-content">
+
+            <!-- HEADER -->
+
+            <div class="modal-header">
+
+                <h2 id="tituloModal">
+
+                    Novo Contrato
+
+                </h2>
+
+                <button type="button" class="btn-close">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                </button>
+
+            </div>
+
+            <!-- BODY -->
+
+            <div class="modal-body">
+
+                <form id="formContrato">
+
+                    <!-- ===========================================
+                    DADOS DO CONTRATO
+                    ============================================ -->
+
+                    <h3 class="box-title">
+
+                        Dados do Contrato
+
+                    </h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="clienteId">
+
+                                Cliente
+
+                            </label>
+
+                            <select id="clienteId" class="form-control">
+
+                                <option value="">
+
+                                    Selecione...
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="planoId">
+
+                                Plano
+
+                            </label>
+
+                            <select id="planoId" class="form-control">
+
+                                <option value="">
+
+                                    Selecione...
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="administradora">
+
+                                Administradora
+
+                            </label>
+
+                            <input type="text" id="administradora" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="numeroContrato">
+
+                                Nº Contrato
+
+                            </label>
+
+                            <input type="text" id="numeroContrato" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="grupo">
+
+                                Grupo
+
+                            </label>
+
+                            <input type="text" id="grupo" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="cota">
+
+                                Cota
+
+                            </label>
+
+                            <input type="text" id="cota" class="form-control">
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===========================================
+                    DADOS DO PLANO
+                    ============================================ -->
+
+                    <h3 class="box-title mt-30">
+
+                        Dados do Plano
+
+                    </h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="tipo">
+
+                                Tipo
+
+                            </label>
+
+                            <input id="tipo" class="form-control" readonly>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="valorCarta">
+
+                                Valor da Carta
+
+                            </label>
+
+                            <input id="valorCarta" class="form-control" readonly>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="valorEntrada">
+
+                                Valor de Entrada
+
+                            </label>
+
+                            <input type="number" step="0.01" id="valorEntrada" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="valorParcela">
+
+                                Valor da Parcela
+
+                            </label>
+
+                            <input id="valorParcela" class="form-control" readonly>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="quantidadeParcelas">
+
+                                Quantidade de Parcelas
+
+                            </label>
+
+                            <input id="quantidadeParcelas" class="form-control" readonly>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="parcelasPagas">
+
+                                Parcelas Pagas
+
+                            </label>
+
+                            <input type="number" id="parcelasPagas" class="form-control" value="0">
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===========================================
+                    COBRANÇA
+                    ============================================ -->
+
+                    <h3 class="box-title mt-30">
+
+                        Cobrança
+
+                    </h3>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="primeiroVencimento">
+
+                                Primeiro Vencimento
+
+                            </label>
+
+                            <input type="date" id="primeiroVencimento" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="diaVencimento">
+
+                                Dia do Vencimento
+
+                            </label>
+
+                            <input type="number" min="1" max="31" id="diaVencimento" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="asaasBillingType">
+
+                                Forma de Cobrança
+
+                            </label>
+
+                            <select id="asaasBillingType" class="form-control">
+
+                                <option value="BOLETO">
+
+                                    Boleto
+
+                                </option>
+
+                                <option value="PIX">
+
+                                    PIX
+
+                                </option>
+
+                                <option value="CARTAO">
+
+                                    Cartão
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Sincronizar com ASAAS
+
+                            </label>
+
+                            <label class="d-flex align-center gap-10">
+
+                                <input type="checkbox" id="sincronizarAsaas" checked>
+
+                                Sim
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                    <!-- ===========================================
+                    OBSERVAÇÕES
+                    ============================================ -->
+
+                    <div class="form-group mt-30">
+
+                        <label for="observacoes">
+
+                            Observações
+
+                        </label>
+
+                        <textarea id="observacoes" class="form-control" rows="5"></textarea>
+
+                    </div>
+                    <div class="modal-footer">
+
+                        <!-- CANCELAR -->
+
+                        <button type="button" id="btnCancelar" class="btn btn-secondary">
+
+                            <i class="fa-solid fa-xmark"></i>
+
+                            Cancelar
+
+                        </button>
+
+                        <!-- SALVAR -->
+
+                        <button type="submit" id="btnSalvar" class="btn btn-primary">
+
+                            <i class="fa-solid fa-floppy-disk"></i>
+
+                            Salvar Contrato
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="../js/contratos.js"></script>
+
+</body>
+
+</html>

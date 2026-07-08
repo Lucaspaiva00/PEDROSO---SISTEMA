@@ -691,9 +691,7 @@ async function salvarContrato(event) {
 
             Number(parcelasPagas.value),
 
-        primeiroVencimento:
-
-            primeiroVencimento.value,
+        primeiroVencimento: new Date(primeiroVencimento.value),
 
         diaVencimento:
 

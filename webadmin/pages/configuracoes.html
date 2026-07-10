@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Configurações • Pedroso Consórcios</title>
+
+    <link rel="stylesheet" href="../css/app.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <!-- ===========================================
+        SIDEBAR
+        ============================================ -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+
+                <img src="../img/logo.png" alt="Pedroso Consórcios">
+
+            </div>
+
+            <ul>
+
+                <li>
+
+                    <a href="dashboard.html">
+
+                        <i class="fa-solid fa-chart-line"></i>
+
+                        <span>Dashboard</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="clientes.html">
+
+                        <i class="fa-solid fa-users"></i>
+
+                        <span>Clientes</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="planos.html">
+
+                        <i class="fa-solid fa-layer-group"></i>
+
+                        <span>Planos</span>
+
+                    </a>
+
+                </li>
+
+                <li>
+
+                    <a href="contratos.html">
+
+                        <i class="fa-solid fa-file-signature"></i>
+
+                        <span>Contratos</span>
+
+                    </a>
+
+                </li>
+
+                <li class="active">
+
+                    <a href="configuracoes.html">
+
+                        <i class="fa-solid fa-gears"></i>
+
+                        <span>Configurações</span>
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- ===========================================
+        CONTENT
+        ============================================ -->
+
+        <main class="content">
+
+            <header class="topbar">
+
+                <div>
+
+                    <h2>
+
+                        Configurações
+
+                    </h2>
+
+                    <span>
+
+                        Gerencie as informações da empresa e do sistema.
+
+                    </span>
+
+                </div>
+
+                <button id="btnSalvar" class="btn btn-primary">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Salvar Alterações
+
+                </button>
+
+            </header>
+
+            <section class="page">
+
+                <!-- ===========================================
+                DADOS DA EMPRESA
+                ============================================ -->
+
+                <div class="box">
+
+                    <h2 class="box-title">
+
+                        <i class="fa-solid fa-building"></i>
+
+                        Dados da Empresa
+
+                    </h2>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="nomeEmpresa">
+
+                                Nome da Empresa
+
+                            </label>
+
+                            <input type="text" id="nomeEmpresa" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="cnpj">
+
+                                CNPJ
+
+                            </label>
+
+                            <input type="text" id="cnpj" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="telefone">
+
+                                Telefone
+
+                            </label>
+
+                            <input type="text" id="telefone" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="whatsapp">
+
+                                WhatsApp
+
+                            </label>
+
+                            <input type="text" id="whatsapp" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="email">
+
+                                E-mail
+
+                            </label>
+
+                            <input type="email" id="email" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="logo">
+
+                                Logo da Empresa
+
+                            </label>
+
+                            <input type="file" id="logo" class="form-control" accept="image/*">
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- ===========================================
+                ENDEREÇO
+                ============================================ -->
+
+                <div class="box mt-30">
+
+                    <h2 class="box-title">
+
+                        <i class="fa-solid fa-location-dot"></i>
+
+                        Endereço
+
+                    </h2>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="cep">
+
+                                CEP
+
+                            </label>
+
+                            <input type="text" id="cep" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="numero">
+
+                                Número
+
+                            </label>
+
+                            <input type="text" id="numero" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="rua">
+
+                                Rua
+
+                            </label>
+
+                            <input type="text" id="rua" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="bairro">
+
+                                Bairro
+
+                            </label>
+
+                            <input type="text" id="bairro" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="cidade">
+
+                                Cidade
+
+                            </label>
+
+                            <input type="text" id="cidade" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="estado">
+
+                                Estado
+
+                            </label>
+
+                            <input type="text" id="estado" class="form-control">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ===========================================
+                MINHA CONTA
+                ============================================ -->
+
+                <div class="box mt-30">
+
+                    <h2 class="box-title">
+
+                        <i class="fa-solid fa-user"></i>
+
+                        Minha Conta
+
+                    </h2>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="nomeUsuario">
+
+                                Nome
+
+                            </label>
+
+                            <input type="text" id="nomeUsuario" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="emailUsuario">
+
+                                E-mail
+
+                            </label>
+
+                            <input type="email" id="emailUsuario" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="senhaAtual">
+
+                                Senha Atual
+
+                            </label>
+
+                            <input type="password" id="senhaAtual" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="novaSenha">
+
+                                Nova Senha
+
+                            </label>
+
+                            <input type="password" id="novaSenha" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="confirmarSenha">
+
+                                Confirmar Nova Senha
+
+                            </label>
+
+                            <input type="password" id="confirmarSenha" class="form-control">
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <!-- ===========================================
+                PREFERÊNCIAS DO SISTEMA
+                ============================================ -->
+
+                <div class="box mt-30">
+
+                    <h2 class="box-title">
+
+                        <i class="fa-solid fa-sliders"></i>
+
+                        Preferências do Sistema
+
+                    </h2>
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Gerar Parcelas Automaticamente
+
+                            </label>
+
+                            <label class="d-flex align-center gap-10">
+
+                                <input type="checkbox" id="gerarParcelas" checked>
+
+                                Sim
+
+                            </label>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label>
+
+                                Sincronizar Cobranças Automaticamente
+
+                            </label>
+
+                            <label class="d-flex align-center gap-10">
+
+                                <input type="checkbox" id="sincronizarCobrancas" checked>
+
+                                Sim
+
+                            </label>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="administradoraPadrao">
+
+                                Administradora Padrão
+
+                            </label>
+
+                            <input type="text" id="administradoraPadrao" class="form-control">
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <label for="formaPagamentoPadrao">
+
+                                Forma de Cobrança Padrão
+
+                            </label>
+
+                            <select id="formaPagamentoPadrao" class="form-control">
+
+                                <option value="BOLETO">
+
+                                    Boleto
+
+                                </option>
+
+                                <option value="PIX">
+
+                                    PIX
+
+                                </option>
+
+                                <option value="CARTAO">
+
+                                    Cartão
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+    <script src="../js/configuracoes.js"></script>
+
+</body>
+
+</html>

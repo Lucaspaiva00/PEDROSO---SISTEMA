@@ -12,6 +12,30 @@ class UsuarioRepository {
 
     }
 
+    async findByCpf(cpfCnpj) {
+
+        return await prisma.usuario.findFirst({
+
+            where: {
+
+                cliente: {
+
+                    cpfCnpj
+
+                }
+
+            },
+
+            include: {
+
+                cliente: true
+
+            }
+
+        });
+
+    }
+
     async findById(id) {
 
         return await prisma.usuario.findUnique({

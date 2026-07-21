@@ -34,11 +34,8 @@ class AuthService {
         const usuario = await UsuarioRepository.create({
 
             nome,
-
             email,
-
             senha: senhaCriptografada,
-
             role
 
         });
@@ -56,11 +53,8 @@ class AuthService {
             usuario: {
 
                 id: usuario.id,
-
                 nome: usuario.nome,
-
                 email: usuario.email,
-
                 role: usuario.role
 
             }
@@ -71,21 +65,33 @@ class AuthService {
 
     async login(dados) {
 
-        const { email, senha } = dados;
+        const { login, senha } = dados;
 
-        if (!email || !senha) {
+        if (!login || !senha) {
 
             return {
 
                 sucesso: false,
 
-                mensagem: "Informe o e-mail e a senha."
+                mensagem: "Informe o login e a senha."
 
             };
 
         }
 
-        const usuario = await UsuarioRepository.findByEmail(email);
+        let usuario;
+
+        if (login.includes("@")) {
+
+            usuario = await UsuarioRepository.findByEmail(login);
+
+        } else {
+
+            const cpf = login.replace(/\D/g, "");
+
+            usuario = await UsuarioRepository.findByCpf(cpf);
+
+        }
 
         if (!usuario) {
 
@@ -112,11 +118,8 @@ class AuthService {
         }
 
         const senhaCorreta = await bcrypt.compare(
-
             senha,
-
             usuario.senha
-
         );
 
         if (!senhaCorreta) {
@@ -144,11 +147,8 @@ class AuthService {
             usuario: {
 
                 id: usuario.id,
-
                 nome: usuario.nome,
-
                 email: usuario.email,
-
                 role: usuario.role
 
             }

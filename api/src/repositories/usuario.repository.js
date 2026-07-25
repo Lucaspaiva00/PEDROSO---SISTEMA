@@ -46,6 +46,18 @@ class UsuarioRepository {
 
     }
 
+    async findByClienteId(clienteId) {
+
+        return await prisma.usuario.findFirst({
+
+            where: {
+                clienteId: Number(clienteId)
+            }
+
+        });
+
+    }
+
     async create(dados) {
 
         return await prisma.usuario.create({
@@ -53,6 +65,8 @@ class UsuarioRepository {
         });
 
     }
+
+
 
 }
 

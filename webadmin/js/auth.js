@@ -6,7 +6,7 @@ async function login(e) {
 
     e.preventDefault();
 
-    const email = document.getElementById("email").value;
+    const login = document.getElementById("email").value.trim();
 
     const senha = document.getElementById("senha").value;
 
@@ -24,7 +24,7 @@ async function login(e) {
 
             body: JSON.stringify({
 
-                email,
+                login,
                 senha
 
             })
@@ -35,7 +35,7 @@ async function login(e) {
 
         if (!dados.sucesso) {
 
-            alert(dados.message);
+            alert(dados.mensagem);
 
             return;
 

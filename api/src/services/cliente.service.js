@@ -35,13 +35,13 @@ class ClienteService {
 
     async criar(dados) {
 
-        const { nome, cpfCnpj } = dados;
+        const { nome, cpfCnpj, email } = dados;
 
-        if (!nome || !cpfCnpj) {
+        if (!nome || !cpfCnpj || !email) {
 
             return {
                 sucesso: false,
-                mensagem: "Nome e CPF/CNPJ são obrigatórios."
+                mensagem: "Nome, CPF/CNPJ e e-mail são obrigatórios."
             };
 
         }

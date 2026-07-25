@@ -1,5 +1,6 @@
 const ContratoRepository = require("../repositories/contrato.repository");
 const ClienteRepository = require("../repositories/cliente.repository");
+const AuthService = require("./auth.service");
 const prisma = require("../config/prisma");
 
 class ContratoService {
@@ -9,9 +10,7 @@ class ContratoService {
         const cliente = await ClienteRepository.buscarPorId(dados.clienteId);
 
         if (!cliente) {
-
             throw new Error("Cliente não encontrado.");
-
         }
 
         let plano = null;
@@ -25,20 +24,21 @@ class ContratoService {
             });
 
             if (!plano) {
-
                 throw new Error("Plano não encontrado.");
-
             }
 
-            // Copia automaticamente os dados do plano
             dados.tipo = plano.tipo;
             dados.valorCarta = plano.valorCarta;
             dados.valorParcela = plano.valorParcela;
             dados.quantidadeParcelas = plano.quantidadeParcelas;
-
         }
 
-        return await ContratoRepository.cadastrar(dados);
+        const contrato = await ContratoRepository.cadastrar(dados);
+
+        // Cria automaticamente o usuário do portal
+        await AuthService.criarUsuarioCliente(cliente);
+
+        return contrato;
 
     }
 

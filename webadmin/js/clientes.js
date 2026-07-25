@@ -405,7 +405,7 @@ async function salvarCliente() {
 
         nascimento: nascimentoFormatado,
 
-        email: email.value.trim() || null,
+        email: email.value.trim(),
         telefone: telefone.value.trim() || null,
 
         cep: cep.value.trim() || null,

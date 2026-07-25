@@ -58,7 +58,7 @@ async function realizarLogin(event) {
             },
 
             body: JSON.stringify({
-                cpf,
+                login: cpf,
                 senha
             })
 
@@ -68,7 +68,7 @@ async function realizarLogin(event) {
 
         if (!response.ok) {
 
-            throw new Error(data.message || "CPF ou senha inválidos.");
+            throw new Error(data.mensagem || "CPF ou senha inválidos.");
 
         }
 
@@ -109,7 +109,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const usuario = JSON.parse(localStorage.getItem("usuario") || "{}");
 
-    if (usuario.perfil === "CLIENTE") {
+    if (usuario.role === "CLIENTE") {
 
         window.location.href = "dashboard.html";
 

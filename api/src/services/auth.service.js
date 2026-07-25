@@ -63,6 +63,40 @@ class AuthService {
 
     }
 
+    async criarUsuarioCliente(cliente) {
+
+        const usuarioExistente = await UsuarioRepository.findByClienteId(cliente.id);
+
+        if (usuarioExistente) {
+
+            return usuarioExistente;
+
+        }
+
+        const cpf = cliente.cpfCnpj.replace(/\D/g, "");
+
+        const senhaInicial = cpf.substring(0, 6);
+
+        const senhaCriptografada = await bcrypt.hash(senhaInicial, 10);
+
+        const usuario = await UsuarioRepository.create({
+
+            nome: cliente.nome,
+
+            email: cliente.email,
+
+            senha: senhaCriptografada,
+
+            role: "CLIENTE",
+
+            clienteId: cliente.id
+
+        });
+
+        return usuario;
+
+    }
+
     async login(dados) {
 
         const { login, senha } = dados;

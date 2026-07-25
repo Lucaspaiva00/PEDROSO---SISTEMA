@@ -6,6 +6,7 @@ const dashboardRoutes = require("./routes/dashboard.routes");
 const clienteRoutes = require("./routes/cliente.routes");
 const planoRoutes = require("./routes/plano.routes");
 const contratoRoutes = require("./routes/contrato.routes");
+const portalRoutes = require("./routes/portal.routes");
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.use("/dashboard", dashboardRoutes);
 app.use("/clientes", clienteRoutes);
 app.use("/planos", planoRoutes);
 app.use("/contratos", contratoRoutes);
+app.use("/portal", portalRoutes);
 
 module.exports = app;

@@ -66,6 +66,50 @@ class UsuarioRepository {
 
     }
 
+    async findPortalByUserId(id) {
+
+        return await prisma.usuario.findUnique({
+
+            where: {
+                id: Number(id)
+            },
+
+            include: {
+
+                cliente: {
+
+                    include: {
+
+                        contratos: {
+
+                            include: {
+
+                                plano: true,
+
+                                parcelas: {
+
+                                    orderBy: {
+
+                                        numero: "asc"
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
 
 
 }

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Portal do Cliente | Pedroso Consórcios
+    </title>
+
+    <link rel="icon" href="../img/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/app.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
+        <header class="header">
+
+            <div class="header-top">
+
+                <div class="header-text">
+
+                    <span class="header-small">
+
+                        Boa tarde 👋
+
+                    </span>
+
+                    <h1 id="nomeCliente">
+
+                        Carregando...
+
+                    </h1>
+
+                </div>
+
+                <button class="btn-profile" id="btnPerfil">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- =========================
+             CONTEÚDO
+        ========================== -->
+
+        <main class="content">
+
+            <!-- Card Principal -->
+
+            <section class="card card-primary">
+
+                <span class="card-label">
+
+                    Carta de Crédito
+
+                </span>
+
+                <h2 id="valorCarta" class="card-value">
+
+                    R$ 0,00
+
+                </h2>
+
+                <p class="card-description">
+
+                    Valor disponível contratado.
+
+                </p>
+
+            </section>
+            <!-- =========================
+                 GRID DE CARDS
+            ========================== -->
+
+            <div class="grid-cards">
+
+                <!-- Próxima Parcela -->
+
+                <section class="card">
+
+                    <div class="card-icon icon-blue">
+
+                        <i class="fa-solid fa-calendar-days"></i>
+
+                    </div>
+
+                    <span class="card-label">
+
+                        Próxima Parcela
+
+                    </span>
+
+                    <h3 id="valorParcela" class="card-title">
+
+                        R$ 0,00
+
+                    </h3>
+
+                    <p id="dataVencimento" class="card-text">
+
+                        Vencimento: --
+
+                    </p>
+
+                </section>
+
+                <!-- Situação -->
+
+                <section class="card">
+
+                    <div class="card-icon icon-green">
+
+                        <i class="fa-solid fa-circle-check"></i>
+
+                    </div>
+
+                    <span class="card-label">
+
+                        Situação
+
+                    </span>
+
+                    <h3 id="statusContrato" class="card-title">
+
+                        Em dia
+
+                    </h3>
+
+                    <p class="card-text">
+
+                        Contrato ativo
+
+                    </p>
+
+                </section>
+
+                <!-- Progresso -->
+
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <span class="card-label">
+
+                            Progresso do Plano
+
+                        </span>
+
+                        <span id="percentualPlano" class="progress-percent">
+
+                            0%
+
+                        </span>
+
+                    </div>
+
+                    <div class="progress">
+
+                        <div id="barraProgresso" class="progress-fill" style="width: 0%;">
+
+                        </div>
+
+                    </div>
+
+                    <div class="progress-info">
+
+                        <span id="parcelasPagas">
+
+                            0 Pagas
+
+                        </span>
+
+                        <span id="parcelasRestantes">
+
+                            0 Restantes
+
+                        </span>
+
+                    </div>
+
+                </section>
+
+                <!-- Resumo -->
+
+                <section class="card">
+
+                    <span class="card-label">
+
+                        Resumo
+
+                    </span>
+
+                    <div class="resume-item">
+
+                        <span>
+
+                            Grupo
+
+                        </span>
+
+                        <strong id="grupo">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+                    <div class="resume-item">
+
+                        <span>
+
+                            Cota
+
+                        </span>
+
+                        <strong id="cota">
+
+                            -
+
+                        </strong>
+
+                    </div>
+
+                    <div class="resume-item">
+
+                        <span>
+
+                            Administradora
+
+                        </span>
+
+                        <strong>
+
+                            Pedroso Consórcios
+
+                        </strong>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <!-- =========================
+                 AÇÕES RÁPIDAS
+            ========================== -->
+
+            <section class="card">
+
+                <span class="card-label">
+
+                    Acesso Rápido
+
+                </span>
+
+                <div class="quick-actions">
+
+                    <button class="quick-action" id="btnContrato">
+
+                        <div class="quick-action-icon">
+
+                            <i class="fa-solid fa-file-contract"></i>
+
+                        </div>
+
+                        <span>
+
+                            Contrato
+
+                        </span>
+
+                    </button>
+
+                    <button class="quick-action" id="btnParcelas">
+
+                        <div class="quick-action-icon">
+
+                            <i class="fa-solid fa-credit-card"></i>
+
+                        </div>
+
+                        <span>
+
+                            Parcelas
+
+                        </span>
+
+                    </button>
+
+                    <button class="quick-action" id="btnPerfil">
+
+                        <div class="quick-action-icon">
+
+                            <i class="fa-solid fa-user"></i>
+
+                        </div>
+
+                        <span>
+
+                            Perfil
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- =========================
+             MENU INFERIOR
+        ========================== -->
+
+        <nav class="bottom-nav">
+
+            <a href="dashboard.html" class="bottom-item active">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+
+                    Início
+
+                </span>
+
+            </a>
+
+            <a href="contrato.html" class="bottom-item">
+
+                <i class="fa-solid fa-file-contract"></i>
+
+                <span>
+
+                    Contrato
+
+                </span>
+
+            </a>
+
+            <a href="parcelas.html" class="bottom-item">
+
+                <i class="fa-solid fa-credit-card"></i>
+
+                <span>
+
+                    Parcelas
+
+                </span>
+
+            </a>
+
+            <a href="perfil.html" class="bottom-item">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+
+                    Perfil
+
+                </span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+
+</body>
+
+</html>

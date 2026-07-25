@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Meu Contrato | Pedroso Consórcios
+
+    </title>
+
+    <link rel="icon" href="../img/favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/app.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
+        <header class="header">
+
+            <div class="header-top">
+
+                <div class="header-text">
+
+                    <span class="header-small">
+
+                        Meu Contrato
+
+                    </span>
+
+                    <h1>
+
+                        Pedroso Consórcios
+
+                    </h1>
+
+                </div>
+
+                <button class="btn-profile" id="btnVoltar">
+
+                    <i class="fa-solid fa-arrow-left"></i>
+
+                </button>
+
+            </div>
+
+        </header>
+
+        <!-- =========================
+             CONTEÚDO
+        ========================== -->
+
+        <main class="content">
+
+            <!-- STATUS -->
+
+            <section class="card card-primary">
+
+                <span class="card-label">
+
+                    Situação do Contrato
+
+                </span>
+
+                <h2 id="statusContrato" class="card-value">
+
+                    Carregando...
+
+                </h2>
+
+                <p id="mensagemStatus" class="card-description">
+
+                    Aguarde enquanto carregamos as informações.
+
+                </p>
+
+            </section>
+
+            <!-- =========================
+                 DADOS DO CONTRATO
+            ========================== -->
+
+            <section class="card">
+
+                <span class="card-label">
+
+                    Informações do Contrato
+
+                </span>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Grupo
+
+                    </span>
+
+                    <strong id="grupo">
+
+                        -
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Cota
+
+                    </span>
+
+                    <strong id="cota">
+
+                        -
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Plano
+
+                    </span>
+
+                    <strong id="plano">
+
+                        -
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Tipo
+
+                    </span>
+
+                    <strong id="tipoConsorcio">
+
+                        -
+
+                    </strong>
+
+                </div>
+
+            </section>
+
+            <!-- =========================
+                 DADOS FINANCEIROS
+            ========================== -->
+
+            <section class="card">
+
+                <span class="card-label">
+
+                    Dados Financeiros
+
+                </span>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Carta de Crédito
+
+                    </span>
+
+                    <strong id="valorCarta">
+
+                        R$ 0,00
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Valor da Parcela
+
+                    </span>
+
+                    <strong id="valorParcela">
+
+                        R$ 0,00
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Parcelas Pagas
+
+                    </span>
+
+                    <strong id="parcelasPagas">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Parcelas Restantes
+
+                    </span>
+
+                    <strong id="parcelasRestantes">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Total de Parcelas
+
+                    </span>
+
+                    <strong id="parcelasTotais">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+            </section>
+
+            <!-- =========================
+                 INFORMAÇÕES GERAIS
+            ========================== -->
+
+            <section class="card">
+
+                <span class="card-label">
+
+                    Informações Gerais
+
+                </span>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Data da Contratação
+
+                    </span>
+
+                    <strong id="dataContrato">
+
+                        -
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Administradora
+
+                    </span>
+
+                    <strong>
+
+                        Pedroso Consórcios
+
+                    </strong>
+
+                </div>
+
+                <div class="resume-item">
+
+                    <span>
+
+                        Número do Contrato
+
+                    </span>
+
+                    <strong id="numeroContrato">
+
+                        -
+
+                    </strong>
+
+                </div>
+
+            </section>
+
+            <!-- =========================
+                 AÇÕES
+            ========================== -->
+
+            <section class="card">
+
+                <span class="card-label">
+
+                    Ações
+
+                </span>
+
+                <div class="quick-actions">
+
+                    <button class="quick-action" id="btnVisualizarContrato">
+
+                        <div class="quick-action-icon">
+
+                            <i class="fa-solid fa-file-pdf"></i>
+
+                        </div>
+
+                        <span>
+
+                            Visualizar
+
+                        </span>
+
+                    </button>
+
+                    <button class="quick-action" id="btnDownloadContrato">
+
+                        <div class="quick-action-icon">
+
+                            <i class="fa-solid fa-download"></i>
+
+                        </div>
+
+                        <span>
+
+                            Download
+
+                        </span>
+
+                    </button>
+
+                    <button class="quick-action" id="btnCompartilharContrato">
+
+                        <div class="quick-action-icon">
+
+                            <i class="fa-solid fa-share-nodes"></i>
+
+                        </div>
+
+                        <span>
+
+                            Compartilhar
+
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- =========================
+             MENU INFERIOR
+        ========================== -->
+
+        <nav class="bottom-nav">
+
+            <a href="dashboard.html" class="bottom-item">
+
+                <i class="fa-solid fa-house"></i>
+
+                <span>
+
+                    Início
+
+                </span>
+
+            </a>
+
+            <a href="contrato.html" class="bottom-item active">
+
+                <i class="fa-solid fa-file-contract"></i>
+
+                <span>
+
+                    Contrato
+
+                </span>
+
+            </a>
+
+            <a href="parcelas.html" class="bottom-item">
+
+                <i class="fa-solid fa-credit-card"></i>
+
+                <span>
+
+                    Parcelas
+
+                </span>
+
+            </a>
+
+            <a href="perfil.html" class="bottom-item">
+
+                <i class="fa-solid fa-user"></i>
+
+                <span>
+
+                    Perfil
+
+                </span>
+
+            </a>
+
+        </nav>
+
+    </div>
+
+    <script src="../js/contrato.js"></script>
+
+</body>
+
+</html>

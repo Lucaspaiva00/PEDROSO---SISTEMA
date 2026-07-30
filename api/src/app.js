@@ -7,6 +7,7 @@ const clienteRoutes = require("./routes/cliente.routes");
 const planoRoutes = require("./routes/plano.routes");
 const contratoRoutes = require("./routes/contrato.routes");
 const portalRoutes = require("./routes/portal.routes");
+const asaasRoutes = require("./routes/asaas.routes");
 
 const app = express();
 
@@ -19,5 +20,6 @@ app.use("/clientes", clienteRoutes);
 app.use("/planos", planoRoutes);
 app.use("/contratos", contratoRoutes);
 app.use("/portal", portalRoutes);
+app.use("/asaas", asaasRoutes);
 
 module.exports = app;

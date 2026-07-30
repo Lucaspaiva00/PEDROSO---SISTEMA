@@ -5,11 +5,27 @@ class ContratoRepository {
     async cadastrar(dados) {
 
         return await prisma.contrato.create({
+
             data: dados,
+
             include: {
+
                 cliente: true,
-                plano: true
+
+                plano: true,
+
+                parcelas: {
+
+                    orderBy: {
+
+                        numero: "asc"
+
+                    }
+
+                }
+
             }
+
         });
 
     }
@@ -17,13 +33,31 @@ class ContratoRepository {
     async listar() {
 
         return await prisma.contrato.findMany({
+
             include: {
+
                 cliente: true,
-                plano: true
+
+                plano: true,
+
+                parcelas: {
+
+                    orderBy: {
+
+                        numero: "asc"
+
+                    }
+
+                }
+
             },
+
             orderBy: {
+
                 criadoEm: "desc"
+
             }
+
         });
 
     }
@@ -31,13 +65,31 @@ class ContratoRepository {
     async buscarPorId(id) {
 
         return await prisma.contrato.findUnique({
+
             where: {
+
                 id: Number(id)
+
             },
+
             include: {
+
                 cliente: true,
-                plano: true
+
+                plano: true,
+
+                parcelas: {
+
+                    orderBy: {
+
+                        numero: "asc"
+
+                    }
+
+                }
+
             }
+
         });
 
     }
@@ -45,14 +97,33 @@ class ContratoRepository {
     async atualizar(id, dados) {
 
         return await prisma.contrato.update({
+
             where: {
+
                 id: Number(id)
+
             },
+
             data: dados,
+
             include: {
+
                 cliente: true,
-                plano: true
+
+                plano: true,
+
+                parcelas: {
+
+                    orderBy: {
+
+                        numero: "asc"
+
+                    }
+
+                }
+
             }
+
         });
 
     }
@@ -60,9 +131,13 @@ class ContratoRepository {
     async excluir(id) {
 
         return await prisma.contrato.delete({
+
             where: {
+
                 id: Number(id)
+
             }
+
         });
 
     }

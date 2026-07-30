@@ -8,6 +8,8 @@ const API_URL = "http://localhost:3000";
 
 const token = localStorage.getItem("token");
 const usuario = JSON.parse(localStorage.getItem("usuario"));
+let proximaParcela = null;
+let parcelaSelecionada = null;
 
 if (!token || !usuario) {
 
@@ -165,7 +167,7 @@ PREENCHER TELA
 function preencherTela(dados) {
 
     const proxima = dados.proximaParcela;
-
+    proximaParcela = dados.proximaParcela;
     if (!proxima) {
 
         document.getElementById("valorProximaParcela").textContent =
@@ -203,6 +205,7 @@ function preencherTela(dados) {
 HISTÓRICO
 ==========================================================*/
 
+
 function renderizarHistorico(parcelas) {
 
     const lista = document.getElementById("listaParcelas");
@@ -212,83 +215,69 @@ function renderizarHistorico(parcelas) {
     if (!parcelas || parcelas.length === 0) {
 
         lista.innerHTML = `
-
             <div class="empty-state">
-
                 Nenhuma parcela encontrada.
-
             </div>
-
         `;
 
         return;
-
     }
 
     parcelas.forEach(parcela => {
 
         const card = document.createElement("div");
 
-        card.className = "parcel-card";
+        card.className = `parcela-item ${parcela.status.toLowerCase()}`;
 
         card.innerHTML = `
 
-            <div class="parcel-header">
+            <div class="parcela-topo">
 
-                <strong>
+                <div>
 
-                    Parcela ${String(parcela.numero).padStart(3, "0")}
+                    <div class="parcela-numero">
+                        Parcela ${String(parcela.numero).padStart(3, "0")}
+                    </div>
 
-                </strong>
+                    <div class="parcela-data">
+                        ${formatarData(parcela.vencimento)}
+                    </div>
+
+                </div>
 
                 <span class="${obterClasseStatus(parcela.status)}">
-
                     ${parcela.status}
-
                 </span>
 
             </div>
 
-            <div class="parcel-body">
+            <div class="parcela-valor">
+                ${formatarMoeda(parcela.valor)}
+            </div>
 
-                <p>
-
-                    <strong>Valor:</strong>
-                    ${formatarMoeda(parcela.valor)}
-
-                </p>
-
-                <p>
-
-                    <strong>Vencimento:</strong>
-                    ${formatarData(parcela.vencimento)}
-
-                </p>
-
+            <div class="parcela-seta">
+                <i class="fa-solid fa-chevron-right"></i>
             </div>
 
         `;
 
-        card.addEventListener("click", () => {
-
-            abrirModal(parcela);
-
-        });
+        card.onclick = () => abrirModal(parcela);
 
         lista.appendChild(card);
 
     });
 
 }
-
 /*==========================================================
 MODAL
 ==========================================================*/
 
 function abrirModal(parcela) {
 
+    parcelaSelecionada = parcela;
+
     document.getElementById("modalNumero").textContent =
-        parcela.numero;
+        String(parcela.numero).padStart(3, "0");
 
     document.getElementById("modalValor").textContent =
         formatarMoeda(parcela.valor);
@@ -302,6 +291,7 @@ function abrirModal(parcela) {
     document
         .getElementById("modalParcela")
         .classList.add("show");
+    console.log(JSON.stringify(parcela, null, 2));
 
 }
 
@@ -373,19 +363,57 @@ AÇÕES
 
 function abrirBoleto() {
 
-    alert("Boleto ainda não disponível.");
+    if (!proximaParcela) {
+
+        return alert("Nenhum boleto disponível.");
+
+    }
+
+    window.open(
+
+        proximaParcela.bankSlipUrl ||
+
+        proximaParcela.invoiceUrl,
+
+        "_blank"
+
+    );
 
 }
 
-async function copiarPix() {
+function copiarPix() {
 
-    alert("PIX ainda não disponível.");
+    if (!proximaParcela?.pixCopiaCola) {
+
+        return alert("PIX indisponível.");
+
+    }
+
+    navigator.clipboard.writeText(
+
+        proximaParcela.pixCopiaCola
+
+    );
+
+    alert("Código PIX copiado.");
 
 }
 
 function abrirComprovante() {
 
-    alert("Comprovante ainda não disponível.");
+    if (!proximaParcela?.invoiceUrl) {
+
+        return alert("Comprovante indisponível.");
+
+    }
+
+    window.open(
+
+        proximaParcela.invoiceUrl,
+
+        "_blank"
+
+    );
 
 }
 
@@ -404,3 +432,87 @@ window.addEventListener("click", (event) => {
     }
 
 });
+
+function abrirBoletoModal() {
+
+    if (!parcelaSelecionada) return;
+
+    const url =
+        parcelaSelecionada.bankSlipUrl ||
+        parcelaSelecionada.invoiceUrl;
+
+    if (!url) {
+
+        alert("Boleto indisponível.");
+
+        return;
+
+    }
+
+    window.open(url, "_blank");
+
+}
+
+function mostrarPixModal() {
+
+    if (!parcelaSelecionada?.pixQrCode) {
+
+        alert("PIX indisponível.");
+
+        return;
+
+    }
+
+    window.open(parcelaSelecionada.pixQrCode, "_blank");
+
+}
+async function copiarPixModal() {
+
+    if (!parcelaSelecionada?.pixCopiaCola) {
+
+        alert("PIX indisponível.");
+
+        return;
+
+    }
+
+    await navigator.clipboard.writeText(
+        parcelaSelecionada.pixCopiaCola
+    );
+
+    alert("Código PIX copiado.");
+
+}
+
+function abrirComprovanteModal() {
+
+    if (!parcelaSelecionada?.invoiceUrl) {
+
+        alert("Comprovante indisponível.");
+
+        return;
+
+    }
+
+    window.open(
+        parcelaSelecionada.invoiceUrl,
+        "_blank"
+    );
+
+}
+
+document
+    .getElementById("btnModalBoleto")
+    .addEventListener("click", abrirBoletoModal);
+
+document
+    .getElementById("btnModalPix")
+    .addEventListener("click", mostrarPixModal);
+
+document
+    .getElementById("btnModalCopiarPix")
+    .addEventListener("click", copiarPixModal);
+
+document
+    .getElementById("btnModalComprovante")
+    .addEventListener("click", abrirComprovanteModal);

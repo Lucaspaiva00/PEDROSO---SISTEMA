@@ -95,7 +95,15 @@ class ContratoRepository {
     }
 
     async atualizar(id, dados) {
+        console.log("Contrato antes do update:", contrato.id);
 
+        const existe = await prisma.contrato.findUnique({
+            where: {
+                id: contrato.id
+            }
+        });
+
+        console.log("Existe?", existe);
         return await prisma.contrato.update({
 
             where: {

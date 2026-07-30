@@ -585,12 +585,25 @@ class AsaasService {
                             contrato.asaasBillingType
 
                     });
+                console.log("COBRANÇA ASAAS:");
+                console.log(cobranca);
 
                 const pix =
                     await this.tentarObterPix(
                         cobranca.id
                     );
+                console.log("PIX:");
+                console.log(pix);
 
+                console.log("SALVANDO PARCELA", parcela.id);
+
+                console.log({
+                    paymentId: cobranca.id,
+                    invoiceUrl: cobranca.invoiceUrl,
+                    bankSlipUrl: cobranca.bankSlipUrl,
+                    pixQrCode: pix?.encodedImage,
+                    pixPayload: pix?.payload
+                });
                 await prisma.parcela.update({
 
                     where: {

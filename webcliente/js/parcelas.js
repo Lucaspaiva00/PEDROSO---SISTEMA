@@ -276,6 +276,8 @@ function abrirModal(parcela) {
 
     parcelaSelecionada = parcela;
 
+    alert(JSON.stringify(parcela, null, 2));
+
     document.getElementById("modalNumero").textContent =
         String(parcela.numero).padStart(3, "0");
 
@@ -291,10 +293,8 @@ function abrirModal(parcela) {
     document
         .getElementById("modalParcela")
         .classList.add("show");
-    console.log(JSON.stringify(parcela, null, 2));
 
 }
-
 /*==========================================================
 UTILITÁRIOS
 ==========================================================*/
@@ -456,14 +456,29 @@ function abrirBoletoModal() {
 function mostrarPixModal() {
 
     if (!parcelaSelecionada?.pixQrCode) {
-
         alert("PIX indisponível.");
-
         return;
-
     }
 
-    window.open(parcelaSelecionada.pixQrCode, "_blank");
+    const janela = window.open("", "_blank");
+
+    janela.document.write(`
+        <html>
+        <body style="
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            height:100vh;
+            margin:0;
+            background:#f5f5f5;
+        ">
+            <img
+                src="data:image/png;base64,${parcelaSelecionada.pixQrCode}"
+                style="max-width:350px;"
+            />
+        </body>
+        </html>
+    `);
 
 }
 async function copiarPixModal() {

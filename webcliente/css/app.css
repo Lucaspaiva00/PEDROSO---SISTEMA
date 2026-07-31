@@ -1749,5 +1749,183 @@ PARCELAS V2
 }
 
 /*==========================================================
-FIM DO ARQUIVO
+CARD DE CONSÓRCIO
 ==========================================================*/
+
+#contratosContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.consorcio-card {
+    width: 100%;
+    padding: 20px;
+
+    display: block;
+
+    text-align: left;
+
+    color: var(--text-primary);
+    background: var(--surface);
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+
+    box-shadow: var(--shadow-sm);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.consorcio-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.consorcio-card:active {
+    transform: scale(0.985);
+}
+
+.consorcio-card-topo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.consorcio-card-icon {
+    width: 52px;
+    height: 52px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #ffffff;
+    background:
+        linear-gradient(135deg,
+            var(--primary-dark),
+            var(--primary));
+
+    border-radius: 16px;
+
+    font-size: 21px;
+}
+
+.consorcio-card-titulo {
+    min-width: 0;
+    flex: 1;
+}
+
+.consorcio-card-label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--text-secondary);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.consorcio-card-titulo strong {
+    display: block;
+
+    color: var(--text-primary);
+
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.consorcio-card-dados {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+
+    margin-top: 20px;
+    padding: 16px 0;
+
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.consorcio-card-dados div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.consorcio-card-dados span {
+    color: var(--text-secondary);
+
+    font-size: 12px;
+}
+
+.consorcio-card-dados strong {
+    color: var(--text-primary);
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.consorcio-card-rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+
+    margin-top: 16px;
+}
+
+.consorcio-card-rodape>div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.consorcio-card-rodape span {
+    color: var(--text-secondary);
+
+    font-size: 12px;
+}
+
+.consorcio-card-rodape strong {
+    color: var(--primary);
+
+    font-size: 17px;
+    font-weight: 800;
+}
+
+.consorcio-card-acessar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: var(--primary);
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+@media (max-width: 420px) {
+    .consorcio-card-topo {
+        align-items: flex-start;
+    }
+
+    .consorcio-card-topo>.badge {
+        padding: 6px 9px;
+        font-size: 10px;
+    }
+
+    .consorcio-card-dados {
+        gap: 7px;
+    }
+
+    .consorcio-card-rodape {
+        align-items: flex-end;
+    }
+}

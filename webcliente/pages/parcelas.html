@@ -73,120 +73,22 @@
         <main class="content">
 
             <!-- =========================
-                 PRÓXIMA PARCELA
-            ========================== -->
+         LISTA DE CONSÓRCIOS
+    ========================== -->
 
-            <section class="card card-primary">
-
-                <span class="card-label">
-
-                    Próxima Parcela
-
-                </span>
-
-                <h2 id="valorProximaParcela" class="card-value">
-
-                    R$ 0,00
-
-                </h2>
-
-                <p id="vencimentoProximaParcela" class="card-description">
-
-                    Carregando...
-
-                </p>
-
-                <div id="statusProximaParcela" class="badge badge-warning">
-
-                    PENDENTE
-
-                </div>
-
-            </section>
-
-            <!-- =========================
-                 AÇÕES DA PARCELA
-            ========================== -->
-
-            <section class="card">
+            <section id="listaContratos" class="card">
 
                 <span class="card-label">
 
-                    Ações
+                    Meus Consórcios
 
                 </span>
 
-                <div class="quick-actions">
-
-                    <button class="quick-action" id="btnBoleto">
-
-                        <div class="quick-action-icon">
-
-                            <i class="fa-solid fa-file-invoice-dollar"></i>
-
-                        </div>
-
-                        <span>
-
-                            Boleto
-
-                        </span>
-
-                    </button>
-
-                    <button class="quick-action" id="btnPix">
-
-                        <div class="quick-action-icon">
-
-                            <i class="fa-solid fa-qrcode"></i>
-
-                        </div>
-
-                        <span>
-
-                            PIX
-
-                        </span>
-
-                    </button>
-
-                    <button class="quick-action" id="btnComprovante">
-
-                        <div class="quick-action-icon">
-
-                            <i class="fa-solid fa-receipt"></i>
-
-                        </div>
-
-                        <span>
-
-                            Comprovante
-
-                        </span>
-
-                    </button>
-
-                </div>
-
-            </section>
-
-            <!-- =========================
-                 HISTÓRICO
-            ========================== -->
-
-            <section class="card">
-
-                <span class="card-label">
-
-                    Histórico de Parcelas
-
-                </span>
-
-                <div id="listaParcelas" class="parcel-list">
+                <div id="contratosContainer">
 
                     <div class="empty-state">
 
-                        Carregando parcelas...
+                        Carregando consórcios...
 
                     </div>
 
@@ -195,8 +97,124 @@
             </section>
 
             <!-- =========================
-                 MODAL DETALHES DA PARCELA
-            ========================== -->
+         ÁREA DAS PARCELAS
+    ========================== -->
+
+            <div id="areaParcelas" style="display:none;">
+
+                <!-- =========================
+             PRÓXIMA PARCELA
+        ========================== -->
+
+                <section class="card card-primary">
+
+                    <span class="card-label">
+
+                        Próxima Parcela
+
+                    </span>
+
+                    <h2 id="valorProximaParcela" class="card-value">
+
+                        R$ 0,00
+
+                    </h2>
+
+                    <p id="vencimentoProximaParcela" class="card-description">
+
+                        Carregando...
+
+                    </p>
+
+                    <div id="statusProximaParcela" class="badge badge-warning">
+
+                        PENDENTE
+
+                    </div>
+
+                </section>
+
+                <!-- =========================
+             AÇÕES
+        ========================== -->
+
+                <section class="card">
+
+                    <span class="card-label">
+
+                        Ações
+
+                    </span>
+
+                    <div class="quick-actions">
+
+                        <button class="quick-action" id="btnBoleto">
+
+                            <div class="quick-action-icon">
+
+                                <i class="fa-solid fa-file-invoice-dollar"></i>
+
+                            </div>
+
+                            <span>Boleto</span>
+
+                        </button>
+
+                        <button class="quick-action" id="btnPix">
+
+                            <div class="quick-action-icon">
+
+                                <i class="fa-solid fa-qrcode"></i>
+
+                            </div>
+
+                            <span>PIX</span>
+
+                        </button>
+
+                        <button class="quick-action" id="btnComprovante">
+
+                            <div class="quick-action-icon">
+
+                                <i class="fa-solid fa-receipt"></i>
+
+                            </div>
+
+                            <span>Comprovante</span>
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+                <!-- =========================
+             HISTÓRICO
+        ========================== -->
+
+                <section class="card">
+
+                    <span class="card-label">
+
+                        Histórico de Parcelas
+
+                    </span>
+
+                    <div id="listaParcelas" class="parcel-list">
+
+                        <div class="empty-state">
+
+                            Carregando parcelas...
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+            <!-- continua exatamente igual -->
 
             <div class="modal" id="modalParcela">
 
@@ -269,13 +287,10 @@
 
             </div>
 
+
+        </main>
     </div>
 
-    </main>
-
-    <!-- =========================
-             MENU INFERIOR
-        ========================== -->
 
     <nav class="bottom-nav">
 

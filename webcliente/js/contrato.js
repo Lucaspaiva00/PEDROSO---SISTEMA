@@ -1,9 +1,3 @@
-/*==========================================================
-PEDROSO CONSÓRCIOS
-PORTAL DO CLIENTE
-contrato.js
-==========================================================*/
-
 const API_URL = "http://localhost:3000";
 
 const token = localStorage.getItem("token");
@@ -22,10 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     configurarEventos();
 
 });
-
-/*==========================================================
-CARREGAR CONTRATO
-==========================================================*/
 
 async function carregarContrato() {
 
@@ -74,10 +64,6 @@ async function carregarContrato() {
     }
 
 }
-
-/*==========================================================
-EVENTOS
-==========================================================*/
 
 function configurarEventos() {
 
@@ -261,41 +247,65 @@ AÇÕES
 
 function visualizarContrato() {
 
-    alert("Visualização do contrato em desenvolvimento.");
+    if (!contratoAtual?.pdfUrl) {
+
+        alert("Contrato indisponível.");
+
+        return;
+
+    }
+
+    window.open(contratoAtual.pdfUrl, "_blank");
 
 }
 
 function downloadContrato() {
 
-    alert("Download do contrato em desenvolvimento.");
+    if (!contratoAtual?.pdfUrl) {
+
+        alert("Contrato indisponível.");
+
+        return;
+
+    }
+
+    const a = document.createElement("a");
+
+    a.href = contratoAtual.pdfUrl;
+
+    a.download = "";
+
+    a.click();
 
 }
 
 async function compartilharContrato() {
 
+    if (!contratoAtual?.pdfUrl) {
+
+        alert("Contrato indisponível.");
+
+        return;
+
+    }
+
     if (navigator.share) {
 
-        try {
+        await navigator.share({
 
-            await navigator.share({
+            title: "Contrato",
 
-                title: "Meu Contrato",
+            url: contratoAtual.pdfUrl
 
-                text: "Confira meu contrato da Pedroso Consórcios.",
-
-                url: window.location.href
-
-            });
-
-        } catch (erro) {
-
-            console.log(erro);
-
-        }
+        });
 
     } else {
 
-        alert("Seu navegador não suporta compartilhamento.");
+        await navigator.clipboard.writeText(
+            contratoAtual.pdfUrl
+        );
+
+        alert("Link copiado.");
 
     }
 

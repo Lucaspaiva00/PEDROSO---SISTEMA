@@ -14,20 +14,29 @@ function feedbackAssembleia(tipo, titulo, mensagem) {
 }
 
 function registrarEventos() {
-    document.getElementById("btnNovaAssembleia")?.addEventListener("click", () => {
-        document.getElementById("modalAssembleia").style.display = "flex";
-    });
+    document.getElementById("btnNovaAssembleia")?.addEventListener("click", abrirModal);
 
     document.getElementById("btnFecharModal")?.addEventListener("click", fecharModal);
+    document.getElementById("btnCancelarAssembleia")?.addEventListener("click", fecharModal);
 
     document.getElementById("formAssembleia")?.addEventListener("submit", salvarAssembleia);
 
     document.getElementById("btnContemplarMaior")?.addEventListener("click", contemplarMaior);
 }
 
+function abrirModal() {
+    const modal = document.getElementById("modalAssembleia");
+    if (modal) {
+        modal.classList.add("show");
+    }
+}
+
 function fecharModal() {
-    document.getElementById("modalAssembleia").style.display = "none";
-    document.getElementById("formAssembleia").reset();
+    const modal = document.getElementById("modalAssembleia");
+    if (modal) {
+        modal.classList.remove("show");
+    }
+    document.getElementById("formAssembleia")?.reset();
 }
 
 async function carregarAssembleias() {

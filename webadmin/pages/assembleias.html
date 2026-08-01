@@ -96,25 +96,66 @@
         </main>
     </div>
 
-    <div class="modal" id="modalAssembleia" style="display: none;">
-        <div class="modal-content">
-            <h2>Nova assembleia</h2>
-            <form id="formAssembleia">
-                <label>Grupo</label>
-                <input type="text" name="grupo" class="input" required placeholder="Mesmo grupo do contrato">
-                <label>Título</label>
-                <input type="text" name="titulo" class="input" placeholder="Ex: Assembleia agosto">
-                <label>Data da assembleia</label>
-                <input type="datetime-local" name="dataAssembleia" class="input" required>
-                <label>
-                    <input type="checkbox" name="aceitaLances" checked>
-                    Abrir para lances agora
-                </label>
-                <div class="modal-actions">
-                    <button type="button" class="btn-secondary" id="btnFecharModal">Cancelar</button>
-                    <button type="submit" class="btn-primary">Salvar</button>
-                </div>
-            </form>
+    <div class="modal" id="modalAssembleia">
+        <div class="modal-content" style="max-width: 560px;">
+            <div class="modal-header">
+                <h2>Nova assembleia</h2>
+                <button type="button" class="btn-close" id="btnFecharModal" aria-label="Fechar">
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formAssembleia">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="assembleiaGrupo">Grupo</label>
+                            <input
+                                type="text"
+                                id="assembleiaGrupo"
+                                name="grupo"
+                                class="form-control"
+                                required
+                                placeholder="Mesmo grupo do contrato"
+                                autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="assembleiaTitulo">Título</label>
+                            <input
+                                type="text"
+                                id="assembleiaTitulo"
+                                name="titulo"
+                                class="form-control"
+                                placeholder="Ex: Assembleia agosto"
+                                autocomplete="off">
+                        </div>
+                        <div class="form-group">
+                            <label for="assembleiaData">Data da assembleia</label>
+                            <input
+                                type="datetime-local"
+                                id="assembleiaData"
+                                name="dataAssembleia"
+                                class="form-control"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="assembleiaAceitaLances" class="form-label-inline">
+                                <input type="checkbox" id="assembleiaAceitaLances" name="aceitaLances" checked>
+                                Abrir para lances agora
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelarAssembleia">
+                            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
+                            Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
     <script src="../js/api.js"></script>

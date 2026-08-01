@@ -1,10 +1,49 @@
+// Local/LAN dev → localhost API; deployed frontend on pedrosoconsorcios.com.br → prod API.
+const API_URL_DEV = "http://localhost:3000";
 const API_URL_PROD = "https://api.pedrosoconsorcios.com.br";
+const PROD_FRONTEND_HOST_SUFFIXES = ["pedrosoconsorcios.com.br"];
 
-const host = typeof location !== "undefined" ? location.hostname : "";
-const API_URL =
-    !host || host === "localhost" || host === "127.0.0.1"
-        ? "http://localhost:3000"
-        : API_URL_PROD;
+function isPrivateIpv4(host) {
+    const m = /^(\d+)\.(\d+)\.(\d+)\.(\d+)$/.exec(host);
+    if (!m) return false;
+    const a = +m[1];
+    const b = +m[2];
+    if (a === 10) return true;
+    if (a === 192 && b === 168) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    return false;
+}
+
+function isDevHost(host) {
+    if (!host) return true;
+    if (host === "localhost" || host === "127.0.0.1" || host === "::1") return true;
+    if (host.endsWith(".local")) return true;
+    if (isPrivateIpv4(host)) return true;
+    return false;
+}
+
+function shouldUseProdApi(host) {
+    if (isDevHost(host)) return false;
+    if (host.startsWith("api.")) return false;
+    return PROD_FRONTEND_HOST_SUFFIXES.some(
+        (s) => host === s || host.endsWith("." + s)
+    );
+}
+
+function resolveApiUrl() {
+    // localStorage.setItem('API_URL_OVERRIDE', 'https://...') forces API base URL
+    try {
+        const override = localStorage.getItem("API_URL_OVERRIDE");
+        if (override) return override.replace(/\/$/, "");
+    } catch (_) {}
+    if (typeof location !== "undefined" && location.protocol === "file:") {
+        return API_URL_DEV;
+    }
+    const host = typeof location !== "undefined" ? location.hostname : "";
+    return shouldUseProdApi(host) ? API_URL_PROD : API_URL_DEV;
+}
+
+const API_URL = resolveApiUrl();
 
 function getToken() {
     return localStorage.getItem("token");

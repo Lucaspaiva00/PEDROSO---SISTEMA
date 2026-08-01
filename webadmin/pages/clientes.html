@@ -21,7 +21,7 @@
 
         <!-- SIDEBAR -->
 
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
 
             <div class="sidebar-logo">
 
@@ -78,8 +78,31 @@
                     </a>
 
                 </li>
+                <li>
+
+                    <a href="assembleias.html">
+
+                        <i class="fa-solid fa-calendar-check"></i>
+
+                        <span>Assembleias</span>
+
+                    </a>
+
+                </li>
 
                 <li>
+
+                    <a href="lances.html">
+
+                        <i class="fa-solid fa-hand-holding-dollar"></i>
+
+                        <span>Lances</span>
+
+                    </a>
+
+                </li>
+
+<li>
 
                     <a href="configuracoes.html">
 
@@ -95,11 +118,18 @@
 
         </aside>
 
+        <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
         <!-- CONTENT -->
 
         <main class="content">
 
             <header class="topbar">
+
+                <div class="topbar-start">
+                    <button type="button" class="btn-menu" id="btnMenu" aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menu">
+                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                    </button>
 
                 <div>
 
@@ -117,6 +147,8 @@
 
                 </div>
 
+                </div>
+
                 <!-- ID UTILIZADO NO JS -->
 
                 <button id="btnNovoCliente" class="btn btn-primary">
@@ -130,6 +162,9 @@
             </header>
 
             <section class="page">
+
+                <div id="feedbackClientes" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
+
 
                 <div class="search-bar">
 
@@ -413,9 +448,10 @@ MODAL CLIENTE
         </div>
 
     </div>
-
+    <script src="../js/api.js"></script>
+    <script src="../js/feedback.js"></script>
+    <script src="../js/layout.js"></script>
     <script src="../js/clientes.js"></script>
-
 </body>
 
 </html>

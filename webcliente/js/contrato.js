@@ -1,7 +1,5 @@
-const API_URL = "http://localhost:3000";
-
-const token = localStorage.getItem("token");
 const usuario = JSON.parse(localStorage.getItem("usuario"));
+const token = getToken();
 
 if (!token || !usuario) {
 
@@ -23,25 +21,13 @@ async function carregarContrato() {
 
         mostrarLoading();
 
-        const resposta = await fetch(`${API_URL}/portal/contrato`, {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
+        const { response: resposta, data: dados } = await http.get("/portal/contrato");
 
         if (resposta.status === 401) {
-
-            logout();
 
             return;
 
         }
-
-        const dados = await resposta.json();
 
         if (!dados.sucesso) {
 
@@ -114,19 +100,6 @@ function configurarEventos() {
         });
 
     }
-
-}
-
-/*==========================================================
-LOGOUT
-==========================================================*/
-
-function logout() {
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-
-    window.location.href = "login.html";
 
 }
 

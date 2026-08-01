@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assembleias • Pedroso Consórcios</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <img src="../img/logo.png" alt="Pedroso Consórcios">
+            </div>
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="clientes.html"><i class="fa-solid fa-users"></i><span>Clientes</span></a></li>
+                <li><a href="planos.html"><i class="fa-solid fa-layer-group"></i><span>Planos</span></a></li>
+                <li><a href="contratos.html"><i class="fa-solid fa-file-signature"></i><span>Contratos</span></a></li>
+                <li class="active"><a href="assembleias.html"><i class="fa-solid fa-calendar-check"></i><span>Assembleias</span></a></li>
+                <li><a href="lances.html"><i class="fa-solid fa-hand-holding-dollar"></i><span>Lances</span></a></li>
+                <li><a href="configuracoes.html"><i class="fa-solid fa-gears"></i><span>Configurações</span></a></li>
+            </ul>
+        </aside>
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+        <main class="content">
+
+            <header class="topbar">
+
+                <div class="topbar-start">
+                    <button type="button" class="btn-menu" id="btnMenu" aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menu">
+                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                    </button>
+
+                <div>
+                    <h1>Assembleias e lances</h1>
+                    <p>Abra assembleias por grupo e analise os lances dos contratos.</p>
+                </div>
+
+                </div>
+
+                <button type="button" class="btn btn-primary" id="btnNovaAssembleia">Nova assembleia</button>
+            </header>
+
+            <section class="card">
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Grupo</th>
+                                <th>Título</th>
+                                <th>Data</th>
+                                <th>Lances</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyAssembleias"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card" id="cardAnalise" style="display: none;">
+                <h2 id="tituloAnalise">Análise de lances</h2>
+                <div id="feedbackAssembleias" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
+
+                <div id="feedbackLancesAssembleia" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Contrato</th>
+                                <th>Cliente</th>
+                                <th>Cota</th>
+                                <th>Valor (R$)</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyRanking"></tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <button type="button" class="btn-secondary" id="btnContemplarMaior">Contemplar maior lance</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <div class="modal" id="modalAssembleia" style="display: none;">
+        <div class="modal-content">
+            <h2>Nova assembleia</h2>
+            <form id="formAssembleia">
+                <label>Grupo</label>
+                <input type="text" name="grupo" class="input" required placeholder="Mesmo grupo do contrato">
+                <label>Título</label>
+                <input type="text" name="titulo" class="input" placeholder="Ex: Assembleia agosto">
+                <label>Data da assembleia</label>
+                <input type="datetime-local" name="dataAssembleia" class="input" required>
+                <label>
+                    <input type="checkbox" name="aceitaLances" checked>
+                    Abrir para lances agora
+                </label>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" id="btnFecharModal">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/feedback.js"></script>
+    <script src="../js/layout.js"></script>
+    <script src="../js/lances-admin.js"></script>
+    <script src="../js/assembleias.js"></script>
+</body>
+
+</html>

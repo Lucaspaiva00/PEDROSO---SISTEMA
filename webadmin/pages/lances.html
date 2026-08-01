@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lances • Pedroso Consórcios</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <img src="../img/logo.png" alt="Pedroso Consórcios">
+            </div>
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+                <li><a href="clientes.html"><i class="fa-solid fa-users"></i><span>Clientes</span></a></li>
+                <li><a href="planos.html"><i class="fa-solid fa-layer-group"></i><span>Planos</span></a></li>
+                <li><a href="contratos.html"><i class="fa-solid fa-file-signature"></i><span>Contratos</span></a></li>
+                <li><a href="assembleias.html"><i class="fa-solid fa-calendar-check"></i><span>Assembleias</span></a></li>
+                <li class="active"><a href="lances.html"><i class="fa-solid fa-gavel"></i><span>Lances</span></a></li>
+                <li><a href="configuracoes.html"><i class="fa-solid fa-gears"></i><span>Configurações</span></a></li>
+            </ul>
+        </aside>
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+
+        <main class="content">
+
+            <header class="topbar">
+
+                <div class="topbar-start">
+                    <button type="button" class="btn-menu" id="btnMenu" aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menu">
+                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                    </button>
+
+                <div>
+                    <h2>Lances por contrato</h2>
+                    <span>Analise, aprove ou reprove os lances enviados pelos clientes.</span>
+                </div>
+
+                </div>
+
+            </header>
+
+            <section class="page">
+
+                <div id="feedbackLancesAdmin" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
+
+                <div class="search-bar" style="display:flex;gap:0.5rem;flex-wrap:wrap;" role="group" aria-label="Filtrar lances">
+                    <button type="button" class="btn btn-primary btn-filter" id="filtroPendentes" aria-pressed="true">
+                        Pendentes
+                    </button>
+                    <button type="button" class="btn btn-secondary btn-filter" id="filtroTodos" aria-pressed="false">
+                        Todos
+                    </button>
+                </div>
+
+                <div class="box">
+                    <div class="table-responsive">
+                        <table class="table" aria-label="Lances por contrato">
+                            <thead>
+                                <tr>
+                                    <th>Contrato</th>
+                                    <th>Cliente</th>
+                                    <th>Grupo / Cota</th>
+                                    <th>Plano</th>
+                                    <th>Assembleia</th>
+                                    <th>Data assembleia</th>
+                                    <th>Valor lance</th>
+                                    <th>Enviado em</th>
+                                    <th>Status</th>
+                                    <th width="200">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyLances"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+    <script src="../js/api.js"></script>
+    <script src="../js/feedback.js"></script>
+    <script src="../js/layout.js"></script>
+    <script src="../js/lances-admin.js"></script>
+    <script src="../js/lances.js"></script>
+</body>
+
+</html>

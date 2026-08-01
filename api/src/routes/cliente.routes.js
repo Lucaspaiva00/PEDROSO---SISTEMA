@@ -6,6 +6,8 @@ const auth = require("../middlewares/auth.middleware");
 
 router.get("/", auth, ClienteController.listar);
 
+router.get("/:id/detalhe", auth, ClienteController.detalhe);
+
 router.get("/:id", auth, ClienteController.buscarPorId);
 
 router.post("/", auth, ClienteController.criar);

@@ -4,10 +4,8 @@ PORTAL DO CLIENTE
 parcelas.js
 ==========================================================*/
 
-const API_URL = "http://localhost:3000";
-
-const token = localStorage.getItem("token");
 const usuario = JSON.parse(localStorage.getItem("usuario"));
+const token = getToken();
 
 let contratoAtual = null;
 let todasParcelas = [];
@@ -33,29 +31,19 @@ async function carregarDadosPortal() {
         mostrarLoadingContratos();
 
         const [respostaContrato, respostaParcelas] = await Promise.all([
-            fetch(`${API_URL}/portal/contrato`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }),
-
-            fetch(`${API_URL}/portal/parcelas`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
+            http.get("/portal/contrato"),
+            http.get("/portal/parcelas")
         ]);
 
         if (
-            respostaContrato.status === 401 ||
-            respostaParcelas.status === 401
+            respostaContrato.response.status === 401 ||
+            respostaParcelas.response.status === 401
         ) {
-            logout();
             return;
         }
 
-        const dadosContrato = await respostaContrato.json();
-        const dadosParcelas = await respostaParcelas.json();
+        const dadosContrato = respostaContrato.data;
+        const dadosParcelas = respostaParcelas.data;
 
         if (!dadosContrato.sucesso) {
             throw new Error(
@@ -1006,15 +994,4 @@ function mostrarLoadingContratos() {
             </p>
         </div>
     `;
-}
-
-/*==========================================================
-LOGOUT
-==========================================================*/
-
-function logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-
-    window.location.href = "login.html";
 }

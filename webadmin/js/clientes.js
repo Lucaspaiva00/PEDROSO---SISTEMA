@@ -4,13 +4,8 @@ clientes.js
 PARTE 1/3
 ==========================================================*/
 
-const API = "http://localhost:3000";
 
-const token = localStorage.getItem("token");
-
-if (!token) {
-    window.location.href = "login.html";
-}
+verificarLogin();
 
 /*==========================================================
 ELEMENTOS
@@ -58,11 +53,6 @@ VARIÁVEIS
 
 let clienteEditando = null;
 
-const headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`
-};
-
 /*==========================================================
 EVENTOS
 ==========================================================*/
@@ -107,11 +97,7 @@ async function listarClientes() {
 
     try {
 
-        const response = await fetch(`${API}/clientes`, {
-            headers
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.get("/clientes");
 
         if (!response.ok || !json.sucesso) {
 
@@ -125,7 +111,7 @@ async function listarClientes() {
 
         console.error(error);
 
-        alert("Erro ao carregar clientes.");
+        mostrarFeedback("feedbackClientes", "error", "Erro", "Erro ao carregar clientes.");
 
     }
 
@@ -189,19 +175,31 @@ function renderizarTabela(clientes) {
 
                     <div class="table-actions">
 
+                        <a
+                            href="cliente-detalhe.html?id=${cliente.id}"
+                            class="btn btn-primary btn-icon"
+                            title="Ver mais"
+                            aria-label="Ver mais sobre ${escaparHtmlAttr(cliente.nome)}">
+
+                            <i class="fa-solid fa-eye" aria-hidden="true"></i>
+
+                        </a>
+
                         <button
                             class="btn btn-warning btn-icon"
-                            onclick="editarCliente(${cliente.id})">
+                            onclick="editarCliente(${cliente.id})"
+                            aria-label="Editar ${escaparHtmlAttr(cliente.nome)}">
 
-                            <i class="fa-solid fa-pen"></i>
+                            <i class="fa-solid fa-pen" aria-hidden="true"></i>
 
                         </button>
 
                         <button
                             class="btn btn-danger btn-icon"
-                            onclick="excluirCliente(${cliente.id})">
+                            onclick="excluirCliente(${cliente.id})"
+                            aria-label="Excluir ${escaparHtmlAttr(cliente.nome)}">
 
-                            <i class="fa-solid fa-trash"></i>
+                            <i class="fa-solid fa-trash" aria-hidden="true"></i>
 
                         </button>
 
@@ -247,11 +245,7 @@ async function editarCliente(id) {
 
     try {
 
-        const response = await fetch(`${API}/clientes/${id}`, {
-            headers
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.get(`/clientes/${id}`);
 
         if (!response.ok || !json.sucesso) {
 
@@ -265,7 +259,7 @@ async function editarCliente(id) {
 
         console.error(error);
 
-        alert("Erro ao carregar cliente.");
+        mostrarFeedback("feedbackClientes", "error", "Erro", "Erro ao carregar cliente.");
 
     }
 
@@ -285,15 +279,7 @@ async function excluirCliente(id) {
 
     try {
 
-        const response = await fetch(`${API}/clientes/${id}`, {
-
-            method: "DELETE",
-
-            headers
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.delete(`/clientes/${id}`);
 
         if (!response.ok || !json.sucesso) {
 
@@ -307,7 +293,7 @@ async function excluirCliente(id) {
 
         console.error(error);
 
-        alert("Erro ao excluir cliente.");
+        mostrarFeedback("feedbackClientes", "error", "Erro", "Erro ao excluir cliente.");
 
     }
 
@@ -420,18 +406,11 @@ async function salvarCliente() {
 
     try {
 
-        const response = await fetch(
-            clienteEditando
-                ? `${API}/clientes/${clienteEditando.id}`
-                : `${API}/clientes`,
-            {
-                method: clienteEditando ? "PUT" : "POST",
-                headers,
-                body: JSON.stringify(body)
-            }
-        );
+        const resultado = clienteEditando
+            ? await http.put(`/clientes/${clienteEditando.id}`, body)
+            : await http.post("/clientes", body);
 
-        const json = await response.json();
+        const { response, data: json } = resultado;
 
         if (!response.ok || !json.sucesso) {
             throw new Error(json.mensagem || "Erro ao salvar cliente.");
@@ -445,7 +424,7 @@ async function salvarCliente() {
 
         console.error(error);
 
-        alert(error.message);
+        mostrarFeedback("feedbackClientes", "error", "Erro", error.message);
 
     }
 
@@ -464,3 +443,10 @@ modal.addEventListener("click", (e) => {
     }
 
 });
+
+function escaparHtmlAttr(texto) {
+    return String(texto ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;");
+}

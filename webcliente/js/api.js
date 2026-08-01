@@ -16,12 +16,6 @@ function logout() {
     window.location.href = "login.html";
 }
 
-function verificarLogin() {
-    if (!getToken()) {
-        window.location.href = "login.html";
-    }
-}
-
 function getHeaders() {
     return {
         "Content-Type": "application/json",

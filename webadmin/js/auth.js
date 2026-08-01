@@ -1,10 +1,22 @@
 const form = document.getElementById("formLogin");
+const mensagemEl = document.getElementById("mensagem");
 
 form.addEventListener("submit", login);
+
+function exibirMensagemLogin(texto, tipo = "error") {
+    if (!mensagemEl) {
+        return;
+    }
+
+    mensagemEl.textContent = texto;
+    mensagemEl.style.color = tipo === "success" ? "#166534" : "#991b1b";
+}
 
 async function login(e) {
 
     e.preventDefault();
+
+    exibirMensagemLogin("");
 
     const login = document.getElementById("email").value.trim();
 
@@ -12,30 +24,14 @@ async function login(e) {
 
     try {
 
-        const resposta = await fetch(`${API_URL}/auth/login`, {
-
-            method: "POST",
-
-            headers: {
-
-                "Content-Type": "application/json"
-
-            },
-
-            body: JSON.stringify({
-
+        const { response, data: dados } = await http.post("/auth/login", {
                 login,
                 senha
+            }, { auth: false });
 
-            })
+        if (!response.ok || !dados?.sucesso) {
 
-        });
-
-        const dados = await resposta.json();
-
-        if (!dados.sucesso) {
-
-            alert(dados.mensagem);
+            exibirMensagemLogin(dados?.mensagem || "Não foi possível entrar.");
 
             return;
 
@@ -65,7 +61,7 @@ async function login(e) {
 
         console.error(erro);
 
-        alert("Erro ao conectar ao servidor.");
+        exibirMensagemLogin("Erro ao conectar ao servidor. Tente novamente.");
 
     }
 

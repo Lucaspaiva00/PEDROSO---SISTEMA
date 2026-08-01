@@ -33,6 +33,86 @@ class ClienteService {
 
     }
 
+    async buscarDetalhe(id) {
+
+        const cliente = await ClienteRepository.buscarDetalhe(id);
+
+        if (!cliente) {
+
+            return {
+                sucesso: false,
+                mensagem: "Cliente não encontrado."
+            };
+
+        }
+
+        const contratos = cliente.contratos.map(contrato => ({
+
+            id: contrato.id,
+
+            numeroContrato: contrato.numeroContrato,
+
+            grupo: contrato.grupo,
+
+            cota: contrato.cota,
+
+            tipo: contrato.tipo,
+
+            status: contrato.status,
+
+            valorCarta: Number(contrato.valorCarta),
+
+            valorParcela: Number(contrato.valorParcela),
+
+            quantidadeParcelas: contrato.quantidadeParcelas,
+
+            parcelasPagas: contrato.parcelasPagas,
+
+            criadoEm: contrato.criadoEm,
+
+            plano: contrato.plano
+                ? {
+                    id: contrato.plano.id,
+                    nome: contrato.plano.nome
+                }
+                : null,
+
+            lances: contrato.lances.map(lance => ({
+
+                id: lance.id,
+
+                valor: Number(lance.valor),
+
+                status: lance.status,
+
+                criadoEm: lance.criadoEm,
+
+                assembleia: {
+                    id: lance.assembleia.id,
+                    grupo: lance.assembleia.grupo,
+                    titulo: lance.assembleia.titulo,
+                    dataAssembleia: lance.assembleia.dataAssembleia,
+                    encerrada: lance.assembleia.encerrada
+                }
+
+            }))
+
+        }));
+
+        const { contratos: _, ...dadosCliente } = cliente;
+
+        return {
+
+            sucesso: true,
+
+            cliente: dadosCliente,
+
+            contratos
+
+        };
+
+    }
+
     async criar(dados) {
 
         const { nome, cpfCnpj, email } = dados;

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lance | Pedroso Consórcios</title>
+    <link rel="icon" href="../img/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="header">
+            <div class="header-top">
+                <div class="header-text">
+                    <span class="header-small">Assembleia</span>
+                    <h1>Dar lance</h1>
+                </div>
+                <button class="btn-profile" id="btnVoltar" type="button" aria-label="Voltar ao início">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <div id="feedbackLance" class="feedback-banner" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></div>
+
+            <div id="painelLance">
+
+                <section class="card">
+                    <label class="card-label" for="selectContrato">Consórcio (contrato)</label>
+                    <select id="selectContrato" class="input" aria-describedby="ajudaContrato"></select>
+                    <p id="ajudaContrato" class="card-text">Escolha o contrato em que deseja participar da assembleia.</p>
+                </section>
+
+                <section class="card" id="cardAssembleia" aria-labelledby="labelAssembleia">
+                    <span class="card-label" id="labelAssembleia">Assembleia</span>
+                    <p id="textoAssembleia" class="card-text">Carregando informações da assembleia…</p>
+                </section>
+
+                <section class="card" id="cardRanking" hidden aria-labelledby="labelParticipacao">
+                    <span class="card-label" id="labelParticipacao">Participação no grupo</span>
+                    <div class="resume-item">
+                        <span>Total de lances</span>
+                        <strong id="totalLances">0</strong>
+                    </div>
+                    <div class="resume-item">
+                        <span>Maior lance atual</span>
+                        <strong id="maiorLance">—</strong>
+                    </div>
+                </section>
+
+                <section class="card" id="cardMeuLance" hidden aria-labelledby="labelMeuLance">
+                    <span class="card-label" id="labelMeuLance">Seu lance registrado</span>
+                    <p id="badgeStatusLance" class="status-lance badge badge-warning" aria-hidden="false"></p>
+                    <h2 id="valorMeuLance" class="card-value">R$ 0,00</h2>
+                    <p id="posicaoMeuLance" class="card-description"></p>
+                    <p class="card-text">Este lance é definitivo. Para alterar, entre em contato com a administradora.</p>
+                </section>
+
+                <section class="card" id="cardFormLance" hidden aria-labelledby="labelValorLance">
+                    <label class="card-label" id="labelValorLance" for="inputValorLance">Valor do lance (R$)</label>
+                    <input type="number" id="inputValorLance" class="input" min="0.01" step="0.01" inputmode="decimal" placeholder="0,00" aria-describedby="avisoLance erroValorLance">
+                    <p id="avisoLance" class="card-text">Após confirmar, não será possível editar nem cancelar o lance.</p>
+                    <p id="erroValorLance" class="card-text" role="alert" hidden></p>
+                    <button type="button" class="btn-primary" id="btnConfirmarLance">Confirmar lance</button>
+                </section>
+
+                <section class="card" id="cardBloqueio" hidden aria-labelledby="labelBloqueio">
+                    <span class="card-label" id="labelBloqueio">Lance indisponível</span>
+                    <div class="empty-state" style="padding: 24px 12px;">
+                        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+                        <h3 id="tituloBloqueio">Não é possível dar lance agora</h3>
+                        <p id="textoBloqueio"></p>
+                    </div>
+                </section>
+
+                <section class="card" id="cardVazio" hidden>
+                    <div class="empty-state">
+                        <i class="fa-solid fa-file-circle-xmark" aria-hidden="true"></i>
+                        <h3>Nenhum consórcio vinculado</h3>
+                        <p>Não encontramos contratos nesta conta. Se acredita que é um erro, fale com a administradora.</p>
+                    </div>
+                </section>
+
+            </div>
+
+            <section class="card card-loading" id="cardLoading" hidden aria-busy="true">
+                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
+                Carregando assembleia e lances…
+            </section>
+
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="bottom-item active">
+                <i class="fa-solid fa-house"></i>
+                <span>Início</span>
+            </a>
+            <a href="contrato.html" class="bottom-item">
+                <i class="fa-solid fa-file-contract"></i>
+                <span>Contrato</span>
+            </a>
+            <a href="parcelas.html" class="bottom-item">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Parcelas</span>
+            </a>
+            <a href="perfil.html" class="bottom-item">
+                <i class="fa-solid fa-user"></i>
+                <span>Perfil</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/lance.js"></script>
+
+</body>
+
+</html>

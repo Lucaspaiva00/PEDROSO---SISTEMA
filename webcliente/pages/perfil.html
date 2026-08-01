@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil | Pedroso Consórcios</title>
+    <link rel="icon" href="../img/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <header class="header">
+            <div class="header-top">
+                <div class="header-text">
+                    <span class="header-small">Minha conta</span>
+                    <h1 id="tituloPerfil">Perfil</h1>
+                </div>
+                <button class="btn-profile" id="btnVoltar" type="button" aria-label="Voltar ao início">
+                    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="content">
+
+            <section class="card text-center">
+                <div class="avatar avatar-lg" id="avatarIniciais" aria-hidden="true">—</div>
+                <h2 class="card-title mt-20" id="nomePerfil">Carregando…</h2>
+                <p class="card-text" id="emailPerfil">—</p>
+            </section>
+
+            <section class="card">
+                <span class="card-label">Dados do consórcio</span>
+                <div class="resume-item">
+                    <span>Grupo</span>
+                    <strong id="grupoPerfil">—</strong>
+                </div>
+                <div class="resume-item">
+                    <span>Cota</span>
+                    <strong id="cotaPerfil">—</strong>
+                </div>
+            </section>
+
+            <button type="button" class="btn btn-danger mt-20" id="btnSair">
+                <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+                Sair da conta
+            </button>
+
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="bottom-item">
+                <i class="fa-solid fa-house"></i>
+                <span>Início</span>
+            </a>
+            <a href="contrato.html" class="bottom-item">
+                <i class="fa-solid fa-file-contract"></i>
+                <span>Contrato</span>
+            </a>
+            <a href="parcelas.html" class="bottom-item">
+                <i class="fa-solid fa-credit-card"></i>
+                <span>Parcelas</span>
+            </a>
+            <a href="perfil.html" class="bottom-item active">
+                <i class="fa-solid fa-user"></i>
+                <span>Perfil</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/perfil.js"></script>
+
+</body>
+
+</html>

@@ -88,11 +88,12 @@
 
     </div>
 
+    <script src="../js/api.js"></script>
     <script>
 
         async function cadastrar() {
 
-            const resposta = await fetch("http://localhost:3000/auth/register", {
+            const resposta = await fetch(`${API_URL}/auth/register`, {
 
                 method: "POST",
 

@@ -40,6 +40,27 @@ class ClienteController {
 
     }
 
+    async detalhe(req, res) {
+
+        try {
+
+            const resultado = await ClienteService.buscarDetalhe(req.params.id);
+
+            const status = resultado.sucesso ? 200 : 404;
+
+            return res.status(status).json(resultado);
+
+        } catch (error) {
+
+            return res.status(500).json({
+                sucesso: false,
+                mensagem: error.message
+            });
+
+        }
+
+    }
+
     async criar(req, res) {
 
         try {

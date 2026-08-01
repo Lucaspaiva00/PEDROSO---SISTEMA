@@ -4,9 +4,10 @@ PLANOS.JS
 PARTE 1/3
 ==========================================================*/
 
-const API = "http://localhost:3000/planos";
 
-const token = localStorage.getItem("token");
+verificarLogin();
+
+const token = getToken();
 
 /*==========================================================
 ELEMENTOS
@@ -76,17 +77,7 @@ async function carregarPlanos() {
 
     try {
 
-        const response = await fetch(API, {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.get("/planos");
 
         if (!json.sucesso) {
 
@@ -104,7 +95,7 @@ async function carregarPlanos() {
 
         console.error(erro);
 
-        alert("Erro ao carregar planos.");
+        mostrarFeedback("feedbackPlanos", "error", "Erro", "Erro ao carregar planos.");
 
     }
 
@@ -327,19 +318,7 @@ async function excluirPlano(id) {
 
     try {
 
-        const response = await fetch(`${API}/${id}`, {
-
-            method: "DELETE",
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.delete(`/planos/${id}`);
 
         if (!json.sucesso) {
 
@@ -355,7 +334,7 @@ async function excluirPlano(id) {
 
         console.error(erro);
 
-        alert("Erro ao excluir plano.");
+        mostrarFeedback("feedbackPlanos", "error", "Erro", "Erro ao excluir plano.");
 
     }
 
@@ -411,65 +390,46 @@ async function salvarPlano(event) {
 
     if (!dados.nome) {
 
-        return alert("Informe o nome do plano.");
+        mostrarFeedback("feedbackPlanos", "error", "Validação", "Informe o nome do plano.");
+        return;
 
     }
 
     if (!dados.tipo) {
 
-        return alert("Selecione o tipo do consórcio.");
+        mostrarFeedback("feedbackPlanos", "error", "Validação", "Selecione o tipo do consórcio.");
+        return;
 
     }
 
     if (dados.valorCarta <= 0) {
 
-        return alert("Informe o valor da carta.");
+        mostrarFeedback("feedbackPlanos", "error", "Validação", "Informe o valor da carta.");
+        return;
 
     }
 
     if (dados.quantidadeParcelas <= 0) {
 
-        return alert("Informe a quantidade de parcelas.");
+        mostrarFeedback("feedbackPlanos", "error", "Validação", "Informe a quantidade de parcelas.");
+        return;
 
     }
 
     if (dados.valorParcela <= 0) {
 
-        return alert("Informe o valor da parcela.");
+        mostrarFeedback("feedbackPlanos", "error", "Validação", "Informe o valor da parcela.");
+        return;
 
     }
 
     try {
 
-        let url = API;
+        const resultado = planoEditando
+            ? await http.put(`/planos/${planoEditando}`, dados)
+            : await http.post("/planos", dados);
 
-        let metodo = "POST";
-
-        if (planoEditando) {
-
-            url = `${API}/${planoEditando}`;
-
-            metodo = "PUT";
-
-        }
-
-        const response = await fetch(url, {
-
-            method: metodo,
-
-            headers: {
-
-                "Content-Type": "application/json",
-
-                Authorization: `Bearer ${token}`
-
-            },
-
-            body: JSON.stringify(dados)
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = resultado;
 
         if (!json.sucesso) {
 
@@ -477,7 +437,7 @@ async function salvarPlano(event) {
 
         }
 
-        alert(json.mensagem);
+        mostrarFeedback("feedbackPlanos", "success", "Sucesso", json.mensagem || "Plano salvo.");
 
         fecharModal();
 
@@ -493,7 +453,7 @@ async function salvarPlano(event) {
 
         console.error(erro);
 
-        alert(erro.message || "Erro ao salvar plano.");
+        mostrarFeedback("feedbackPlanos", "error", "Erro", erro.message || "Erro ao salvar plano.");
 
     }
 

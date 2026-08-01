@@ -50,6 +50,12 @@ enum MetodoPagamento {
   CARTAO
 }
 
+enum StatusLance {
+  REGISTRADO
+  VENCEDOR
+  NAO_CONTEMPLADO
+}
+
 model Usuario {
   id    Int     @id @default(autoincrement())
   nome  String
@@ -146,9 +152,45 @@ model Contrato {
   sincronizarAsaas    Boolean         @default(true)
 
   parcelas Parcela[]
+  lances   Lance[]
 
   criadoEm     DateTime @default(now())
   atualizadoEm DateTime @updatedAt
+}
+
+model Assembleia {
+  id Int @id @default(autoincrement())
+
+  grupo          String
+  titulo         String?
+  dataAssembleia DateTime
+  aceitaLances   Boolean  @default(false)
+  encerrada      Boolean  @default(false)
+
+  lances Lance[]
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  @@index([grupo])
+}
+
+model Lance {
+  id Int @id @default(autoincrement())
+
+  assembleiaId Int
+  assembleia   Assembleia @relation(fields: [assembleiaId], references: [id], onDelete: Cascade)
+
+  contratoId Int
+  contrato   Contrato @relation(fields: [contratoId], references: [id], onDelete: Cascade)
+
+  valor  Decimal     @db.Decimal(10, 2)
+  status StatusLance @default(REGISTRADO)
+
+  criadoEm DateTime @default(now())
+
+  @@unique([assembleiaId, contratoId])
+  @@index([assembleiaId, valor(sort: Desc)])
 }
 
 model Parcela {

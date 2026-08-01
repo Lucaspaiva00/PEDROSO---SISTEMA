@@ -54,7 +54,7 @@
 
                 </div>
 
-                <button class="btn-profile" id="btnPerfil">
+                <button class="btn-profile" id="btnPerfil" type="button" aria-label="Abrir perfil">
 
                     <i class="fa-solid fa-user"></i>
 
@@ -68,7 +68,9 @@
              CONTEÚDO
         ========================== -->
 
-        <main class="content">
+        <main class="content" id="dashboardConteudo">
+
+            <div id="feedbackDashboard" class="feedback-banner" role="status" aria-live="polite" aria-atomic="true" tabindex="-1" hidden></div>
 
             <!-- Card Principal -->
 
@@ -82,7 +84,7 @@
 
                 <h2 id="valorCarta" class="card-value">
 
-                    R$ 0,00
+                    —
 
                 </h2>
 
@@ -117,13 +119,13 @@
 
                     <h3 id="valorParcela" class="card-title">
 
-                        R$ 0,00
+                        —
 
                     </h3>
 
                     <p id="dataVencimento" class="card-text">
 
-                        Vencimento: --
+                        Carregando…
 
                     </p>
 
@@ -147,7 +149,7 @@
 
                     <h3 id="statusContrato" class="card-title">
 
-                        Em dia
+                        —
 
                     </h3>
 
@@ -173,7 +175,7 @@
 
                         <span id="percentualPlano" class="progress-percent">
 
-                            0%
+                            —
 
                         </span>
 
@@ -191,13 +193,13 @@
 
                         <span id="parcelasPagas">
 
-                            0 Pagas
+                            —
 
                         </span>
 
                         <span id="parcelasRestantes">
 
-                            0 Restantes
+                            —
 
                         </span>
 
@@ -313,7 +315,23 @@
 
                     </button>
 
-                    <button class="quick-action" id="btnPerfil">
+                    <button class="quick-action" id="btnLance">
+
+                        <div class="quick-action-icon">
+
+                            <i class="fa-solid fa-gavel"></i>
+
+                        </div>
+
+                        <span>
+
+                            Lance
+
+                        </span>
+
+                    </button>
+
+                    <button class="quick-action" id="btnPerfilAtalho">
 
                         <div class="quick-action-icon">
 
@@ -393,6 +411,7 @@
 
     </div>
 
+    <script src="../js/api.js"></script>
     <script src="../js/dashboard.js"></script>
 
 </body>

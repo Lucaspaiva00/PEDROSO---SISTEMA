@@ -17,4 +17,10 @@ router.get(
 );
 router.get("/dashboard", auth, PortalController.dashboard);
 
+router.get("/contratos", auth, PortalController.contratos);
+
+router.get("/lances/situacao", auth, PortalController.situacaoLance);
+
+router.post("/lances", auth, PortalController.registrarLance);
+
 module.exports = router;

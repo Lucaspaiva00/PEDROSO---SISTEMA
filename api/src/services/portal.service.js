@@ -126,7 +126,7 @@ class PortalService {
 
                 cota: contrato.cota,
 
-                tipoConsorcio: contrato.tipoConsorcio,
+                tipoConsorcio: contrato.tipo,
 
                 valorCartaCredito: Number(contrato.valorCarta),
 
@@ -138,7 +138,7 @@ class PortalService {
 
                 parcelasRestantes,
 
-                dataContratacao: contrato.createdAt,
+                dataContratacao: contrato.criadoEm,
 
                 plano: {
 

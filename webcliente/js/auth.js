@@ -1,6 +1,4 @@
 
-const API_URL = "http://localhost:3000";
-
 const formLogin = document.getElementById("formLogin");
 const btnEntrar = document.getElementById("btnEntrar");
 const mensagem = document.getElementById("mensagem");
@@ -49,22 +47,10 @@ async function realizarLogin(event) {
     `;
     try {
 
-        const response = await fetch(`${API_URL}/auth/login`, {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
+        const { response, data } = await http.post("/auth/login", {
                 login: cpf,
                 senha
-            })
-
-        });
-
-        const data = await response.json();
+            }, { auth: false });
 
         if (!response.ok) {
 

@@ -4,9 +4,10 @@ CONTRATOS.JS
 PARTE 1/3
 ==========================================================*/
 
-const API = "http://localhost:3000";
 
-const token = localStorage.getItem("token");
+verificarLogin();
+
+const token = getToken();
 
 /*==========================================================
 ELEMENTOS
@@ -96,6 +97,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await carregarContratos();
 
+    carregarLancesPendentesContratos();
+
 });
 
 /*==========================================================
@@ -126,17 +129,7 @@ async function carregarContratos() {
 
     try {
 
-        const response = await fetch(`${API}/contratos`, {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.get("/contratos");
 
         if (!json.sucesso) {
 
@@ -154,7 +147,7 @@ async function carregarContratos() {
 
         console.error(erro);
 
-        alert("Erro ao carregar contratos.");
+        mostrarFeedback("feedbackContratos", "error", "Erro", "Erro ao carregar contratos.");
 
     }
 
@@ -168,17 +161,7 @@ async function carregarClientes() {
 
     try {
 
-        const response = await fetch(`${API}/clientes`, {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.get("/clientes");
 
         if (!json.sucesso) {
 
@@ -230,17 +213,7 @@ async function carregarPlanos() {
 
     try {
 
-        const response = await fetch(`${API}/planos`, {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.get("/planos");
 
         if (!json.sucesso) {
 
@@ -281,6 +254,31 @@ async function carregarPlanos() {
         console.error(erro);
 
     }
+
+}
+
+/*==========================================================
+PESQUISAR
+==========================================================*/
+
+/*==========================================================
+LANCES PENDENTES
+==========================================================*/
+
+function carregarLancesPendentesContratos() {
+
+    const tbody = document.getElementById("tbodyLancesPendentes");
+
+    if (!tbody || typeof carregarTabelaLances !== "function") {
+        return;
+    }
+
+    carregarTabelaLances(tbody, {
+        status: "REGISTRADO",
+        compacto: true,
+        feedbackId: "feedbackLancesContratos",
+        aoAtualizar: carregarLancesPendentesContratos
+    });
 
 }
 
@@ -597,19 +595,7 @@ async function excluirContrato(id) {
 
     try {
 
-        const response = await fetch(`${API}/contratos/${id}`, {
-
-            method: "DELETE",
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.delete(`/contratos/${id}`);
 
         if (!json.sucesso) {
 
@@ -625,7 +611,7 @@ async function excluirContrato(id) {
 
         console.error(erro);
 
-        alert(erro.message);
+        mostrarFeedback("feedbackContratos", "error", "Erro", erro.message);
 
     }
 
@@ -717,77 +703,60 @@ async function salvarContrato(event) {
 
     if (!dados.clienteId) {
 
-        return alert("Selecione um cliente.");
+        mostrarFeedback("feedbackContratos", "error", "Validação", "Selecione um cliente.");
+        return;
 
     }
 
     if (!dados.planoId) {
 
-        return alert("Selecione um plano.");
+        mostrarFeedback("feedbackContratos", "error", "Validação", "Selecione um plano.");
+        return;
 
     }
 
     if (!dados.administradora) {
 
-        return alert("Informe a administradora.");
+        mostrarFeedback("feedbackContratos", "error", "Validação", "Informe a administradora.");
+        return;
 
     }
 
     if (!dados.grupo) {
 
-        return alert("Informe o grupo.");
+        mostrarFeedback("feedbackContratos", "error", "Validação", "Informe o grupo.");
+        return;
 
     }
 
     if (!dados.cota) {
 
-        return alert("Informe a cota.");
+        mostrarFeedback("feedbackContratos", "error", "Validação", "Informe a cota.");
+        return;
 
     }
 
     if (!dados.primeiroVencimento) {
 
-        return alert("Informe o primeiro vencimento.");
+        mostrarFeedback("feedbackContratos", "error", "Validação", "Informe o primeiro vencimento.");
+        return;
 
     }
 
     if (!dados.diaVencimento) {
 
-        return alert("Informe o dia do vencimento.");
+        mostrarFeedback("feedbackContratos", "error", "Validação", "Informe o dia do vencimento.");
+        return;
 
     }
 
     try {
 
-        let metodo = "POST";
+        const resultado = contratoEditando
+            ? await http.put(`/contratos/${contratoEditando}`, dados)
+            : await http.post("/contratos", dados);
 
-        let url = `${API}/contratos`;
-
-        if (contratoEditando) {
-
-            metodo = "PUT";
-
-            url = `${API}/contratos/${contratoEditando}`;
-
-        }
-
-        const response = await fetch(url, {
-
-            method: metodo,
-
-            headers: {
-
-                Authorization: `Bearer ${token}`,
-
-                "Content-Type": "application/json"
-
-            },
-
-            body: JSON.stringify(dados)
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = resultado;
 
         if (!json.sucesso) {
 
@@ -795,7 +764,7 @@ async function salvarContrato(event) {
 
         }
 
-        alert(json.mensagem);
+        mostrarFeedback("feedbackContratos", "success", "Sucesso", json.mensagem);
 
         contratoEditando = null;
 
@@ -811,7 +780,7 @@ async function salvarContrato(event) {
 
         console.error(erro);
 
-        alert(erro.message || "Erro ao salvar contrato.");
+        mostrarFeedback("feedbackContratos", "error", "Erro", erro.message || "Erro ao salvar contrato.");
 
     }
 

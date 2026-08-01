@@ -4,15 +4,11 @@ PORTAL DO CLIENTE
 dashboard.js
 ==========================================================*/
 
-const API_URL = "http://localhost:3000";
-
-const token = localStorage.getItem("token");
 const usuario = JSON.parse(localStorage.getItem("usuario"));
+const token = getToken();
 
 if (!token || !usuario) {
-
     logout();
-
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -23,39 +19,56 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
-/*==========================================================
-CARREGAR DASHBOARD
-==========================================================*/
+function mostrarFeedbackDashboard(tipo, titulo, mensagem) {
+    const el = document.getElementById("feedbackDashboard");
+
+    if (!el) {
+        return;
+    }
+
+    const classes = {
+        success: "feedback-banner feedback-banner--success is-visible",
+        error: "feedback-banner feedback-banner--error is-visible",
+        info: "feedback-banner feedback-banner--info is-visible"
+    };
+
+    el.className = classes[tipo] || classes.info;
+    el.hidden = false;
+    el.innerHTML = `
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <div><strong>${titulo}</strong>${mensagem}</div>
+    `;
+    el.focus({ preventScroll: true });
+}
+
+function ocultarFeedbackDashboard() {
+    const el = document.getElementById("feedbackDashboard");
+
+    if (el) {
+        el.hidden = true;
+        el.className = "feedback-banner";
+        el.textContent = "";
+    }
+}
 
 async function carregarDashboard() {
 
     try {
 
+        ocultarFeedbackDashboard();
         mostrarLoading();
 
-        const resposta = await fetch(`${API_URL}/portal/dashboard`, {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
+        const { response: resposta, data: dados } = await http.get("/portal/dashboard");
 
         if (resposta.status === 401) {
-
-            logout();
 
             return;
 
         }
 
-        const dados = await resposta.json();
-
         if (!dados.sucesso) {
 
-            throw new Error(dados.mensagem);
+            throw new Error(dados.mensagem || "Não foi possível carregar o dashboard.");
 
         }
 
@@ -65,7 +78,11 @@ async function carregarDashboard() {
 
         console.error(erro);
 
-        alert("Não foi possível carregar o dashboard.");
+        mostrarFeedbackDashboard(
+            "error",
+            "Erro ao carregar",
+            erro.message || "Tente novamente em instantes."
+        );
 
     } finally {
 
@@ -75,66 +92,25 @@ async function carregarDashboard() {
 
 }
 
-/*==========================================================
-EVENTOS
-==========================================================*/
-
 function configurarEventos() {
 
-    const btnContrato = document.getElementById("btnContrato");
-
-    if (btnContrato) {
-
-        btnContrato.addEventListener("click", () => {
-
-            window.location.href = "contrato.html";
-
-        });
-
-    }
-
-    const btnParcelas = document.getElementById("btnParcelas");
-
-    if (btnParcelas) {
-
-        btnParcelas.addEventListener("click", () => {
-
-            window.location.href = "parcelas.html";
-
-        });
-
-    }
-
-    const btnPerfil = document.getElementById("btnPerfil");
-
-    if (btnPerfil) {
-
-        btnPerfil.addEventListener("click", () => {
-
-            window.location.href = "perfil.html";
-
-        });
-
-    }
+    irPara("btnContrato", "contrato.html");
+    irPara("btnParcelas", "parcelas.html");
+    irPara("btnLance", "lance.html");
+    irPara("btnPerfil", "perfil.html");
+    irPara("btnPerfilAtalho", "perfil.html");
 
 }
 
-/*==========================================================
-LOGOUT
-==========================================================*/
+function irPara(id, url) {
+    const btn = document.getElementById(id);
 
-function logout() {
-
-    localStorage.removeItem("token");
-    localStorage.removeItem("usuario");
-
-    window.location.href = "login.html";
-
+    if (btn) {
+        btn.addEventListener("click", () => {
+            window.location.href = url;
+        });
+    }
 }
-
-/*==========================================================
-PREENCHER DASHBOARD
-==========================================================*/
 
 function preencherDashboard(dados) {
 
@@ -172,10 +148,6 @@ function preencherDashboard(dados) {
 
 }
 
-/*==========================================================
-BARRA DE PROGRESSO
-==========================================================*/
-
 function atualizarProgresso(pagas, total) {
 
     const percentual = total > 0
@@ -190,15 +162,11 @@ function atualizarProgresso(pagas, total) {
 
 }
 
-/*==========================================================
-FORMATAÇÃO
-==========================================================*/
-
 function formatarMoeda(valor) {
 
     if (valor == null) {
 
-        return "R$ 0,00";
+        return "—";
 
     }
 
@@ -224,25 +192,19 @@ function formatarData(data) {
 
 }
 
-/*==========================================================
-LOADING
-==========================================================*/
-
 function mostrarLoading() {
 
+    document.body.classList.add("is-loading");
     document.body.style.cursor = "wait";
 
 }
 
 function esconderLoading() {
 
+    document.body.classList.remove("is-loading");
     document.body.style.cursor = "default";
 
 }
-
-/*==========================================================
-SAUDAÇÃO
-==========================================================*/
 
 atualizarSaudacao();
 
@@ -273,41 +235,3 @@ function atualizarSaudacao() {
     }
 
 }
-
-/*==========================================================
-UTILITÁRIOS
-==========================================================*/
-
-function definirTexto(id, valor) {
-
-    const elemento = document.getElementById(id);
-
-    if (!elemento) {
-
-        return;
-
-    }
-
-    elemento.textContent = valor ?? "-";
-
-}
-
-function definirHTML(id, valor) {
-
-    const elemento = document.getElementById(id);
-
-    if (!elemento) {
-
-        return;
-
-    }
-
-    elemento.innerHTML = valor ?? "";
-
-}
-
-/*==========================================================
-LOG
-==========================================================*/
-
-console.log("Dashboard carregado com sucesso.");

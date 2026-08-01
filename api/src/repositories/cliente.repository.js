@@ -22,6 +22,48 @@ class ClienteRepository {
 
     }
 
+    async buscarDetalhe(id) {
+
+        return await prisma.cliente.findUnique({
+
+            where: {
+                id: Number(id)
+            },
+
+            include: {
+
+                contratos: {
+
+                    orderBy: {
+                        criadoEm: "desc"
+                    },
+
+                    include: {
+
+                        plano: true,
+
+                        lances: {
+
+                            orderBy: {
+                                criadoEm: "desc"
+                            },
+
+                            include: {
+                                assembleia: true
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        });
+
+    }
+
     async buscarPorCpf(cpfCnpj) {
 
         return await prisma.cliente.findUnique({

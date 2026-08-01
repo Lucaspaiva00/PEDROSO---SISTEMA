@@ -1,8 +1,7 @@
 
 
-const API = "http://localhost:3000";
 
-const token = localStorage.getItem("token");
+const token = getToken();
 
 /*==========================================================
 ELEMENTOS
@@ -104,17 +103,7 @@ async function carregarConfiguracoes() {
 
     try {
 
-        const response = await fetch(`${API}/configuracoes`, {
-
-            headers: {
-
-                Authorization: `Bearer ${token}`
-
-            }
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.get("/configuracoes");
 
         if (!json.sucesso) {
 
@@ -173,7 +162,7 @@ function selecionarLogo() {
 
     if (!arquivo.type.startsWith("image/")) {
 
-        alert("Selecione uma imagem válida.");
+        mostrarFeedback("feedbackConfig", "error", "Validação", "Selecione uma imagem válida.");
 
         logo.value = "";
 
@@ -190,7 +179,7 @@ function validarSenhas() {
         novaSenha.value !== confirmarSenha.value
     ) {
 
-        alert("As senhas não coincidem.");
+        mostrarFeedback("feedbackConfig", "error", "Validação", "As senhas não coincidem.");
 
         confirmarSenha.focus();
 
@@ -266,23 +255,7 @@ async function salvarConfiguracoes() {
 
     try {
 
-        const response = await fetch(`${API}/configuracoes`, {
-
-            method: "PUT",
-
-            headers: {
-
-                Authorization: `Bearer ${token}`,
-
-                "Content-Type": "application/json"
-
-            },
-
-            body: JSON.stringify(dados)
-
-        });
-
-        const json = await response.json();
+        const { response, data: json } = await http.put("/configuracoes", dados);
 
         if (!json.sucesso) {
 
@@ -292,7 +265,7 @@ async function salvarConfiguracoes() {
 
         limparSenhas();
 
-        alert(json.mensagem);
+        mostrarFeedback("feedbackConfig", "success", "Sucesso", json.mensagem);
 
     }
 
@@ -300,7 +273,7 @@ async function salvarConfiguracoes() {
 
         console.error(erro);
 
-        alert(erro.message || "Erro ao salvar configurações.");
+        mostrarFeedback("feedbackConfig", "error", "Erro", erro.message || "Erro ao salvar configurações.");
 
     }
 

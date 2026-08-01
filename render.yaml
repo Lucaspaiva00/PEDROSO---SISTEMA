@@ -35,7 +35,6 @@ services:
   - type: web
     name: pedroso-admin
     runtime: static
-    plan: free
     rootDir: webadmin
     staticPublishPath: ./pages
     buildCommand: >-
@@ -49,7 +48,6 @@ services:
   - type: web
     name: pedroso-portal
     runtime: static
-    plan: free
     rootDir: webcliente
     staticPublishPath: ./pages
     buildCommand: >-

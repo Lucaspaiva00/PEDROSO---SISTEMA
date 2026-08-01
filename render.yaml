@@ -43,7 +43,10 @@ services:
       sed -i "s|http://localhost:3000|${API_BASE}|g" pages/register.html
     envVars:
       - key: API_URL
-        sync: false
+        fromService:
+          name: pedroso-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
 
   - type: web
     name: pedroso-portal
@@ -55,4 +58,7 @@ services:
       for f in js/*.js; do sed -i "s|http://localhost:3000|${API_BASE}|g" "$f"; done
     envVars:
       - key: API_URL
-        sync: false
+        fromService:
+          name: pedroso-api
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL

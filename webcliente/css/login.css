@@ -117,22 +117,53 @@ body {
 button {
     width: 100%;
     height: 54px;
-    border: none;
-    border-radius: 12px;
-    background: #0d4ea6;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    background: linear-gradient(165deg, #1260c4 0%, #0f4fa8 42%, #0b3c82 100%);
     color: #fff;
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.01em;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    transition: .25s;
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.18) inset,
+        0 10px 24px rgba(15, 79, 168, 0.28);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
 }
 
-button:hover {
-    background: #083a80;
+button:focus-visible {
+    outline: none;
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.18) inset,
+        0 10px 24px rgba(15, 79, 168, 0.28),
+        0 0 0 4px rgba(15, 79, 168, 0.25);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+@media (hover: hover) {
+    button:hover {
+        transform: translateY(-1px);
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.22) inset,
+            0 14px 32px rgba(15, 79, 168, 0.34);
+    }
+
+    button:active {
+        transform: translateY(0) scale(0.98);
+        box-shadow:
+            0 1px 0 rgba(255, 255, 255, 0.12) inset,
+            0 6px 16px rgba(15, 79, 168, 0.22);
+    }
 }
 
 .mensagem {

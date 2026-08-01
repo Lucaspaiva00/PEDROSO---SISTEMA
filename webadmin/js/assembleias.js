@@ -69,13 +69,15 @@ async function carregarAssembleias() {
                 <td>${item.totalLances}</td>
                 <td>${status}</td>
                 <td>
+                    <div class="table-link-actions">
                     <button type="button" class="btn-link" data-analisar="${item.id}">Analisar</button>
                     ${!item.encerrada && !item.aceitaLances
                         ? `<button type="button" class="btn-link" data-abrir="${item.id}">Abrir lances</button>`
                         : ""}
                     ${!item.encerrada
-                        ? `<button type="button" class="btn-link" data-encerrar="${item.id}">Encerrar</button>`
+                        ? `<button type="button" class="btn-link btn-link-muted" data-encerrar="${item.id}">Encerrar</button>`
                         : ""}
+                    </div>
                 </td>
             </tr>
         `;
@@ -168,8 +170,10 @@ async function analisar(id) {
             <td>
                 ${item.status === "REGISTRADO"
                     ? `
+                        <div class="table-link-actions">
                         <button type="button" class="btn-link" data-aprovar-lance="${item.lanceId}">Aprovar</button>
-                        <button type="button" class="btn-link" data-reprovar-lance="${item.lanceId}">Reprovar</button>
+                        <button type="button" class="btn-link btn-link-danger" data-reprovar-lance="${item.lanceId}">Reprovar</button>
+                        </div>
                     `
                     : ""}
             </td>

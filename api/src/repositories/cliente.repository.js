@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { somenteNumeros } = require("../utils/cpfCnpj");
 
 class ClienteRepository {
 
@@ -66,10 +67,33 @@ class ClienteRepository {
 
     async buscarPorCpf(cpfCnpj) {
 
-        return await prisma.cliente.findUnique({
-            where: {
-                cpfCnpj
-            }
+        const cpf = somenteNumeros(cpfCnpj);
+
+        if (!cpf) {
+            return null;
+        }
+
+        const direto = await prisma.cliente.findUnique({
+            where: { cpfCnpj: cpf }
+        });
+
+        if (direto) {
+            return direto;
+        }
+
+        const rows = await prisma.$queryRaw`
+            SELECT id
+            FROM "Cliente"
+            WHERE regexp_replace("cpfCnpj", '[^0-9]', '', 'g') = ${cpf}
+            LIMIT 1
+        `;
+
+        if (!rows.length) {
+            return null;
+        }
+
+        return prisma.cliente.findUnique({
+            where: { id: rows[0].id }
         });
 
     }

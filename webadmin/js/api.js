@@ -117,9 +117,27 @@ function createHttpClient({
         }
 
         const text = await response.text();
-        const data = text ? JSON.parse(text) : null;
+        let data = null;
+        let parseError = false;
 
-        return { response, data };
+        if (text) {
+            const contentType = response.headers.get("content-type") || "";
+            const looksJson =
+                contentType.includes("json") ||
+                /^\s*[\[{]/.test(text);
+
+            if (looksJson) {
+                try {
+                    data = JSON.parse(text);
+                } catch {
+                    parseError = true;
+                }
+            } else {
+                parseError = true;
+            }
+        }
+
+        return { response, data, parseError };
     }
 
     return {

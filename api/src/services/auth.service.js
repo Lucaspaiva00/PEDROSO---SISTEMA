@@ -1,7 +1,9 @@
 const bcrypt = require("bcrypt");
 
 const UsuarioRepository = require("../repositories/usuario.repository");
+const ClienteRepository = require("../repositories/cliente.repository");
 const { gerarToken } = require("../config/jwt");
+const { somenteNumeros } = require("../utils/cpfCnpj");
 
 class AuthService {
 
@@ -73,7 +75,7 @@ class AuthService {
 
         }
 
-        const cpf = cliente.cpfCnpj.replace(/\D/g, "");
+        const cpf = somenteNumeros(cliente.cpfCnpj);
 
         const senhaInicial = cpf.substring(0, 6);
 
@@ -121,9 +123,19 @@ class AuthService {
 
         } else {
 
-            const cpf = login.replace(/\D/g, "");
+            const cpf = somenteNumeros(login);
 
             usuario = await UsuarioRepository.findByCpf(cpf);
+
+            if (!usuario) {
+
+                const cliente = await ClienteRepository.buscarPorCpf(cpf);
+
+                if (cliente) {
+                    usuario = await this.criarUsuarioCliente(cliente);
+                }
+
+            }
 
         }
 

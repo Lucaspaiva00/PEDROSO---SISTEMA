@@ -10,6 +10,7 @@ const portalRoutes = require("./routes/portal.routes");
 const asaasRoutes = require("./routes/asaas.routes");
 const assembleiaRoutes = require("./routes/assembleia.routes");
 const lanceRoutes = require("./routes/lance.routes");
+const configuracaoRoutes = require("./routes/configuracao.routes");
 
 const app = express();
 
@@ -29,5 +30,6 @@ app.use("/portal", portalRoutes);
 app.use("/asaas", asaasRoutes);
 app.use("/assembleias", assembleiaRoutes);
 app.use("/lances", lanceRoutes);
+app.use("/configuracoes", configuracaoRoutes);
 
 module.exports = app;

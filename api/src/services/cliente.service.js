@@ -1,4 +1,5 @@
 const ClienteRepository = require("../repositories/cliente.repository");
+const { somenteNumeros } = require("../utils/cpfCnpj");
 
 class ClienteService {
 
@@ -115,7 +116,8 @@ class ClienteService {
 
     async criar(dados) {
 
-        const { nome, cpfCnpj, email } = dados;
+        const { nome, email } = dados;
+        const cpfCnpj = somenteNumeros(dados.cpfCnpj);
 
         if (!nome || !cpfCnpj || !email) {
 
@@ -137,7 +139,10 @@ class ClienteService {
 
         }
 
-        const cliente = await ClienteRepository.criar(dados);
+        const cliente = await ClienteRepository.criar({
+            ...dados,
+            cpfCnpj
+        });
 
         return {
             sucesso: true,
@@ -160,7 +165,13 @@ class ClienteService {
 
         }
 
-        const atualizado = await ClienteRepository.editar(id, dados);
+        const payload = { ...dados };
+
+        if (payload.cpfCnpj !== undefined) {
+            payload.cpfCnpj = somenteNumeros(payload.cpfCnpj);
+        }
+
+        const atualizado = await ClienteRepository.editar(id, payload);
 
         return {
             sucesso: true,

@@ -103,9 +103,29 @@ async function carregarConfiguracoes() {
 
     try {
 
-        const { response, data: json } = await http.get("/configuracoes");
+        const { response, data: json, parseError } = await http.get("/configuracoes");
+
+        if (!response.ok || parseError || !json) {
+
+            const msg =
+                response.status === 404
+                    ? "Endpoint de configurações indisponível. Atualize a API e rode a migration no banco."
+                    : "Não foi possível carregar as configurações. Verifique se o servidor está online.";
+
+            mostrarFeedback("feedbackConfig", "error", "Erro", msg);
+
+            return;
+
+        }
 
         if (!json.sucesso) {
+
+            mostrarFeedback(
+                "feedbackConfig",
+                "error",
+                "Erro",
+                json.mensagem || "Erro ao carregar configurações."
+            );
 
             return;
 
@@ -118,6 +138,13 @@ async function carregarConfiguracoes() {
     catch (erro) {
 
         console.error(erro);
+
+        mostrarFeedback(
+            "feedbackConfig",
+            "error",
+            "Erro",
+            "Não foi possível carregar as configurações."
+        );
 
     }
 
@@ -255,7 +282,17 @@ async function salvarConfiguracoes() {
 
     try {
 
-        const { response, data: json } = await http.put("/configuracoes", dados);
+        const { response, data: json, parseError } = await http.put("/configuracoes", dados);
+
+        if (!response.ok || parseError || !json) {
+
+            throw new Error(
+                response.status === 404
+                    ? "Endpoint de configurações indisponível."
+                    : `Erro do servidor (${response.status}).`
+            );
+
+        }
 
         if (!json.sucesso) {
 

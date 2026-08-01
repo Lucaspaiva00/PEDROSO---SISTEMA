@@ -221,6 +221,31 @@ model Parcela {
   @@unique([contratoId, numero])
 }
 
+model ConfiguracaoSistema {
+  id Int @id @default(1)
+
+  nomeEmpresa String?
+  cnpj        String?
+  telefone    String?
+  whatsapp    String?
+  email       String?
+
+  cep    String?
+  rua    String?
+  numero String?
+  bairro String?
+  cidade String?
+  estado String?
+
+  gerarParcelas         Boolean @default(true)
+  sincronizarCobrancas  Boolean @default(true)
+  administradoraPadrao  String?
+  formaPagamentoPadrao  String  @default("BOLETO")
+
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
+
 model ConfiguracaoAsaas {
   id Int @id @default(autoincrement())
 

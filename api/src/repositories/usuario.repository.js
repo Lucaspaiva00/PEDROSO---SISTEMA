@@ -1,4 +1,5 @@
 const prisma = require("../config/prisma");
+const { somenteNumeros } = require("../utils/cpfCnpj");
 
 class UsuarioRepository {
 
@@ -14,23 +15,43 @@ class UsuarioRepository {
 
     async findByCpf(cpfCnpj) {
 
-        return await prisma.usuario.findFirst({
+        const cpf = somenteNumeros(cpfCnpj);
+
+        if (!cpf) {
+            return null;
+        }
+
+        const direto = await prisma.usuario.findFirst({
 
             where: {
-
-                cliente: {
-
-                    cpfCnpj
-
-                }
-
+                cliente: { cpfCnpj: cpf }
             },
 
-            include: {
+            include: { cliente: true }
 
-                cliente: true
+        });
 
-            }
+        if (direto) {
+            return direto;
+        }
+
+        const rows = await prisma.$queryRaw`
+            SELECT u."id" AS id
+            FROM "Usuario" u
+            INNER JOIN "Cliente" c ON c."id" = u."clienteId"
+            WHERE regexp_replace(c."cpfCnpj", '[^0-9]', '', 'g') = ${cpf}
+            LIMIT 1
+        `;
+
+        if (!rows.length) {
+            return null;
+        }
+
+        return prisma.usuario.findUnique({
+
+            where: { id: rows[0].id },
+
+            include: { cliente: true }
 
         });
 
@@ -61,6 +82,15 @@ class UsuarioRepository {
     async create(dados) {
 
         return await prisma.usuario.create({
+            data: dados
+        });
+
+    }
+
+    async update(id, dados) {
+
+        return await prisma.usuario.update({
+            where: { id: Number(id) },
             data: dados
         });
 

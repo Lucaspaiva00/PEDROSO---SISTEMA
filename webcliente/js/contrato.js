@@ -1,6 +1,9 @@
 const usuario = JSON.parse(localStorage.getItem("usuario"));
 const token = getToken();
 
+let contratoAtual = null;
+let contratos = [];
+
 if (!token || !usuario) {
 
     logout();
@@ -9,33 +12,33 @@ if (!token || !usuario) {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    carregarContrato();
-
     configurarEventos();
+
+    iniciarPaginaContrato();
 
 });
 
-async function carregarContrato() {
+async function iniciarPaginaContrato() {
 
     try {
 
         mostrarLoading();
 
-        const { response: resposta, data: dados } = await http.get("/portal/contrato");
+        await carregarListaContratos();
 
-        if (resposta.status === 401) {
+        const params = new URLSearchParams(window.location.search);
+        const contratoParam = params.get("contratoId");
+        let contratoId = contratos[0]?.id || null;
 
-            return;
-
+        if (contratoParam && contratos.some(c => c.id === Number(contratoParam))) {
+            contratoId = Number(contratoParam);
         }
 
-        if (!dados.sucesso) {
+        preencherSeletorContratos(contratoId);
 
-            throw new Error(dados.mensagem);
-
+        if (contratoId) {
+            await carregarContrato(contratoId);
         }
-
-        preencherContrato(dados.dados);
 
     } catch (erro) {
 
@@ -51,6 +54,74 @@ async function carregarContrato() {
 
 }
 
+async function carregarListaContratos() {
+
+    const { response: resposta, data: dados } = await http.get("/portal/contratos");
+
+    if (resposta.status === 401) {
+        return;
+    }
+
+    if (!dados.sucesso) {
+        throw new Error(dados.mensagem);
+    }
+
+    contratos = dados.dados || [];
+
+}
+
+function preencherSeletorContratos(contratoIdSelecionado) {
+
+    const secao = document.getElementById("secaoSeletorContrato");
+    const select = document.getElementById("selectContrato");
+
+    if (!select || !secao) {
+        return;
+    }
+
+    if (contratos.length <= 1) {
+        secao.hidden = true;
+        return;
+    }
+
+    secao.hidden = false;
+
+    select.innerHTML = contratos.map(contrato => {
+        const rotulo = [
+            contrato.planoNome || contrato.plano?.nome || "Consórcio",
+            contrato.grupo ? `Grupo ${contrato.grupo}` : null,
+            contrato.cota ? `Cota ${contrato.cota}` : null
+        ].filter(Boolean).join(" • ");
+
+        return `<option value="${contrato.id}">${rotulo}</option>`;
+    }).join("");
+
+    if (contratoIdSelecionado) {
+        select.value = String(contratoIdSelecionado);
+    }
+
+}
+
+async function carregarContrato(contratoId) {
+
+    const { response: resposta, data: dados } = await http.get(
+        `/portal/contrato?contratoId=${contratoId}`
+    );
+
+    if (resposta.status === 401) {
+        return;
+    }
+
+    if (!dados.sucesso) {
+        throw new Error(dados.mensagem);
+    }
+
+    contratoAtual = dados.dados;
+
+    preencherContrato(contratoAtual);
+
+}
+
 function configurarEventos() {
 
     const btnVoltar = document.getElementById("btnVoltar");
@@ -60,6 +131,32 @@ function configurarEventos() {
         btnVoltar.addEventListener("click", () => {
 
             window.location.href = "dashboard.html";
+
+        });
+
+    }
+
+    const select = document.getElementById("selectContrato");
+
+    if (select) {
+
+        select.addEventListener("change", async (evento) => {
+
+            const id = Number(evento.target.value);
+
+            if (!id) {
+                return;
+            }
+
+            try {
+                mostrarLoading();
+                await carregarContrato(id);
+            } catch (erro) {
+                console.error(erro);
+                alert("Não foi possível carregar o contrato.");
+            } finally {
+                esconderLoading();
+            }
 
         });
 
@@ -102,10 +199,6 @@ function configurarEventos() {
     }
 
 }
-
-/*==========================================================
-PREENCHER CONTRATO
-==========================================================*/
 
 function preencherContrato(contrato) {
 
@@ -150,10 +243,6 @@ function preencherContrato(contrato) {
 
 }
 
-/*==========================================================
-MENSAGEM DO STATUS
-==========================================================*/
-
 function obterMensagemStatus(status) {
 
     switch ((status || "").toUpperCase()) {
@@ -175,13 +264,10 @@ function obterMensagemStatus(status) {
 
         default:
             return "Situação do contrato.";
+
     }
 
 }
-
-/*==========================================================
-UTILITÁRIOS
-==========================================================*/
 
 function formatarMoeda(valor) {
 
@@ -213,10 +299,6 @@ function mostrarLoading() {
 function esconderLoading() {
 
 }
-
-/*==========================================================
-AÇÕES
-==========================================================*/
 
 function visualizarContrato() {
 

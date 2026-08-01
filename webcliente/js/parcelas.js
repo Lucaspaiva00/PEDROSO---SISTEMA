@@ -8,6 +8,7 @@ const usuario = JSON.parse(localStorage.getItem("usuario"));
 const token = getToken();
 
 let contratoAtual = null;
+let contratosResumo = [];
 let todasParcelas = [];
 let proximaParcela = null;
 let parcelaSelecionada = null;
@@ -30,38 +31,22 @@ async function carregarDadosPortal() {
     try {
         mostrarLoadingContratos();
 
-        const [respostaContrato, respostaParcelas] = await Promise.all([
-            http.get("/portal/contrato"),
-            http.get("/portal/parcelas")
-        ]);
+        const { response: resposta, data: json } = await http.get(
+            "/portal/contratos"
+        );
 
-        if (
-            respostaContrato.response.status === 401 ||
-            respostaParcelas.response.status === 401
-        ) {
+        if (resposta.status === 401) {
             return;
         }
 
-        const dadosContrato = respostaContrato.data;
-        const dadosParcelas = respostaParcelas.data;
-
-        if (!dadosContrato.sucesso) {
+        if (!json.sucesso) {
             throw new Error(
-                dadosContrato.mensagem ||
-                "Não foi possível carregar o contrato."
+                json.mensagem ||
+                "Não foi possível carregar os consórcios."
             );
         }
 
-        if (!dadosParcelas.sucesso) {
-            throw new Error(
-                dadosParcelas.mensagem ||
-                "Não foi possível carregar as parcelas."
-            );
-        }
-
-        contratoAtual = dadosContrato.dados;
-        todasParcelas = dadosParcelas.dados?.parcelas || [];
-        proximaParcela = dadosParcelas.dados?.proximaParcela || null;
+        contratosResumo = json.dados || [];
 
         renderizarConsorcios();
 
@@ -186,7 +171,7 @@ function renderizarConsorcios() {
 
     container.innerHTML = "";
 
-    if (!contratoAtual) {
+    if (!contratosResumo.length) {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="fa-solid fa-file-circle-xmark"></i>
@@ -200,6 +185,15 @@ function renderizarConsorcios() {
         return;
     }
 
+    contratosResumo.forEach(resumo => {
+        const card = criarCardConsorcio(resumo);
+        container.appendChild(card);
+    });
+}
+
+function criarCardConsorcio(contrato) {
+    const proxima = contrato.proximaParcela;
+
     const card = document.createElement("button");
 
     card.type = "button";
@@ -209,30 +203,31 @@ function renderizarConsorcios() {
         <div class="consorcio-card-topo">
             <div class="consorcio-card-icon">
                 <i class="${obterIconeConsorcio(
-        contratoAtual.tipoConsorcio
+        contrato.tipoConsorcio || contrato.tipo
     )}"></i>
             </div>
 
             <div class="consorcio-card-titulo">
                 <span class="consorcio-card-label">
                     ${escaparHtml(
-        contratoAtual.plano?.nome ||
+        contrato.plano?.nome ||
+        contrato.planoNome ||
         "Consórcio"
     )}
                 </span>
 
                 <strong>
                     ${formatarMoeda(
-        contratoAtual.valorCartaCredito
+        contrato.valorCartaCredito || contrato.valorCarta
     )}
                 </strong>
             </div>
 
             <span class="${obterClasseStatus(
-        contratoAtual.status
+        contrato.status
     )}">
                 ${escaparHtml(
-        contratoAtual.status || "ATIVO"
+        contrato.status || "ATIVO"
     )}
             </span>
         </div>
@@ -242,7 +237,7 @@ function renderizarConsorcios() {
                 <span>Grupo</span>
                 <strong>
                     ${escaparHtml(
-        contratoAtual.grupo || "-"
+        contrato.grupo || "-"
     )}
                 </strong>
             </div>
@@ -251,7 +246,7 @@ function renderizarConsorcios() {
                 <span>Cota</span>
                 <strong>
                     ${escaparHtml(
-        contratoAtual.cota || "-"
+        contrato.cota || "-"
     )}
                 </strong>
             </div>
@@ -260,7 +255,7 @@ function renderizarConsorcios() {
                 <span>Parcelas</span>
                 <strong>
                     ${Number(
-        contratoAtual.quantidadeParcelas || 0
+        contrato.quantidadeParcelas || 0
     )}
                 </strong>
             </div>
@@ -271,8 +266,8 @@ function renderizarConsorcios() {
                 <span>Próxima parcela</span>
 
                 <strong>
-                    ${proximaParcela
-            ? formatarMoeda(proximaParcela.valor)
+                    ${proxima
+            ? formatarMoeda(proxima.valor)
             : "Nenhuma pendente"
         }
                 </strong>
@@ -285,9 +280,46 @@ function renderizarConsorcios() {
         </div>
     `;
 
-    card.addEventListener("click", abrirParcelasDoConsorcio);
+    card.addEventListener("click", () => {
+        carregarParcelasDoContrato(contrato.id);
+    });
 
-    container.appendChild(card);
+    return card;
+}
+
+async function carregarParcelasDoContrato(contratoId) {
+    try {
+        const { response: resposta, data: json } = await http.get(
+            `/portal/parcelas?contratoId=${contratoId}`
+        );
+
+        if (resposta.status === 401) {
+            return;
+        }
+
+        if (!json.sucesso) {
+            throw new Error(
+                json.mensagem ||
+                "Não foi possível carregar as parcelas."
+            );
+        }
+
+        contratoAtual = contratosResumo.find(
+            item => item.id === Number(contratoId)
+        ) || null;
+
+        todasParcelas = json.dados?.parcelas || [];
+        proximaParcela = json.dados?.proximaParcela || null;
+
+        abrirParcelasDoConsorcio();
+
+    } catch (erro) {
+        console.error(erro);
+        alert(
+            erro.message ||
+            "Não foi possível carregar as parcelas deste consórcio."
+        );
+    }
 }
 
 /*==========================================================

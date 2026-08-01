@@ -25,7 +25,10 @@ class PortalController {
     }
     async contrato(req, res) {
 
-        const resultado = await PortalService.contrato(req.usuario);
+        const resultado = await PortalService.contrato(
+            req.usuario,
+            req.query.contratoId
+        );
 
         return res.json(resultado);
 
@@ -36,7 +39,8 @@ class PortalController {
         try {
 
             const resultado = await PortalService.parcelas(
-                req.usuario
+                req.usuario,
+                req.query.contratoId
             );
 
             return res.json(resultado);
@@ -61,7 +65,7 @@ class PortalController {
 
         try {
 
-            const resultado = await LanceService.listarContratos(
+            const resultado = await PortalService.listarContratos(
                 req.usuario
             );
 

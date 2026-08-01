@@ -117,6 +117,33 @@ function preencherDashboard(dados) {
     document.getElementById("nomeCliente").textContent =
         dados.nome || "-";
 
+    const contratos = dados.contratos || [];
+    const secao = document.getElementById("secaoMeusConsorcios");
+    const container = document.getElementById("contratosDashboard");
+
+    if (secao && container && contratos.length > 1) {
+        secao.hidden = false;
+        container.innerHTML = contratos.map(contrato => {
+            const rotulo = [
+                contrato.planoNome || "Consórcio",
+                contrato.grupo ? `Grupo ${contrato.grupo}` : null,
+                contrato.cota ? `Cota ${contrato.cota}` : null
+            ].filter(Boolean).join(" • ");
+
+            return `
+                <a class="consorcio-link" href="contrato.html?contratoId=${contrato.id}">
+                    <div>
+                        <strong>${rotulo}</strong>
+                        <span>${formatarMoeda(contrato.valorCarta)} • ${contrato.status || "—"}</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                </a>
+            `;
+        }).join("");
+    } else if (secao) {
+        secao.hidden = true;
+    }
+
     document.getElementById("valorCarta").textContent =
         formatarMoeda(dados.valorCarta);
 

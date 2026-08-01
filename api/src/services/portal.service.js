@@ -2,6 +2,86 @@ const UsuarioRepository = require("../repositories/usuario.repository");
 
 class PortalService {
 
+    resolverContrato(cliente, contratoId) {
+
+        const contratos = cliente.contratos || [];
+
+        if (!contratos.length) {
+            return null;
+        }
+
+        if (contratoId != null && contratoId !== "") {
+            const id = Number(contratoId);
+
+            if (!Number.isNaN(id)) {
+                const encontrado = contratos.find(item => item.id === id);
+
+                if (encontrado) {
+                    return encontrado;
+                }
+            }
+        }
+
+        return contratos[0];
+
+    }
+
+    mapearContratoResumo(contrato) {
+
+        const proximaParcela = contrato.parcelas.find(
+            parcela => parcela.status === "PENDENTE"
+        );
+
+        return {
+
+            id: contrato.id,
+
+            numeroContrato: contrato.numeroContrato,
+
+            grupo: contrato.grupo,
+
+            cota: contrato.cota,
+
+            status: contrato.status,
+
+            tipo: contrato.tipo,
+
+            tipoConsorcio: contrato.tipo,
+
+            valorCarta: Number(contrato.valorCarta),
+
+            valorCartaCredito: Number(contrato.valorCarta),
+
+            valorParcela: Number(contrato.valorParcela),
+
+            quantidadeParcelas: contrato.quantidadeParcelas,
+
+            parcelasPagas: contrato.parcelasPagas,
+
+            parcelasRestantes:
+                contrato.quantidadeParcelas - contrato.parcelasPagas,
+
+            planoNome: contrato.plano?.nome || null,
+
+            plano: {
+                nome: contrato.plano?.nome
+            },
+
+            proximaParcela: proximaParcela
+                ? {
+                    valor: Number(proximaParcela.valor),
+                    vencimento: proximaParcela.vencimento
+                }
+                : null,
+
+            proximoVencimento: proximaParcela
+                ? proximaParcela.vencimento
+                : null
+
+        };
+
+    }
+
     async dashboard(usuarioLogado) {
 
         const usuario = await UsuarioRepository.findPortalByUserId(
@@ -18,6 +98,10 @@ class PortalService {
             };
 
         }
+
+        const contratosResumo = usuario.cliente.contratos.map(
+            contrato => this.mapearContratoResumo(contrato)
+        );
 
         const contrato = usuario.cliente.contratos[0];
 
@@ -67,7 +151,9 @@ class PortalService {
                     contrato.parcelasPagas,
 
                 parcelasTotais:
-                    contrato.quantidadeParcelas
+                    contrato.quantidadeParcelas,
+
+                contratos: contratosResumo
 
             }
 
@@ -75,7 +161,34 @@ class PortalService {
 
     }
 
-    async contrato(usuarioLogado) {
+    async listarContratos(usuarioLogado) {
+
+        const usuario = await UsuarioRepository.findPortalByUserId(
+            usuarioLogado.id
+        );
+
+        if (!usuario?.cliente) {
+
+            return {
+                sucesso: false,
+                mensagem: "Cliente não encontrado."
+            };
+
+        }
+
+        return {
+
+            sucesso: true,
+
+            dados: usuario.cliente.contratos.map(contrato =>
+                this.mapearContratoResumo(contrato)
+            )
+
+        };
+
+    }
+
+    async contrato(usuarioLogado, contratoId) {
 
         const usuario = await UsuarioRepository.findPortalByUserId(
             usuarioLogado.id
@@ -92,7 +205,10 @@ class PortalService {
 
         }
 
-        const contrato = usuario.cliente.contratos[0];
+        const contrato = this.resolverContrato(
+            usuario.cliente,
+            contratoId
+        );
 
         if (!contrato) {
 
@@ -151,7 +267,7 @@ class PortalService {
         };
 
     }
-    async parcelas(usuarioLogado) {
+    async parcelas(usuarioLogado, contratoId) {
 
         const usuario = await UsuarioRepository.findPortalByUserId(
             usuarioLogado.id
@@ -168,7 +284,10 @@ class PortalService {
 
         }
 
-        const contrato = usuario.cliente.contratos[0];
+        const contrato = this.resolverContrato(
+            usuario.cliente,
+            contratoId
+        );
 
         if (!contrato) {
 

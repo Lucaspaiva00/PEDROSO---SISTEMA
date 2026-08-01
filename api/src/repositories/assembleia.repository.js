@@ -74,6 +74,23 @@ class AssembleiaRepository {
 
     }
 
+    async buscarNaoEncerradaPorGrupo(grupo) {
+
+        return prisma.assembleia.findFirst({
+
+            where: {
+                grupo: String(grupo),
+                encerrada: false
+            },
+
+            orderBy: {
+                dataAssembleia: "desc"
+            }
+
+        });
+
+    }
+
 }
 
 module.exports = new AssembleiaRepository();

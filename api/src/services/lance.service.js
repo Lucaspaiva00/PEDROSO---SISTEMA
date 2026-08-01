@@ -92,7 +92,7 @@ class LanceService {
 
                     podeDarLance: false,
 
-                    motivoBloqueio: "Nenhuma assembleia aberta para este grupo."
+                    motivoBloqueio: "Nenhuma rodada de lances aberta para este grupo."
 
                 }
 
@@ -135,9 +135,9 @@ class LanceService {
         if (contrato.status !== "ATIVO") {
             motivoBloqueio = "Contrato não está ativo.";
         } else if (meuLance) {
-            motivoBloqueio = "Você já registrou um lance nesta assembleia.";
+            motivoBloqueio = "Você já registrou um lance nesta rodada.";
         } else if (!assembleia.aceitaLances || assembleia.encerrada) {
-            motivoBloqueio = "Assembleia não aceita lances.";
+            motivoBloqueio = "Rodada não aceita lances.";
         }
 
         return {
@@ -220,7 +220,7 @@ class LanceService {
         );
 
         if (!assembleia || !assembleia.aceitaLances || assembleia.encerrada) {
-            throw new Error("Não há assembleia aberta para lances neste grupo.");
+            throw new Error("Não há rodada de lances aberta para este grupo.");
         }
 
         const existente = await LanceRepository.buscarPorAssembleiaEContrato(
@@ -229,7 +229,7 @@ class LanceService {
         );
 
         if (existente) {
-            throw new Error("Você já registrou um lance nesta assembleia.");
+            throw new Error("Você já registrou um lance nesta rodada.");
         }
 
         const lance = await LanceRepository.criar({

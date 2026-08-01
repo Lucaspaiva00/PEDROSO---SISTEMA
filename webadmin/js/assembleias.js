@@ -14,17 +14,18 @@ function feedbackAssembleia(tipo, titulo, mensagem) {
 }
 
 function registrarEventos() {
-    document.getElementById("btnNovaAssembleia")?.addEventListener("click", abrirModal);
+    document.getElementById("btnAbrirLancesGrupo")?.addEventListener("click", abrirModal);
 
     document.getElementById("btnFecharModal")?.addEventListener("click", fecharModal);
     document.getElementById("btnCancelarAssembleia")?.addEventListener("click", fecharModal);
 
-    document.getElementById("formAssembleia")?.addEventListener("submit", salvarAssembleia);
+    document.getElementById("formAbrirLances")?.addEventListener("submit", confirmarAbrirLances);
 
     document.getElementById("btnContemplarMaior")?.addEventListener("click", contemplarMaior);
 }
 
-function abrirModal() {
+async function abrirModal() {
+    await popularGrupos();
     const modal = document.getElementById("modalAssembleia");
     if (modal) {
         modal.classList.add("show");
@@ -36,14 +37,119 @@ function fecharModal() {
     if (modal) {
         modal.classList.remove("show");
     }
-    document.getElementById("formAssembleia")?.reset();
+    document.getElementById("formAbrirLances")?.reset();
+}
+
+async function popularGrupos() {
+    const select = document.getElementById("selectGrupoLances");
+    const wrapSelect = document.getElementById("wrapSelectGrupo");
+    const wrapManual = document.getElementById("wrapGrupoManual");
+    const inputManual = document.getElementById("inputGrupoManual");
+
+    if (!select || !wrapSelect || !wrapManual) {
+        return;
+    }
+
+    select.innerHTML = "<option value=\"\">Selecione o grupo…</option>";
+
+    try {
+        const { data: json } = await http.get("/assembleias/grupos");
+        const grupos = json.sucesso ? json.grupos || [] : [];
+
+        if (!grupos.length) {
+            wrapSelect.hidden = true;
+            wrapManual.hidden = false;
+            select.removeAttribute("required");
+            inputManual?.setAttribute("required", "required");
+            return;
+        }
+
+        wrapSelect.hidden = false;
+        wrapManual.hidden = true;
+        select.setAttribute("required", "required");
+        inputManual?.removeAttribute("required");
+
+        grupos.forEach(grupo => {
+            const option = document.createElement("option");
+            option.value = grupo;
+            option.textContent = grupo;
+            select.appendChild(option);
+        });
+    } catch {
+        wrapSelect.hidden = true;
+        wrapManual.hidden = false;
+        select.removeAttribute("required");
+        inputManual?.setAttribute("required", "required");
+    }
+}
+
+function obterGrupoDoFormulario() {
+    const select = document.getElementById("selectGrupoLances");
+    const manual = document.getElementById("inputGrupoManual");
+    const wrapManual = document.getElementById("wrapGrupoManual");
+
+    if (wrapManual && !wrapManual.hidden) {
+        return manual?.value?.trim() || "";
+    }
+
+    return select?.value?.trim() || "";
+}
+
+async function confirmarAbrirLances(evento) {
+    evento.preventDefault();
+
+    const grupo = obterGrupoDoFormulario();
+
+    if (!grupo) {
+        feedbackAssembleia("error", "Grupo obrigatório", "Selecione ou informe o grupo do consórcio.");
+        return;
+    }
+
+    const titulo = document.getElementById("tituloRodada")?.value?.trim() || undefined;
+    const dataAssembleia = document.getElementById("dataRodada")?.value || undefined;
+
+    const botao = evento.target.querySelector("button[type=\"submit\"]");
+    if (botao) {
+        botao.disabled = true;
+    }
+
+    try {
+        const { data: json } = await http.post("/assembleias/abrir-lances-grupo", {
+            grupo,
+            titulo,
+            dataAssembleia
+        });
+
+        if (!json.sucesso) {
+            feedbackAssembleia("error", "Não foi possível abrir", json.mensagem || "Tente novamente.");
+            return;
+        }
+
+        feedbackAssembleia(
+            "success",
+            "Lances abertos",
+            json.mensagem || "Clientes do grupo já podem dar lance no portal."
+        );
+        fecharModal();
+        carregarAssembleias();
+    } catch {
+        feedbackAssembleia(
+            "error",
+            "Falha de conexão",
+            "Não conseguimos contactar o servidor. Verifique a rede e tente de novo."
+        );
+    } finally {
+        if (botao) {
+            botao.disabled = false;
+        }
+    }
 }
 
 async function carregarAssembleias() {
     const { data: json } = await http.get("/assembleias");
 
     if (!json.sucesso) {
-        feedbackAssembleia("error", "Erro", json.mensagem || "Erro ao listar assembleias.");
+        feedbackAssembleia("error", "Erro", json.mensagem || "Erro ao listar rodadas.");
         return;
     }
 
@@ -58,7 +164,7 @@ async function carregarAssembleias() {
         const status = item.encerrada
             ? "Encerrada"
             : item.aceitaLances
-                ? "Aberta"
+                ? "Lances abertos"
                 : "Aguardando";
 
         return `
@@ -96,29 +202,6 @@ async function carregarAssembleias() {
     });
 }
 
-async function salvarAssembleia(evento) {
-    evento.preventDefault();
-
-    const form = evento.target;
-    const dados = Object.fromEntries(new FormData(form));
-
-    const { data: json } = await http.post("/assembleias", {
-            grupo: dados.grupo,
-            titulo: dados.titulo,
-            dataAssembleia: dados.dataAssembleia,
-            aceitaLances: form.aceitaLances.checked
-        });
-
-    if (!json.sucesso) {
-        feedbackAssembleia("error", "Erro", json.mensagem || "Erro ao salvar.");
-        return;
-    }
-
-    feedbackAssembleia("success", "Sucesso", json.mensagem || "Assembleia salva.");
-    fecharModal();
-    carregarAssembleias();
-}
-
 async function abrirLances(id) {
     const { data: json } = await http.patch(`/assembleias/${id}/abrir-lances`);
     feedbackAssembleia(
@@ -130,7 +213,7 @@ async function abrirLances(id) {
 }
 
 async function encerrar(id) {
-    if (!confirm("Encerrar assembleia sem contemplar?")) {
+    if (!confirm("Encerrar esta rodada sem contemplar?")) {
         return;
     }
 
@@ -138,7 +221,7 @@ async function encerrar(id) {
     feedbackAssembleia(
         json.sucesso ? "success" : "error",
         json.sucesso ? "Sucesso" : "Erro",
-        json.mensagem || (json.sucesso ? "Assembleia encerrada." : "Erro ao encerrar.")
+        json.mensagem || (json.sucesso ? "Rodada encerrada." : "Erro ao encerrar.")
     );
     carregarAssembleias();
 }
@@ -215,7 +298,7 @@ async function contemplarMaior() {
         return;
     }
 
-    if (!confirm("Contemplar o maior lance desta assembleia?")) {
+    if (!confirm("Contemplar o maior lance desta rodada?")) {
         return;
     }
 

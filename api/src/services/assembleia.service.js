@@ -1,5 +1,6 @@
 const AssembleiaRepository = require("../repositories/assembleia.repository");
 const LanceRepository = require("../repositories/lance.repository");
+const ContratoRepository = require("../repositories/contrato.repository");
 const prisma = require("../config/prisma");
 
 class AssembleiaService {
@@ -61,6 +62,66 @@ class AssembleiaService {
         return AssembleiaRepository.atualizar(id, {
             aceitaLances: true
         });
+
+    }
+
+    async listarGruposContratos() {
+
+        return ContratoRepository.listarGruposDistintos();
+
+    }
+
+    async abrirLancesPorGrupo(dados) {
+
+        const grupo = dados.grupo?.trim();
+
+        if (!grupo) {
+            throw new Error("Informe o grupo.");
+        }
+
+        const existente = await AssembleiaRepository.buscarNaoEncerradaPorGrupo(grupo);
+
+        if (existente) {
+
+            if (existente.aceitaLances) {
+
+                return {
+                    assembleia: existente,
+                    jaAberta: true
+                };
+
+            }
+
+            const assembleia = await AssembleiaRepository.atualizar(existente.id, {
+                aceitaLances: true
+            });
+
+            return {
+                assembleia,
+                jaAberta: false
+            };
+
+        }
+
+        const dataAssembleia = dados.dataAssembleia
+            ? new Date(dados.dataAssembleia)
+            : new Date();
+
+        const titulo = dados.titulo?.trim()
+            || `Lances — grupo ${grupo}`;
+
+        const assembleia = await AssembleiaRepository.criar({
+            grupo,
+            titulo,
+            dataAssembleia,
+            aceitaLances: true
+        });
+
+        return {
+            assembleia,
+            jaAberta: false,
+            criada: true
+        };
 
     }
 

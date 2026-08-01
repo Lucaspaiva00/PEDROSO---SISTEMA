@@ -40,16 +40,19 @@
                     </button>
 
                 <div>
-                    <h1>Assembleias e lances</h1>
-                    <p>Abra assembleias por grupo e analise os lances dos contratos.</p>
+                    <h1>Lances por grupo</h1>
+                    <p>Abra lances para um grupo; a rodada é criada automaticamente quando necessário.</p>
                 </div>
 
                 </div>
 
-                <button type="button" class="btn btn-primary" id="btnNovaAssembleia">Nova assembleia</button>
+                <button type="button" class="btn btn-primary" id="btnAbrirLancesGrupo">Abrir lances</button>
             </header>
 
+            <div id="feedbackAssembleias" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
+
             <section class="card">
+                <h2 style="margin: 0 0 1rem; font-size: 1.125rem;">Rodadas de lances</h2>
                 <div class="table-wrapper">
                     <table class="table">
                         <thead>
@@ -69,7 +72,6 @@
 
             <section class="card" id="cardAnalise" style="display: none;">
                 <h2 id="tituloAnalise">Análise de lances</h2>
-                <div id="feedbackAssembleias" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
 
                 <div id="feedbackLancesAssembleia" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
                 <div class="table-wrapper">
@@ -99,59 +101,59 @@
     <div class="modal" id="modalAssembleia">
         <div class="modal-content" style="max-width: 560px;">
             <div class="modal-header">
-                <h2>Nova assembleia</h2>
+                <h2>Abrir lances no grupo</h2>
                 <button type="button" class="btn-close" id="btnFecharModal" aria-label="Fechar">
                     <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="formAssembleia">
+                <form id="formAbrirLances">
                     <div class="form-grid">
-                        <div class="form-group">
-                            <label for="assembleiaGrupo">Grupo</label>
+                        <div class="form-group" id="wrapSelectGrupo">
+                            <label for="selectGrupoLances">Grupo</label>
+                            <select id="selectGrupoLances" name="grupo" class="form-control" required>
+                                <option value="">Selecione o grupo…</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="wrapGrupoManual" hidden>
+                            <label for="inputGrupoManual">Grupo</label>
                             <input
                                 type="text"
-                                id="assembleiaGrupo"
-                                name="grupo"
+                                id="inputGrupoManual"
                                 class="form-control"
-                                required
-                                placeholder="Mesmo grupo do contrato"
+                                placeholder="Código do grupo"
                                 autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="assembleiaTitulo">Título</label>
+                            <label for="tituloRodada">Título (opcional)</label>
                             <input
                                 type="text"
-                                id="assembleiaTitulo"
+                                id="tituloRodada"
                                 name="titulo"
                                 class="form-control"
-                                placeholder="Ex: Assembleia agosto"
+                                placeholder="Ex: Contemplação agosto"
                                 autocomplete="off">
                         </div>
                         <div class="form-group">
-                            <label for="assembleiaData">Data da assembleia</label>
+                            <label for="dataRodada">Data de referência (opcional)</label>
                             <input
                                 type="datetime-local"
-                                id="assembleiaData"
+                                id="dataRodada"
                                 name="dataAssembleia"
-                                class="form-control"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="assembleiaAceitaLances" class="form-label-inline">
-                                <input type="checkbox" id="assembleiaAceitaLances" name="aceitaLances" checked>
-                                Abrir para lances agora
-                            </label>
+                                class="form-control">
                         </div>
                     </div>
+                    <p class="form-hint" style="margin-top: 0;">
+                        Os clientes do grupo poderão dar lance no portal assim que você confirmar.
+                    </p>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" id="btnCancelarAssembleia">
                             <i class="fa-solid fa-xmark" aria-hidden="true"></i>
                             Cancelar
                         </button>
                         <button type="submit" class="btn btn-primary">
-                            <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
-                            Salvar
+                            <i class="fa-solid fa-lock-open" aria-hidden="true"></i>
+                            Abrir lances
                         </button>
                     </div>
                 </form>

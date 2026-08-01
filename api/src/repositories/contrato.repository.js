@@ -150,6 +150,27 @@ class ContratoRepository {
 
     }
 
+    async listarGruposDistintos() {
+
+        const linhas = await prisma.contrato.groupBy({
+
+            by: ["grupo"],
+
+            where: {
+                grupo: {
+                    not: null
+                }
+            }
+
+        });
+
+        return linhas
+            .map(item => item.grupo?.trim())
+            .filter(Boolean)
+            .sort((a, b) => a.localeCompare(b, "pt-BR"));
+
+    }
+
 }
 
 module.exports = new ContratoRepository();

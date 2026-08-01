@@ -5,6 +5,10 @@ const auth = require("../middlewares/auth.middleware");
 
 router.post("/", auth, AssembleiaController.cadastrar);
 
+router.get("/grupos", auth, AssembleiaController.listarGrupos);
+
+router.post("/abrir-lances-grupo", auth, AssembleiaController.abrirLancesPorGrupo);
+
 router.get("/", auth, AssembleiaController.listar);
 
 router.patch("/:id/abrir-lances", auth, AssembleiaController.abrirLances);

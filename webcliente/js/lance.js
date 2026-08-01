@@ -219,17 +219,17 @@ function renderizarSituacao(dados) {
     }
 
     if (!dados.assembleia) {
-        textoAssembleia.textContent = "Nenhuma assembleia aberta no momento.";
-        document.getElementById("tituloBloqueio").textContent = "Assembleia fechada";
+        textoAssembleia.textContent = "Nenhuma rodada de lances aberta no momento.";
+        document.getElementById("tituloBloqueio").textContent = "Lances fechados";
         document.getElementById("textoBloqueio").textContent =
             dados.motivoBloqueio ||
-            "Aguarde a administradora abrir uma nova assembleia para o seu grupo.";
+            "Aguarde a administradora abrir lances para o seu grupo.";
         document.getElementById("cardBloqueio").hidden = false;
         return;
     }
 
     const data = new Date(dados.assembleia.dataAssembleia);
-    const titulo = dados.assembleia.titulo || "Assembleia do grupo";
+    const titulo = dados.assembleia.titulo || "Rodada de lances";
 
     textoAssembleia.textContent =
         `${titulo} • Grupo ${dados.contrato.grupo} • ${data.toLocaleDateString("pt-BR")}`;
@@ -245,7 +245,7 @@ function renderizarSituacao(dados) {
         document.getElementById("cardMeuLance").hidden = false;
         document.getElementById("valorMeuLance").textContent = formatarMoeda(dados.meuLance.valor);
         document.getElementById("posicaoMeuLance").textContent =
-            `Você está em ${dados.meuLance.posicao}º lugar entre ${dados.ranking.totalLances} lance(s) nesta assembleia.`;
+            `Você está em ${dados.meuLance.posicao}º lugar entre ${dados.ranking.totalLances} lance(s) nesta rodada.`;
 
         const badge = document.getElementById("badgeStatusLance");
         const status = dados.meuLance.status;
@@ -254,7 +254,7 @@ function renderizarSituacao(dados) {
             badge.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i><span>Aprovado — contemplado</span>';
         } else if (status === "NAO_CONTEMPLADO") {
             badge.className = "status-lance badge badge-danger";
-            badge.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i><span>Reprovado nesta assembleia</span>';
+            badge.innerHTML = '<i class="fa-solid fa-xmark" aria-hidden="true"></i><span>Não contemplado nesta rodada</span>';
         } else {
             badge.className = "status-lance badge badge-warning";
             badge.innerHTML = '<i class="fa-solid fa-clock" aria-hidden="true"></i><span>Aguardando análise da administradora</span>';

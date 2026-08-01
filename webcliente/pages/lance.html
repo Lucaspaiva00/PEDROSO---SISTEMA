@@ -20,7 +20,7 @@
         <header class="header">
             <div class="header-top">
                 <div class="header-text">
-                    <span class="header-small">Assembleia</span>
+                    <span class="header-small">Lances</span>
                     <h1>Dar lance</h1>
                 </div>
                 <button class="btn-profile" id="btnVoltar" type="button" aria-label="Voltar ao início">
@@ -38,12 +38,12 @@
                 <section class="card">
                     <label class="card-label" for="selectContrato">Consórcio (contrato)</label>
                     <select id="selectContrato" class="input" aria-describedby="ajudaContrato"></select>
-                    <p id="ajudaContrato" class="card-text">Escolha o contrato em que deseja participar da assembleia.</p>
+                    <p id="ajudaContrato" class="card-text">Escolha o consórcio (contrato) para dar lance.</p>
                 </section>
 
                 <section class="card" id="cardAssembleia" aria-labelledby="labelAssembleia">
-                    <span class="card-label" id="labelAssembleia">Assembleia</span>
-                    <p id="textoAssembleia" class="card-text">Carregando informações da assembleia…</p>
+                    <span class="card-label" id="labelAssembleia">Rodada de lances</span>
+                    <p id="textoAssembleia" class="card-text">Carregando…</p>
                 </section>
 
                 <section class="card" id="cardRanking" hidden aria-labelledby="labelParticipacao">
@@ -95,7 +95,7 @@
 
             <section class="card card-loading" id="cardLoading" hidden aria-busy="true">
                 <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                Carregando assembleia e lances…
+                Carregando rodada e lances…
             </section>
 
         </main>

@@ -47,6 +47,57 @@ class AssembleiaController {
 
     }
 
+    async listarGrupos(req, res) {
+
+        try {
+
+            const grupos = await AssembleiaService.listarGruposContratos();
+
+            return res.json({
+                sucesso: true,
+                grupos
+            });
+
+        } catch (error) {
+
+            return res.status(500).json({
+                sucesso: false,
+                mensagem: error.message
+            });
+
+        }
+
+    }
+
+    async abrirLancesPorGrupo(req, res) {
+
+        try {
+
+            const resultado = await AssembleiaService.abrirLancesPorGrupo(req.body);
+
+            const mensagem = resultado.jaAberta
+                ? "Lances já estavam abertos para este grupo."
+                : resultado.criada
+                    ? "Rodada criada e lances abertos para o grupo."
+                    : "Lances abertos para o grupo.";
+
+            return res.json({
+                sucesso: true,
+                mensagem,
+                assembleia: resultado.assembleia
+            });
+
+        } catch (error) {
+
+            return res.status(400).json({
+                sucesso: false,
+                mensagem: error.message
+            });
+
+        }
+
+    }
+
     async abrirLances(req, res) {
 
         try {

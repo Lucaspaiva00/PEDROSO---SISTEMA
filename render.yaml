@@ -37,6 +37,10 @@ services:
     runtime: static
     rootDir: webadmin
     staticPublishPath: ./pages
+    routes:
+      - type: redirect
+        source: /
+        destination: /login.html
     buildCommand: >-
       API_BASE="${API_URL}";
       for f in js/*.js; do sed -i "s|http://localhost:3000|${API_BASE}|g" "$f"; done;
@@ -53,6 +57,10 @@ services:
     runtime: static
     rootDir: webcliente
     staticPublishPath: ./pages
+    routes:
+      - type: redirect
+        source: /
+        destination: /login.html
     buildCommand: >-
       API_BASE="${API_URL}";
       for f in js/*.js; do sed -i "s|http://localhost:3000|${API_BASE}|g" "$f"; done

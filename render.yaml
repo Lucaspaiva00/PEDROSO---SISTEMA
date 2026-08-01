@@ -3,7 +3,7 @@
 
 databases:
   - name: pedroso-db
-    plan: free
+    plan: basic-256mb
     databaseName: pedroso
     user: pedroso
 
@@ -11,7 +11,7 @@ services:
   - type: web
     name: pedroso-api
     runtime: docker
-    plan: free
+    plan: starter
     region: oregon
     dockerfilePath: ./api/Dockerfile
     dockerContext: ./api

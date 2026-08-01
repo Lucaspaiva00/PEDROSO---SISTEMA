@@ -1,0 +1,60 @@
+# Blueprint Render — conecte o repo em Dashboard > New > Blueprint
+# docker-compose.yml = só local; na Render cada serviço abaixo sobe separado.
+
+databases:
+  - name: pedroso-db
+    plan: free
+    databaseName: pedroso
+    user: pedroso
+
+services:
+  - type: web
+    name: pedroso-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./api/Dockerfile
+    dockerContext: ./api
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pedroso-db
+          property: connectionString
+      - key: JWT_SECRET
+        sync: false
+      - key: ASAAS_API_URL
+        value: https://api.asaas.com/v3
+      - key: ASAAS_API_KEY
+        sync: false
+      - key: ASAAS_WEBHOOK_TOKEN
+        sync: false
+
+  - type: web
+    name: pedroso-admin
+    runtime: static
+    plan: free
+    rootDir: webadmin
+    staticPublishPath: ./pages
+    buildCommand: >-
+      API_BASE="${API_URL}";
+      for f in js/*.js; do sed -i "s|http://localhost:3000|${API_BASE}|g" "$f"; done;
+      sed -i "s|http://localhost:3000|${API_BASE}|g" pages/register.html
+    envVars:
+      - key: API_URL
+        sync: false
+
+  - type: web
+    name: pedroso-portal
+    runtime: static
+    plan: free
+    rootDir: webcliente
+    staticPublishPath: ./pages
+    buildCommand: >-
+      API_BASE="${API_URL}";
+      for f in js/*.js; do sed -i "s|http://localhost:3000|${API_BASE}|g" "$f"; done
+    envVars:
+      - key: API_URL
+        sync: false

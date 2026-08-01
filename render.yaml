@@ -24,7 +24,7 @@ services:
           name: pedroso-db
           property: connectionString
       - key: JWT_SECRET
-        sync: false
+        generateValue: true
       - key: ASAAS_API_URL
         value: https://api.asaas.com/v3
       - key: ASAAS_API_KEY

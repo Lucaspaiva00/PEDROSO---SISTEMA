@@ -36,11 +36,14 @@ services:
     name: pedroso-admin
     runtime: static
     rootDir: webadmin
-    staticPublishPath: ./pages
+    staticPublishPath: .
     routes:
       - type: redirect
         source: /
-        destination: /login.html
+        destination: /pages/login.html
+      - type: redirect
+        source: /login.html
+        destination: /pages/login.html
     buildCommand: >-
       API_BASE="${API_URL}";
       for f in js/*.js; do sed -i "s|http://localhost:3000|${API_BASE}|g" "$f"; done;
@@ -56,11 +59,14 @@ services:
     name: pedroso-portal
     runtime: static
     rootDir: webcliente
-    staticPublishPath: ./pages
+    staticPublishPath: .
     routes:
       - type: redirect
         source: /
-        destination: /login.html
+        destination: /pages/login.html
+      - type: redirect
+        source: /login.html
+        destination: /pages/login.html
     buildCommand: >-
       API_BASE="${API_URL}";
       for f in js/*.js; do sed -i "s|http://localhost:3000|${API_BASE}|g" "$f"; done

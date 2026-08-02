@@ -189,6 +189,8 @@ async function carregarAssembleias() {
         `;
     }).join("");
 
+    window.decorateStackedTables?.(tbody.closest("table"));
+
     tbody.querySelectorAll("[data-analisar]").forEach(botao => {
         botao.addEventListener("click", () => analisar(botao.dataset.analisar));
     });
@@ -262,6 +264,8 @@ async function analisar(id) {
             </td>
         </tr>
     `).join("");
+
+    window.decorateStackedTables?.(document.getElementById("tbodyRanking")?.closest("table"));
 
     const tabela = document.getElementById("tbodyRanking")?.closest("table");
 

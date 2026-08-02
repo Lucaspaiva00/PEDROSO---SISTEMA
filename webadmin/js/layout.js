@@ -1,4 +1,38 @@
+function decorateStackedTables(root = document) {
+    let tables = [];
+
+    if (root instanceof HTMLTableElement && root.classList.contains("table-stack")) {
+        tables = [root];
+    } else if (root && typeof root.querySelectorAll === "function") {
+        tables = [...root.querySelectorAll("table.table-stack")];
+    }
+
+    tables.forEach(table => {
+        const headers = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
+
+        table.querySelectorAll("tbody tr").forEach(tr => {
+            const cells = [...tr.querySelectorAll("td")];
+            const stateCell = cells.find(td => td.colSpan > 1 || td.classList.contains("table-state-cell"));
+
+            if (stateCell) {
+                stateCell.removeAttribute("data-label");
+                return;
+            }
+
+            cells.forEach((td, index) => {
+                if (headers[index]) {
+                    td.setAttribute("data-label", headers[index]);
+                }
+            });
+        });
+    });
+}
+
+window.decorateStackedTables = decorateStackedTables;
+
 document.addEventListener("DOMContentLoaded", () => {
+    decorateStackedTables();
+
     const sidebar = document.getElementById("sidebar");
     const backdrop = document.getElementById("sidebarBackdrop");
     const btnMenu = document.getElementById("btnMenu");

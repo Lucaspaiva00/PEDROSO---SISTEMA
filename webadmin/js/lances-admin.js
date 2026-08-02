@@ -142,7 +142,7 @@ function renderizarLinhasLances(lances, { mostrarAcoes = true, compacto = false 
                     <td>${rotuloContrato}</td>
                     <td>${escLance(contrato.cliente || "-")}</td>
                     <td>${escLance(contrato.grupo || "-")} / ${escLance(contrato.cota || "-")}</td>
-                    <td>${escLance(contrato.plano || "-")}</td>
+                    <td class="col-hide-sm">${escLance(contrato.plano || "-")}</td>
                     <td>${escLance(assembleia.titulo || `Grupo ${assembleia.grupo || "-"}`)}</td>
                     <td><strong>${formatarMoedaLance(lance.valor)}</strong></td>
                     <td>${badgeStatusLance(lance.status)}</td>
@@ -156,11 +156,11 @@ function renderizarLinhasLances(lances, { mostrarAcoes = true, compacto = false 
                 <td>${rotuloContrato}</td>
                 <td>${escLance(contrato.cliente || "-")}</td>
                 <td>${escLance(contrato.grupo || "-")} / ${escLance(contrato.cota || "-")}</td>
-                <td>${escLance(contrato.plano || "-")}</td>
+                <td class="col-hide-sm">${escLance(contrato.plano || "-")}</td>
                 <td>${escLance(assembleia.titulo || `Grupo ${assembleia.grupo || "-"}`)}</td>
                 <td>${dataAssembleia}</td>
                 <td><strong>${formatarMoedaLance(lance.valor)}</strong></td>
-                <td>${dataLance}</td>
+                <td class="col-hide-sm">${dataLance}</td>
                 <td>${badgeStatusLance(lance.status)}</td>
                 <td class="acoes-lance">${acoes}</td>
             </tr>

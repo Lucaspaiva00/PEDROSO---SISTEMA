@@ -252,11 +252,19 @@ ul {
 
     align-items: center;
 
-    padding: 0 35px;
+    padding: 0 max(35px, env(safe-area-inset-right)) 0 max(35px, env(safe-area-inset-left));
+
+    padding-top: env(safe-area-inset-top, 0);
 
     border-bottom: 1px solid var(--border);
 
     gap: 16px;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 50;
 
 }
 
@@ -354,7 +362,9 @@ button:focus-visible,
 
 .page {
 
-    padding: 30px;
+    padding: 30px max(30px, env(safe-area-inset-right)) 30px max(30px, env(safe-area-inset-left));
+
+    padding-bottom: max(30px, env(safe-area-inset-bottom));
 
 }
 
@@ -845,6 +855,18 @@ GRID DASHBOARD
 
 }
 
+.chart-wrap {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 220px;
+
+    max-height: 320px;
+
+}
+
 /*==========================================================
 FORMULÁRIOS
 ==========================================================*/
@@ -970,6 +992,40 @@ TABELAS
 .table-responsive {
 
     overflow-x: auto;
+
+    -webkit-overflow-scrolling: touch;
+
+}
+
+.table-responsive.table-scroll-hint::after {
+
+    content: "Deslize para ver mais →";
+
+    display: block;
+
+    font-size: 12px;
+
+    color: #64748b;
+
+    text-align: center;
+
+    padding: 8px 0 0;
+
+}
+
+@media (min-width: 769px) {
+
+    .table-responsive.table-scroll-hint::after {
+
+        display: none;
+
+    }
+
+}
+
+.table-scroll {
+
+    min-width: 640px;
 
 }
 
@@ -1545,23 +1601,197 @@ RESPONSIVIDADE
 
     }
 
+    .sidebar {
+
+        padding-bottom: env(safe-area-inset-bottom, 0);
+
+    }
+
     .topbar {
 
         height: auto;
 
-        padding: 20px;
+        min-height: 64px;
 
-        flex-direction: column;
+        padding: 14px max(16px, env(safe-area-inset-right)) 14px max(16px, env(safe-area-inset-left));
 
-        align-items: flex-start;
+        padding-top: max(14px, env(safe-area-inset-top));
 
-        gap: 15px;
+        flex-direction: row;
+
+        flex-wrap: wrap;
+
+        align-items: center;
+
+        gap: 12px;
+
+    }
+
+    .topbar-start {
+
+        flex: 1;
+
+        min-width: 0;
 
     }
 
     .topbar h2 {
 
-        font-size: 32px;
+        font-size: 24px;
+
+        line-height: 1.15;
+
+    }
+
+    .topbar span {
+
+        font-size: 13px;
+
+        margin-top: 4px;
+
+        display: -webkit-box;
+
+        -webkit-line-clamp: 2;
+
+        -webkit-box-orient: vertical;
+
+        overflow: hidden;
+
+    }
+
+    .topbar > .btn {
+
+        flex-basis: 100%;
+
+        width: 100%;
+
+    }
+
+    .col-hide-sm {
+
+        display: none;
+
+    }
+
+    .table-stack thead {
+
+        display: none;
+
+    }
+
+    .table-stack tbody tr {
+
+        display: block;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 14px;
+
+        margin-bottom: 12px;
+
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+
+        overflow: hidden;
+
+    }
+
+    .table-stack tbody tr:hover {
+
+        background: #fff;
+
+    }
+
+    .table-stack tbody td {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+        padding: 12px 16px;
+
+        border-bottom: 1px solid #edf2f7;
+
+        text-align: right;
+
+    }
+
+    .table-stack tbody td::before {
+
+        content: attr(data-label);
+
+        font-weight: 600;
+
+        color: #64748b;
+
+        font-size: 12px;
+
+        text-align: left;
+
+        flex-shrink: 0;
+
+        max-width: 42%;
+
+    }
+
+    .table-stack tbody td:last-child {
+
+        border-bottom: none;
+
+    }
+
+    .table-stack tbody td[colspan],
+    .table-stack tbody td.table-state-cell {
+
+        display: block;
+
+        text-align: center;
+
+    }
+
+    .table-stack tbody td[colspan]::before,
+    .table-stack tbody td.table-state-cell::before {
+
+        display: none;
+
+    }
+
+    .table-stack .table-actions,
+    .table-stack .acoes-lance {
+
+        justify-content: flex-end;
+
+        flex-wrap: wrap;
+
+    }
+
+    .table-stack .table-actions .btn,
+    .table-stack .acoes-lance .btn {
+
+        min-width: 44px;
+
+        min-height: 44px;
+
+    }
+
+    .table-stack tbody td.acoes-lance,
+    .table-stack tbody td:has(.table-actions) {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .table-stack tbody td.acoes-lance::before,
+    .table-stack tbody td:has(.table-actions)::before {
+
+        margin-bottom: 4px;
 
     }
 
@@ -1615,7 +1845,9 @@ RESPONSIVIDADE
 
     .page {
 
-        padding: 18px;
+        padding: 18px max(18px, env(safe-area-inset-right)) 18px max(18px, env(safe-area-inset-left));
+
+        padding-bottom: max(18px, env(safe-area-inset-bottom));
 
     }
 
@@ -1631,15 +1863,9 @@ RESPONSIVIDADE
 
     }
 
-    .table {
+    .topbar h2 {
 
-        min-width: 700px;
-
-    }
-
-    .table-responsive {
-
-        overflow: auto;
+        font-size: 22px;
 
     }
 

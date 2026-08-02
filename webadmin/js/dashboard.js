@@ -83,6 +83,7 @@ function preencherTabelaCarregando() {
             </td>
         </tr>
     `;
+    window.decorateStackedTables?.(tbody.closest("table"));
 }
 
 function preencherTabelaErro() {
@@ -99,6 +100,7 @@ function preencherTabelaErro() {
             </td>
         </tr>
     `;
+    window.decorateStackedTables?.(tbody.closest("table"));
 }
 
 function esc(texto) {
@@ -133,6 +135,7 @@ function renderizarUltimosContratos(contratos) {
                 </td>
             </tr>
         `;
+        window.decorateStackedTables?.(tbody.closest("table"));
         return;
     }
 
@@ -152,6 +155,7 @@ function renderizarUltimosContratos(contratos) {
             </tr>
         `;
     }).join("");
+    window.decorateStackedTables?.(tbody.closest("table"));
 }
 
 function renderizarGrafico(contratos) {

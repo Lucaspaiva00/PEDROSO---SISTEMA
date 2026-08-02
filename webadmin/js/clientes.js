@@ -141,6 +141,8 @@ function renderizarTabela(clientes) {
 
         `;
 
+        window.decorateStackedTables?.(tbody.closest("table"));
+
         return;
 
     }
@@ -212,6 +214,8 @@ function renderizarTabela(clientes) {
         `;
 
     });
+
+    window.decorateStackedTables?.(tbody.closest("table"));
 
 }
 

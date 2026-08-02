@@ -152,6 +152,8 @@ function renderizarTabela(lista) {
 
         `;
 
+        window.decorateStackedTables?.(tbody.closest("table"));
+
         return;
 
     }
@@ -231,6 +233,8 @@ function renderizarTabela(lista) {
         `;
 
     });
+
+    window.decorateStackedTables?.(tbody.closest("table"));
 
 }
 

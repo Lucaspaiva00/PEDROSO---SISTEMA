@@ -215,6 +215,38 @@ button:active {
 
         width: 100%;
 
+        padding: max(50px, env(safe-area-inset-top)) max(50px, env(safe-area-inset-right)) max(50px, env(safe-area-inset-bottom)) max(50px, env(safe-area-inset-left));
+
+    }
+
+}
+
+@media(max-width:480px) {
+
+    .lado-direito {
+
+        padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+
+    }
+
+    .logo {
+
+        width: 200px;
+
+        margin-bottom: 28px;
+
+    }
+
+    .card-login h2 {
+
+        font-size: 26px;
+
+    }
+
+    .card-login p {
+
+        margin-bottom: 28px;
+
     }
 
 }

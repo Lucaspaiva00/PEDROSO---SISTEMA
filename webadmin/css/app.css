@@ -987,16 +987,6 @@ SEARCH
 
 .list-toolbar {
 
-    background: #fff;
-
-    border-radius: 18px;
-
-    box-shadow: var(--shadow);
-
-    border: 1px solid var(--border);
-
-    padding: 18px 20px;
-
     margin-bottom: 20px;
 
 }
@@ -1014,151 +1004,6 @@ SEARCH
     flex-wrap: wrap;
 
     gap: 10px;
-
-}
-
-.filter-bar .btn {
-
-    flex: 1;
-
-    min-width: 0;
-
-}
-
-.table-stack thead {
-
-    display: none;
-
-}
-
-.table-stack tbody {
-
-    display: block;
-
-}
-
-.table-stack tbody tr {
-
-    display: block;
-
-    background: #fff;
-
-    border: 1px solid var(--border);
-
-    border-radius: 14px;
-
-    margin-bottom: 12px;
-
-    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
-
-    overflow: hidden;
-
-}
-
-.table-stack tbody tr:hover {
-
-    background: #fff;
-
-}
-
-.table-stack tbody td {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: flex-start;
-
-    gap: 12px;
-
-    padding: 12px 16px;
-
-    border-bottom: 1px solid #edf2f7;
-
-    text-align: right;
-
-}
-
-.table-stack tbody td::before {
-
-    content: attr(data-label);
-
-    font-weight: 600;
-
-    color: #64748b;
-
-    font-size: 12px;
-
-    text-align: left;
-
-    flex-shrink: 0;
-
-    max-width: 42%;
-
-}
-
-.table-stack tbody td:last-child {
-
-    border-bottom: none;
-
-}
-
-.table-stack tbody td[colspan],
-.table-stack tbody td.table-state-cell {
-
-    display: block;
-
-    text-align: center;
-
-}
-
-.table-stack tbody td[colspan]::before,
-.table-stack tbody td.table-state-cell::before {
-
-    display: none;
-
-}
-
-.table-stack .table-actions,
-.table-stack .acoes-lance,
-.table-stack .table-link-actions {
-
-    justify-content: flex-end;
-
-    flex-wrap: wrap;
-
-}
-
-.table-stack .table-actions .btn,
-.table-stack .acoes-lance .btn {
-
-    min-width: 44px;
-
-    min-height: 44px;
-
-}
-
-.table-stack tbody td.acoes-lance,
-.table-stack tbody td:has(.table-actions),
-.table-stack tbody td:has(.table-link-actions) {
-
-    flex-direction: column;
-
-    align-items: stretch;
-
-}
-
-.table-stack tbody td.acoes-lance::before,
-.table-stack tbody td:has(.table-actions)::before,
-.table-stack tbody td:has(.table-link-actions)::before {
-
-    margin-bottom: 4px;
-
-}
-
-.table-responsive:has(.table-stack) {
-
-    overflow: visible;
 
 }
 
@@ -1852,6 +1697,14 @@ RESPONSIVIDADE
 
     .list-toolbar {
 
+        background: #fff;
+
+        border-radius: 18px;
+
+        box-shadow: var(--shadow);
+
+        border: 1px solid var(--border);
+
         padding: 16px;
 
     }
@@ -1859,6 +1712,145 @@ RESPONSIVIDADE
     .filter-bar .btn {
 
         flex: 1 1 calc(50% - 5px);
+
+        min-width: 0;
+
+    }
+
+    .table-responsive:has(.table-stack) {
+
+        overflow: visible;
+
+    }
+
+    .table-stack thead {
+
+        display: none;
+
+    }
+
+    .table-stack tbody {
+
+        display: block;
+
+    }
+
+    .table-stack tbody tr {
+
+        display: block;
+
+        background: #fff;
+
+        border: 1px solid var(--border);
+
+        border-radius: 14px;
+
+        margin-bottom: 12px;
+
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+
+        overflow: hidden;
+
+    }
+
+    .table-stack tbody tr:hover {
+
+        background: #fff;
+
+    }
+
+    .table-stack tbody td {
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: flex-start;
+
+        gap: 12px;
+
+        padding: 12px 16px;
+
+        border-bottom: 1px solid #edf2f7;
+
+        text-align: right;
+
+    }
+
+    .table-stack tbody td::before {
+
+        content: attr(data-label);
+
+        font-weight: 600;
+
+        color: #64748b;
+
+        font-size: 12px;
+
+        text-align: left;
+
+        flex-shrink: 0;
+
+        max-width: 42%;
+
+    }
+
+    .table-stack tbody td:last-child {
+
+        border-bottom: none;
+
+    }
+
+    .table-stack tbody td[colspan],
+    .table-stack tbody td.table-state-cell {
+
+        display: block;
+
+        text-align: center;
+
+    }
+
+    .table-stack tbody td[colspan]::before,
+    .table-stack tbody td.table-state-cell::before {
+
+        display: none;
+
+    }
+
+    .table-stack .table-actions,
+    .table-stack .acoes-lance,
+    .table-stack .table-link-actions {
+
+        justify-content: flex-end;
+
+        flex-wrap: wrap;
+
+    }
+
+    .table-stack .table-actions .btn,
+    .table-stack .acoes-lance .btn {
+
+        min-width: 44px;
+
+        min-height: 44px;
+
+    }
+
+    .table-stack tbody td.acoes-lance,
+    .table-stack tbody td:has(.table-actions),
+    .table-stack tbody td:has(.table-link-actions) {
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+    }
+
+    .table-stack tbody td.acoes-lance::before,
+    .table-stack tbody td:has(.table-actions)::before,
+    .table-stack tbody td:has(.table-link-actions)::before {
+
+        margin-bottom: 4px;
 
     }
 

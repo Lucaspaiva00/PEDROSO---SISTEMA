@@ -142,7 +142,7 @@ function renderizarLinhasLances(lances, { mostrarAcoes = true, compacto = false 
                     <td>${rotuloContrato}</td>
                     <td>${escLance(contrato.cliente || "-")}</td>
                     <td>${escLance(contrato.grupo || "-")} / ${escLance(contrato.cota || "-")}</td>
-                    <td class="col-hide-sm">${escLance(contrato.plano || "-")}</td>
+                    <td>${escLance(contrato.plano || "-")}</td>
                     <td>${escLance(assembleia.titulo || `Grupo ${assembleia.grupo || "-"}`)}</td>
                     <td><strong>${formatarMoedaLance(lance.valor)}</strong></td>
                     <td>${badgeStatusLance(lance.status)}</td>
@@ -156,11 +156,11 @@ function renderizarLinhasLances(lances, { mostrarAcoes = true, compacto = false 
                 <td>${rotuloContrato}</td>
                 <td>${escLance(contrato.cliente || "-")}</td>
                 <td>${escLance(contrato.grupo || "-")} / ${escLance(contrato.cota || "-")}</td>
-                <td class="col-hide-sm">${escLance(contrato.plano || "-")}</td>
+                <td>${escLance(contrato.plano || "-")}</td>
                 <td>${escLance(assembleia.titulo || `Grupo ${assembleia.grupo || "-"}`)}</td>
                 <td>${dataAssembleia}</td>
                 <td><strong>${formatarMoedaLance(lance.valor)}</strong></td>
-                <td class="col-hide-sm">${dataLance}</td>
+                <td>${dataLance}</td>
                 <td>${badgeStatusLance(lance.status)}</td>
                 <td class="acoes-lance">${acoes}</td>
             </tr>
@@ -270,11 +270,16 @@ async function carregarTabelaLances(tbody, opcoes = {}) {
     const feedbackId = opcoes.feedbackId || "feedbackLancesAdmin";
     const pendente = status === "REGISTRADO";
 
+    const aplicarLabels = () => {
+        window.decorateStackedTables?.(tbody?.closest("table"));
+    };
+
     if (!tbody) {
         return;
     }
 
     tbody.innerHTML = linhaCarregando(cols);
+    aplicarLabels();
 
     try {
         const json = await buscarLances(status);
@@ -284,6 +289,7 @@ async function carregarTabelaLances(tbody, opcoes = {}) {
                 cols,
                 `<span class="empty-inline"><strong>Erro ao carregar</strong><p>${escLance(json.mensagem || "Tente atualizar a página.")}</p></span>`
             );
+            aplicarLabels();
             mostrarFeedbackLances(
                 feedbackId,
                 "error",
@@ -297,10 +303,12 @@ async function carregarTabelaLances(tbody, opcoes = {}) {
 
         if (!linhas) {
             tbody.innerHTML = linhaVazia(cols, pendente);
+            aplicarLabels();
             return;
         }
 
         tbody.innerHTML = linhas;
+        aplicarLabels();
 
         vincularAcoesLances(
             tbody.closest("table") || tbody,
@@ -312,6 +320,7 @@ async function carregarTabelaLances(tbody, opcoes = {}) {
             cols,
             `<span class="empty-inline"><strong>Falha de conexão</strong><p>Verifique a internet e clique em atualizar.</p></span>`
         );
+        aplicarLabels();
         mostrarFeedbackLances(
             feedbackId,
             "error",

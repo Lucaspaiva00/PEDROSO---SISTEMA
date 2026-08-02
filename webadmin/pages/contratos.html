@@ -180,14 +180,14 @@
 
                     <div id="feedbackLancesContratos" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
 
-                    <div class="table-responsive table-scroll-hint">
-                        <table class="table table-scroll" id="tabelaLancesContratos" aria-label="Lances pendentes por contrato">
+                    <div class="table-responsive">
+                        <table class="table table-stack" id="tabelaLancesContratos" aria-label="Lances pendentes por contrato">
                             <thead>
                                 <tr>
                                     <th>Contrato</th>
                                     <th>Cliente</th>
                                     <th>Grupo / Cota</th>
-                                    <th class="col-hide-sm">Plano</th>
+                                    <th>Plano</th>
                                     <th>Assembleia</th>
                                     <th>Valor</th>
                                     <th>Status</th>
@@ -206,6 +206,8 @@
 
                 <!-- PESQUISA -->
 
+                <div class="list-toolbar">
+
                 <div class="search-bar">
 
                     <input id="pesquisa" type="text" class="form-control"
@@ -213,11 +215,9 @@
 
                 </div>
 
-                <!-- TABELA -->
+                </div>
 
-                <div class="box">
-
-                    <div class="table-responsive">
+                <div class="table-responsive">
 
                         <table class="table table-stack">
 
@@ -256,8 +256,6 @@
                         </table>
 
                     </div>
-
-                </div>
 
             </section>
 

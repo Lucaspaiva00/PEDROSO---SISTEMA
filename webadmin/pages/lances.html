@@ -52,7 +52,8 @@
 
                 <div id="feedbackLancesAdmin" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
 
-                <div class="search-bar" style="display:flex;gap:0.5rem;flex-wrap:wrap;" role="group" aria-label="Filtrar lances">
+                <div class="list-toolbar">
+                <div class="filter-bar" role="group" aria-label="Filtrar lances">
                     <button type="button" class="btn btn-primary btn-filter" id="filtroPendentes" aria-pressed="true">
                         Pendentes
                     </button>
@@ -60,20 +61,20 @@
                         Todos
                     </button>
                 </div>
+                </div>
 
-                <div class="box">
-                    <div class="table-responsive table-scroll-hint">
-                        <table class="table table-scroll" aria-label="Lances por contrato">
+                <div class="table-responsive">
+                        <table class="table table-stack" aria-label="Lances por contrato">
                             <thead>
                                 <tr>
                                     <th>Contrato</th>
                                     <th>Cliente</th>
                                     <th>Grupo / Cota</th>
-                                    <th class="col-hide-sm">Plano</th>
+                                    <th>Plano</th>
                                     <th>Assembleia</th>
                                     <th>Data assembleia</th>
                                     <th>Valor lance</th>
-                                    <th class="col-hide-sm">Enviado em</th>
+                                    <th>Enviado em</th>
                                     <th>Status</th>
                                     <th width="200">Ações</th>
                                 </tr>
@@ -81,7 +82,6 @@
                             <tbody id="tbodyLances"></tbody>
                         </table>
                     </div>
-                </div>
 
             </section>
 

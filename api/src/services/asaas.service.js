@@ -795,6 +795,69 @@ class AsaasService {
 
     }
 
+    async agendarSincronizacaoContrato(contratoId) {
+
+        const id = Number(contratoId);
+
+        await prisma.contrato.update({
+
+            where: { id },
+
+            data: { asaasStatus: "SINCRONIZANDO" }
+
+        });
+
+        void this.executarSincronizacaoContrato(id);
+
+        return {
+
+            sucesso: true,
+
+            emAndamento: true,
+
+            mensagem:
+                "Contrato salvo. As cobranças estão sendo geradas no Asaas em segundo plano."
+
+        };
+
+    }
+
+    async executarSincronizacaoContrato(contratoId) {
+
+        try {
+
+            await this.sincronizarContrato(contratoId);
+
+        } catch (erro) {
+
+            console.error(
+                `Erro na sincronização em background do contrato ${contratoId}:`,
+                erro.response?.data || erro.message
+            );
+
+            try {
+
+                await prisma.contrato.update({
+
+                    where: { id: Number(contratoId) },
+
+                    data: { asaasStatus: "ERRO_SINCRONIZACAO" }
+
+                });
+
+            } catch (erroUpdate) {
+
+                console.error(
+                    "Erro ao marcar contrato com falha de sincronização:",
+                    erroUpdate.message
+                );
+
+            }
+
+        }
+
+    }
+
     /*==========================================================
     UTILITÁRIOS
     ==========================================================*/

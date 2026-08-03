@@ -10,7 +10,9 @@ class ContratoController {
 
             return res.status(201).json({
                 sucesso: true,
-                mensagem: "Contrato cadastrado com sucesso.",
+                mensagem:
+                    contrato.integracaoAsaas?.mensagem ||
+                    "Contrato cadastrado com sucesso.",
                 contrato
             });
 

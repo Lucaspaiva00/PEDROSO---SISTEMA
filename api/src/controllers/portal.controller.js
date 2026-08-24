@@ -126,6 +126,32 @@ class PortalController {
 
     }
 
+
+    async alterarSituacaoContrato(req, res) {
+        try {
+            const resultado = await PortalService.alterarSituacaoContrato(
+                req.usuario,
+                req.params.contratoId,
+                req.body?.acao
+            );
+            return res.json(resultado);
+        } catch (error) {
+            return res.status(400).json({ sucesso: false, mensagem: error.message });
+        }
+    }
+
+    async boleto(req, res) {
+        try {
+            const resultado = await PortalService.boleto(
+                req.usuario,
+                req.params.parcelaId
+            );
+            return res.json(resultado);
+        } catch (error) {
+            return res.status(400).json({ sucesso: false, mensagem: error.message });
+        }
+    }
+
 }
 
 module.exports = new PortalController();

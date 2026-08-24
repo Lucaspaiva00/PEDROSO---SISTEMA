@@ -43,6 +43,10 @@ class ClienteRepository {
 
                         plano: true,
 
+                        parcelas: {
+                            orderBy: { numero: "asc" }
+                        },
+
                         lances: {
 
                             orderBy: {

@@ -30,6 +30,7 @@ enum TipoConsorcio {
 
 enum StatusContrato {
   ATIVO
+  PAUSADO
   CANCELADO
   QUITADO
   CONTEMPLADO

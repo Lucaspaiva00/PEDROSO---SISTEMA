@@ -1,4 +1,6 @@
 const ContratoService = require("../services/contrato.service");
+const AsaasService = require("../services/asaas.service");
+const prisma = require("../config/prisma");
 
 class ContratoController {
 
@@ -117,6 +119,32 @@ class ContratoController {
 
         }
 
+    }
+
+
+    async boletoParcela(req, res) {
+        try {
+            if (!req.usuario || !["ADMIN", "FUNCIONARIO"].includes(req.usuario.role)) {
+                return res.status(403).json({ sucesso: false, mensagem: "Acesso restrito ao administrativo." });
+            }
+
+            const contratoId = Number(req.params.id);
+            const parcelaId = Number(req.params.parcelaId);
+
+            const parcela = await prisma.parcela.findFirst({
+                where: { id: parcelaId, contratoId }
+            });
+
+            if (!parcela) {
+                return res.status(404).json({ sucesso: false, mensagem: "Parcela não encontrada neste contrato." });
+            }
+
+            const boleto = await AsaasService.atualizarDadosCobrancaDaParcela(parcela.id);
+
+            return res.json({ sucesso: true, dados: boleto });
+        } catch (error) {
+            return res.status(400).json({ sucesso: false, mensagem: error.message });
+        }
     }
 
 }

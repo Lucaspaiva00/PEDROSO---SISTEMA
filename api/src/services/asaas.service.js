@@ -308,6 +308,205 @@ class AsaasService {
 
     }
 
+    async removerCobranca(paymentId) {
+
+        if (!paymentId) {
+            throw new Error("Identificador da cobrança não informado.");
+        }
+
+        const resposta = await this.api.delete(`/payments/${paymentId}`);
+
+        return resposta.data;
+
+    }
+
+    statusCobrancaEhPaga(status) {
+
+        return [
+            "RECEIVED",
+            "CONFIRMED",
+            "RECEIVED_IN_CASH"
+        ].includes(String(status || "").toUpperCase());
+
+    }
+
+    async atualizarDadosCobrancaDaParcela(parcelaId) {
+
+        let parcela = await prisma.parcela.findUnique({
+            where: { id: Number(parcelaId) },
+            include: { contrato: true }
+        });
+
+        if (!parcela) {
+            throw new Error("Parcela não encontrada.");
+        }
+
+        if (["PAUSADO", "CANCELADO"].includes(parcela.contrato.status)) {
+            throw new Error(
+                parcela.contrato.status === "PAUSADO"
+                    ? "O contrato está pausado. Reative-o para emitir o boleto."
+                    : "O contrato está cancelado."
+            );
+        }
+
+        if (!parcela.asaasPaymentId && parcela.contrato.sincronizarAsaas) {
+            await this.sincronizarContrato(parcela.contratoId);
+
+            parcela = await prisma.parcela.findUnique({
+                where: { id: Number(parcelaId) },
+                include: { contrato: true }
+            });
+        }
+
+        if (!parcela?.asaasPaymentId) {
+            throw new Error("Esta parcela ainda não possui cobrança no Asaas.");
+        }
+
+        let cobranca;
+
+        try {
+            cobranca = await this.consultarCobranca(parcela.asaasPaymentId);
+        } catch (erroConsulta) {
+            const statusHttp = erroConsulta.response?.status;
+
+            if (statusHttp === 404 && parcela.contrato.sincronizarAsaas) {
+                await prisma.parcela.update({
+                    where: { id: parcela.id },
+                    data: {
+                        asaasPaymentId: null,
+                        asaasInvoiceUrl: null,
+                        asaasBankSlipUrl: null,
+                        asaasPixQrCode: null,
+                        asaasPixCopiaCola: null,
+                        asaasNossoNumero: null,
+                        asaasStatus: "COBRANCA_NAO_ENCONTRADA"
+                    }
+                });
+
+                await this.sincronizarContrato(parcela.contratoId);
+
+                parcela = await prisma.parcela.findUnique({
+                    where: { id: Number(parcelaId) },
+                    include: { contrato: true }
+                });
+
+                if (!parcela?.asaasPaymentId) {
+                    throw new Error("Não foi possível recriar a cobrança desta parcela no Asaas.");
+                }
+
+                cobranca = await this.consultarCobranca(parcela.asaasPaymentId);
+            } else {
+                throw erroConsulta;
+            }
+        }
+
+        const paga = this.statusCobrancaEhPaga(cobranca.status);
+        const urlBoleto = cobranca.bankSlipUrl || cobranca.invoiceUrl || null;
+
+        const atualizada = await prisma.parcela.update({
+            where: { id: parcela.id },
+            data: {
+                asaasInvoiceUrl: cobranca.invoiceUrl || parcela.asaasInvoiceUrl || null,
+                asaasBankSlipUrl: cobranca.bankSlipUrl || parcela.asaasBankSlipUrl || null,
+                asaasNossoNumero: cobranca.nossoNumero || parcela.asaasNossoNumero || null,
+                asaasStatus: cobranca.status || parcela.asaasStatus || null,
+                ...(paga ? { status: "PAGA", pagamentoEm: parcela.pagamentoEm || new Date() } : {})
+            }
+        });
+
+        const link = atualizada.asaasBankSlipUrl || atualizada.asaasInvoiceUrl || urlBoleto;
+
+        if (!link) {
+            throw new Error("O Asaas não retornou o PDF do boleto para esta cobrança.");
+        }
+
+        return {
+            parcelaId: atualizada.id,
+            paymentId: atualizada.asaasPaymentId,
+            status: atualizada.status,
+            asaasStatus: atualizada.asaasStatus,
+            url: link
+        };
+
+    }
+
+    async interromperCobrancasContrato(contratoId, { cancelarParcelas = false } = {}) {
+
+        const parcelas = await prisma.parcela.findMany({
+            where: {
+                contratoId: Number(contratoId),
+                status: { not: "PAGA" }
+            },
+            orderBy: { numero: "asc" }
+        });
+
+        const resultados = [];
+
+        for (const parcela of parcelas) {
+            let removida = false;
+            let erro = null;
+
+            if (parcela.asaasPaymentId) {
+                try {
+                    const cobranca = await this.consultarCobranca(parcela.asaasPaymentId);
+
+                    if (this.statusCobrancaEhPaga(cobranca.status)) {
+                        await prisma.parcela.update({
+                            where: { id: parcela.id },
+                            data: {
+                                status: "PAGA",
+                                asaasStatus: cobranca.status,
+                                pagamentoEm: parcela.pagamentoEm || new Date(),
+                                asaasInvoiceUrl: cobranca.invoiceUrl || parcela.asaasInvoiceUrl || null,
+                                asaasBankSlipUrl: cobranca.bankSlipUrl || parcela.asaasBankSlipUrl || null
+                            }
+                        });
+
+                        resultados.push({ parcelaId: parcela.id, numero: parcela.numero, paga: true });
+                        continue;
+                    }
+
+                    await this.removerCobranca(parcela.asaasPaymentId);
+                    removida = true;
+                } catch (e) {
+                    erro = this.obterMensagemErro(e);
+                }
+            }
+
+            const podeLimparCobranca = !parcela.asaasPaymentId || removida;
+
+            await prisma.parcela.update({
+                where: { id: parcela.id },
+                data: {
+                    ...(cancelarParcelas ? { status: "CANCELADA" } : {}),
+                    ...(podeLimparCobranca ? {
+                        asaasPaymentId: null,
+                        asaasInvoiceUrl: null,
+                        asaasBankSlipUrl: null,
+                        asaasPixQrCode: null,
+                        asaasPixCopiaCola: null,
+                        asaasNossoNumero: null,
+                        asaasStatus: cancelarParcelas ? "CANCELADA" : "PAUSADA"
+                    } : {})
+                }
+            });
+
+            resultados.push({
+                parcelaId: parcela.id,
+                numero: parcela.numero,
+                removida,
+                sucesso: !erro,
+                erro
+            });
+        }
+
+        return {
+            sucesso: resultados.every(item => item.sucesso !== false),
+            resultados
+        };
+
+    }
+
     /*==========================================================
     CRIAR PARCELAS LOCAIS
     ==========================================================*/
@@ -481,6 +680,16 @@ class AsaasService {
             throw new Error(
                 "Contrato não encontrado para sincronização."
             );
+
+        }
+
+        if (["PAUSADO", "CANCELADO"].includes(contrato.status)) {
+
+            return {
+                sucesso: true,
+                ignorado: true,
+                mensagem: `Contrato ${contrato.status.toLowerCase()}; cobranças não serão sincronizadas.`
+            };
 
         }
 

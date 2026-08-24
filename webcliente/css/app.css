@@ -2388,3 +2388,7 @@ body.is-loading .card-title {
 .card-loading i {
     margin-right: 8px;
 }
+/* Gestão do contrato */
+.contract-danger .quick-action-icon { color: #b42318; }
+.contract-danger span { color: #b42318; }
+.quick-action:disabled { opacity: .5; cursor: not-allowed; }

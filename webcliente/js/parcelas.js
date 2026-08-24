@@ -436,7 +436,11 @@ function preencherResumoParcelas() {
             obterClasseStatus(proximaParcela.status);
     }
 
-    atualizarAcoesSuperiores(true);
+    const contratoPermitePagamento = !["PAUSADO", "CANCELADO"].includes(
+        String(contratoAtual?.status || "").toUpperCase()
+    );
+
+    atualizarAcoesSuperiores(contratoPermitePagamento);
 }
 
 /*==========================================================
@@ -584,13 +588,17 @@ BOTÕES DO MODAL
 ==========================================================*/
 
 function atualizarBotoesModal(parcela) {
+    const contratoPermitePagamento = !["PAUSADO", "CANCELADO"].includes(
+        String(contratoAtual?.status || "").toUpperCase()
+    );
+
     const boletoDisponivel =
-        Boolean(
-            parcela?.bankSlipUrl ||
-            parcela?.invoiceUrl
-        );
+        contratoPermitePagamento &&
+        Boolean(parcela?.id) &&
+        !["PAGA", "CANCELADA", "ESTORNADA"].includes(normalizarStatus(parcela?.status));
 
     const pixDisponivel =
+        contratoPermitePagamento &&
         Boolean(
             parcela?.pixQrCode ||
             parcela?.pixCopiaCola
@@ -674,22 +682,30 @@ function abrirComprovanteModal() {
 BOLETO
 ==========================================================*/
 
-function abrirBoletoDaParcela(parcela) {
-    if (!parcela) {
+async function abrirBoletoDaParcela(parcela) {
+    if (!parcela?.id) {
         alert("Nenhuma parcela selecionada.");
         return;
     }
 
-    const url =
-        parcela.bankSlipUrl ||
-        parcela.invoiceUrl;
+    const janela = window.open("", "_blank");
 
-    if (!url) {
-        alert("Boleto indisponível para esta parcela.");
-        return;
+    try {
+        const { response, data } = await http.get(
+            `/portal/parcelas/${parcela.id}/boleto`
+        );
+
+        if (!response.ok || !data?.sucesso || !data?.dados?.url) {
+            throw new Error(data?.mensagem || "Boleto indisponível para esta parcela.");
+        }
+
+        parcela.bankSlipUrl = data.dados.url;
+        janela ? janela.location.replace(data.dados.url) : window.open(data.dados.url, "_blank", "noopener,noreferrer");
+    } catch (erro) {
+        if (janela) janela.close();
+        console.error("Erro ao abrir boleto:", erro);
+        alert(erro.message || "Não foi possível abrir o boleto.");
     }
-
-    window.open(url, "_blank", "noopener,noreferrer");
 }
 
 /*==========================================================

@@ -23,4 +23,8 @@ router.get("/lances/situacao", auth, PortalController.situacaoLance);
 
 router.post("/lances", auth, PortalController.registrarLance);
 
+router.post("/contratos/:contratoId/situacao", auth, PortalController.alterarSituacaoContrato);
+
+router.get("/parcelas/:parcelaId/boleto", auth, PortalController.boleto);
+
 module.exports = router;

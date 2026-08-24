@@ -198,6 +198,10 @@ function configurarEventos() {
 
     }
 
+    document.getElementById("btnPausarContrato")?.addEventListener("click", () => alterarSituacaoContrato("pausar"));
+    document.getElementById("btnReativarContrato")?.addEventListener("click", () => alterarSituacaoContrato("reativar"));
+    document.getElementById("btnCancelarContrato")?.addEventListener("click", () => alterarSituacaoContrato("cancelar"));
+
 }
 
 function preencherContrato(contrato) {
@@ -241,6 +245,8 @@ function preencherContrato(contrato) {
     document.getElementById("numeroContrato").textContent =
         contrato.numeroContrato || contrato.id || "-";
 
+    atualizarAcoesSituacao(contrato.status);
+
 }
 
 function obterMensagemStatus(status) {
@@ -252,6 +258,9 @@ function obterMensagemStatus(status) {
 
         case "QUITADO":
             return "Contrato totalmente quitado.";
+
+        case "PAUSADO":
+            return "Contrato pausado. As cobranças em aberto ficam interrompidas até a reativação.";
 
         case "CANCELADO":
             return "Contrato cancelado.";
@@ -298,6 +307,76 @@ function mostrarLoading() {
 
 function esconderLoading() {
 
+}
+
+function atualizarAcoesSituacao(status) {
+    const valor = String(status || "").toUpperCase();
+    const btnPausar = document.getElementById("btnPausarContrato");
+    const btnReativar = document.getElementById("btnReativarContrato");
+    const btnCancelar = document.getElementById("btnCancelarContrato");
+    const descricao = document.getElementById("descricaoGestaoContrato");
+
+    const pausado = valor === "PAUSADO";
+    const encerrado = ["CANCELADO", "QUITADO"].includes(valor);
+
+    if (btnPausar) btnPausar.hidden = pausado || encerrado;
+    if (btnReativar) btnReativar.hidden = !pausado;
+    if (btnCancelar) btnCancelar.disabled = encerrado;
+
+    if (descricao) {
+        descricao.textContent = pausado
+            ? "O contrato está pausado. Você pode reativá-lo ou cancelá-lo."
+            : encerrado
+                ? "Este contrato está encerrado e não aceita novas alterações pelo portal."
+                : "Pause temporariamente ou cancele este contrato.";
+    }
+}
+
+async function alterarSituacaoContrato(acao) {
+    if (!contratoAtual?.id) {
+        alert("Contrato não carregado.");
+        return;
+    }
+
+    const mensagens = {
+        pausar: "Deseja realmente pausar este contrato? As cobranças em aberto serão interrompidas até a reativação.",
+        reativar: "Deseja reativar este contrato e voltar a gerar as cobranças em aberto?",
+        cancelar: "Deseja realmente cancelar este contrato? Esta ação cancela as cobranças em aberto e não pode ser desfeita pelo portal."
+    };
+
+    if (!confirm(mensagens[acao] || "Confirmar alteração do contrato?")) {
+        return;
+    }
+
+    const botoes = [
+        document.getElementById("btnPausarContrato"),
+        document.getElementById("btnReativarContrato"),
+        document.getElementById("btnCancelarContrato")
+    ].filter(Boolean);
+
+    botoes.forEach(botao => botao.disabled = true);
+
+    try {
+        const { response, data } = await http.post(
+            `/portal/contratos/${contratoAtual.id}/situacao`,
+            { acao }
+        );
+
+        if (!response.ok || !data?.sucesso) {
+            throw new Error(data?.mensagem || "Não foi possível alterar o contrato.");
+        }
+
+        alert(data.mensagem || "Contrato atualizado com sucesso.");
+        await carregarListaContratos();
+        preencherSeletorContratos(contratoAtual.id);
+        await carregarContrato(contratoAtual.id);
+    } catch (erro) {
+        console.error(erro);
+        alert(erro.message || "Não foi possível alterar o contrato.");
+    } finally {
+        botoes.forEach(botao => botao.disabled = false);
+        atualizarAcoesSituacao(contratoAtual?.status);
+    }
 }
 
 function visualizarContrato() {

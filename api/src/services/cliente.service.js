@@ -78,6 +78,16 @@ class ClienteService {
                 }
                 : null,
 
+            parcelas: (contrato.parcelas || []).map(parcela => ({
+                id: parcela.id,
+                numero: parcela.numero,
+                valor: Number(parcela.valor),
+                vencimento: parcela.vencimento,
+                pagamentoEm: parcela.pagamentoEm,
+                status: parcela.status,
+                asaasStatus: parcela.asaasStatus
+            })),
+
             lances: contrato.lances.map(lance => ({
 
                 id: lance.id,

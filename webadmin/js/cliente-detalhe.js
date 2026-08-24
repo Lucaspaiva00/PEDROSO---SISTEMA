@@ -13,6 +13,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     carregarDetalhe();
+
+    document.getElementById("listaContratosCliente")?.addEventListener("click", async (event) => {
+        const botao = event.target.closest("[data-boleto-parcela]");
+        if (!botao) return;
+
+        const contratoId = Number(botao.dataset.contratoId);
+        const parcelaId = Number(botao.dataset.boletoParcela);
+        await abrirBoletoAdmin(contratoId, parcelaId, botao);
+    });
 });
 
 async function carregarDetalhe() {
@@ -171,6 +180,8 @@ function renderContratoCard(contrato) {
                 </div>
             </header>
 
+            ${renderParcelasContrato(contrato)}
+
             <div class="table-responsive">
                 <table class="table" id="lances-contrato-${contrato.id}" aria-label="Lances do contrato ${esc(contrato.numeroContrato || contrato.id)}">
                     <thead>
@@ -188,6 +199,76 @@ function renderContratoCard(contrato) {
             </div>
         </article>
     `;
+}
+
+function renderParcelasContrato(contrato) {
+    const parcelas = contrato.parcelas || [];
+
+    if (!parcelas.length) {
+        return '<p class="empty-inline" style="margin:16px 0;">Nenhuma parcela cadastrada.</p>';
+    }
+
+    const linhas = parcelas.map(parcela => {
+        const podeBoleto = ["PENDENTE", "VENCIDA"].includes(String(parcela.status || "").toUpperCase());
+        return `
+            <tr>
+                <td>${parcela.numero}</td>
+                <td>${new Date(parcela.vencimento).toLocaleDateString("pt-BR")}</td>
+                <td>${formatarMoedaLance(parcela.valor)}</td>
+                <td><span class="badge ${parcela.status === "PAGA" ? "badge-success" : parcela.status === "VENCIDA" ? "badge-warning" : parcela.status === "CANCELADA" ? "badge-danger" : "badge-primary"}">${esc(parcela.status)}</span></td>
+                <td>
+                    ${podeBoleto ? `
+                        <button type="button" class="btn btn-sm btn-primary" data-boleto-parcela="${parcela.id}" data-contrato-id="${contrato.id}">
+                            <i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i>
+                            Baixar boleto
+                        </button>
+                    ` : "—"}
+                </td>
+            </tr>
+        `;
+    }).join("");
+
+    return `
+        <div class="table-responsive" style="margin:16px 0 22px;">
+            <table class="table" aria-label="Parcelas do contrato ${esc(contrato.numeroContrato || contrato.id)}">
+                <thead>
+                    <tr>
+                        <th>Parcela</th>
+                        <th>Vencimento</th>
+                        <th>Valor</th>
+                        <th>Status</th>
+                        <th width="190">Boleto</th>
+                    </tr>
+                </thead>
+                <tbody>${linhas}</tbody>
+            </table>
+        </div>
+    `;
+}
+
+async function abrirBoletoAdmin(contratoId, parcelaId, botao) {
+    const janela = window.open("", "_blank");
+    const textoOriginal = botao.innerHTML;
+    botao.disabled = true;
+    botao.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Buscando boleto';
+
+    try {
+        const { response, data } = await http.get(
+            `/contratos/${contratoId}/parcelas/${parcelaId}/boleto`
+        );
+
+        if (!response.ok || !data?.sucesso || !data?.dados?.url) {
+            throw new Error(data?.mensagem || "Não foi possível obter o boleto.");
+        }
+
+        janela ? janela.location.replace(data.dados.url) : window.open(data.dados.url, "_blank", "noopener,noreferrer");
+    } catch (erro) {
+        if (janela) janela.close();
+        mostrarFeedback("feedbackCliente", "error", "Boleto", erro.message || "Não foi possível obter o boleto.");
+    } finally {
+        botao.disabled = false;
+        botao.innerHTML = textoOriginal;
+    }
 }
 
 function esc(texto) {

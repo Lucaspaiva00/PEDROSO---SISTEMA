@@ -7,6 +7,8 @@ router.post("/", auth, ContratoController.cadastrar);
 
 router.get("/", auth, ContratoController.listar);
 
+router.get("/:id/parcelas/:parcelaId/boleto", auth, ContratoController.boletoParcela);
+
 router.get("/:id", auth, ContratoController.buscarPorId);
 
 router.put("/:id", auth, ContratoController.atualizar);

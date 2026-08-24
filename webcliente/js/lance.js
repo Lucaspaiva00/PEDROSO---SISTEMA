@@ -3,6 +3,7 @@ const token = getToken();
 
 let contratos = [];
 let contratoSelecionadoId = null;
+let situacaoAtual = null;
 
 if (!token || !usuario) {
     logout();
@@ -25,6 +26,16 @@ function configurarEventos() {
     });
 
     document.getElementById("btnConfirmarLance")?.addEventListener("click", confirmarLance);
+    document.getElementById("inputValorSimulado")?.addEventListener("input", atualizarSimulador);
+    document.getElementById("btnUsarValorSimulado")?.addEventListener("click", () => {
+        const valor = document.getElementById("inputValorSimulado")?.value;
+        const input = document.getElementById("inputValorLance");
+        if (!valor || !input || document.getElementById("cardFormLance")?.hidden) return;
+        input.value = valor;
+        input.dispatchEvent(new Event("input"));
+        input.scrollIntoView({ behavior: "smooth", block: "center" });
+        input.focus();
+    });
 
     document.getElementById("inputValorLance")?.addEventListener("input", () => {
         const erro = document.getElementById("erroValorLance");
@@ -83,7 +94,7 @@ function setLoading(ativo) {
 }
 
 function ocultarCardsLance() {
-    ["cardRanking", "cardMeuLance", "cardFormLance", "cardBloqueio", "cardVazio"].forEach(id => {
+    ["cardRanking", "cardSimulador", "cardHistoricoLances", "cardMeuLance", "cardFormLance", "cardBloqueio", "cardVazio"].forEach(id => {
         const el = document.getElementById(id);
         if (el) {
             el.hidden = true;
@@ -205,8 +216,11 @@ async function carregarSituacao() {
 }
 
 function renderizarSituacao(dados) {
+    situacaoAtual = dados;
     const textoAssembleia = document.getElementById("textoAssembleia");
     ocultarCardsLance();
+    renderizarSimulador(dados);
+    renderizarHistorico(dados.historico || []);
     document.getElementById("cardAssembleia").hidden = false;
 
     if (dados.contrato.status === "CONTEMPLADO") {
@@ -350,4 +364,54 @@ function escaparHtml(texto) {
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
+}
+
+function renderizarSimulador(dados) {
+    const card = document.getElementById("cardSimulador");
+    if (!card || !dados?.contrato?.valorCarta) return;
+    card.hidden = false;
+    document.getElementById("maiorLanceSimulador").textContent = dados.ranking?.maiorValor != null
+        ? formatarMoeda(dados.ranking.maiorValor)
+        : "Nenhum lance ainda";
+    const usar = document.getElementById("btnUsarValorSimulado");
+    if (usar) usar.disabled = !dados.podeDarLance;
+    atualizarSimulador();
+}
+
+function atualizarSimulador() {
+    if (!situacaoAtual?.contrato) return;
+    const valor = Number(document.getElementById("inputValorSimulado")?.value || 0);
+    const carta = Number(situacaoAtual.contrato.valorCarta || 0);
+    const maior = Number(situacaoAtual.ranking?.maiorValor || 0);
+    const percentual = carta > 0 ? (valor / carta) * 100 : 0;
+    document.getElementById("percentualSimulado").textContent = `${percentual.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}%`;
+
+    const diferenca = valor && maior ? valor - maior : null;
+    document.getElementById("diferencaSimulada").textContent = diferenca == null
+        ? "—"
+        : `${diferenca >= 0 ? "+" : "-"} ${formatarMoeda(Math.abs(diferenca))}`;
+
+    let leitura = "Informe um valor";
+    if (valor > 0 && maior <= 0) leitura = "Seria o maior lance atual";
+    else if (valor > maior && maior > 0) leitura = "Acima do maior lance atual";
+    else if (valor === maior && maior > 0) leitura = "Empata com o maior lance";
+    else if (valor > 0) leitura = "Abaixo do maior lance atual";
+    document.getElementById("leituraSimulada").textContent = leitura;
+}
+
+function renderizarHistorico(historico) {
+    const card = document.getElementById("cardHistoricoLances");
+    const el = document.getElementById("historicoLances");
+    if (!card || !el) return;
+    card.hidden = !historico.length;
+    if (!historico.length) return;
+    el.innerHTML = historico.map(item => `
+        <div class="bid-history-row">
+            <div><strong>${formatarMoeda(item.valor)}</strong><span>${Number(item.percentualCarta || 0).toLocaleString("pt-BR", { maximumFractionDigits: 2 })}% da carta</span></div>
+            <div><span>${item.assembleia?.dataAssembleia ? new Date(item.assembleia.dataAssembleia).toLocaleDateString("pt-BR") : new Date(item.criadoEm).toLocaleDateString("pt-BR")}</span><strong>${rotuloStatusHistorico(item.status)}</strong></div>
+        </div>`).join("");
+}
+
+function rotuloStatusHistorico(status) {
+    return ({ REGISTRADO: "Em análise", VENCEDOR: "Contemplado", NAO_CONTEMPLADO: "Não contemplado" })[status] || status || "—";
 }

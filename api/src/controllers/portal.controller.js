@@ -152,6 +152,15 @@ class PortalController {
         }
     }
 
+    async documentos(req, res) {
+        try {
+            const resultado = await PortalService.documentos(req.usuario, req.query.contratoId);
+            return res.json(resultado);
+        } catch (error) {
+            return res.status(400).json({ sucesso: false, mensagem: error.message });
+        }
+    }
+
 }
 
 module.exports = new PortalController();

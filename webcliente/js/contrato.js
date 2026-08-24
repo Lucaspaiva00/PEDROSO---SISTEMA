@@ -246,6 +246,10 @@ function preencherContrato(contrato) {
         contrato.numeroContrato || contrato.id || "-";
 
     atualizarAcoesSituacao(contrato.status);
+    renderizarResumoFinanceiro(contrato);
+    renderizarAssembleiaContrato(contrato.proximaAssembleia);
+    renderizarTimelineContrato(contrato.timeline || []);
+    renderizarContemplacao(contrato.contemplacao);
 
 }
 
@@ -443,4 +447,52 @@ async function compartilharContrato() {
 
     }
 
+}
+
+function renderizarResumoFinanceiro(contrato) {
+    document.getElementById("totalPagoContrato").textContent = formatarMoeda(contrato.totalPago);
+    document.getElementById("saldoRestanteContrato").textContent = formatarMoeda(contrato.saldoRestante);
+    document.getElementById("percentualContrato").textContent = `${Number(contrato.percentual || 0)}%`;
+    document.getElementById("atrasoContrato").textContent = formatarMoeda(contrato.valorEmAtraso);
+}
+
+function renderizarAssembleiaContrato(assembleia) {
+    const card = document.getElementById("cardProximaAssembleiaContrato");
+    if (!card) return;
+    card.hidden = !assembleia;
+    if (!assembleia) return;
+    document.getElementById("tituloAssembleiaContrato").textContent = assembleia.titulo || `Assembleia do grupo ${assembleia.grupo}`;
+    document.getElementById("dataAssembleiaContrato").textContent = `${formatarData(assembleia.dataAssembleia)} • Grupo ${assembleia.grupo}${assembleia.aceitaLances ? " • Lances abertos" : ""}`;
+}
+
+function renderizarTimelineContrato(eventos) {
+    const el = document.getElementById("timelineContrato");
+    if (!el) return;
+    if (!eventos.length) { el.innerHTML = '<p class="card-text">O histórico do contrato aparecerá aqui conforme houver movimentações.</p>'; return; }
+    el.innerHTML = eventos.map(evento => `
+        <div class="timeline-row">
+            <div class="timeline-dot"><i class="fa-solid fa-${evento.icone || "circle"}"></i></div>
+            <div class="timeline-body"><strong>${escaparContrato(evento.titulo)}</strong><span>${escaparContrato(evento.descricao || "")}</span><small>${formatarDataHora(evento.data)}</small></div>
+        </div>`).join("");
+}
+
+function renderizarContemplacao(contemplacao) {
+    const card = document.getElementById("cardContemplacao");
+    if (!card) return;
+    card.hidden = !contemplacao;
+    if (!contemplacao) return;
+    document.getElementById("tituloContemplacao").textContent = contemplacao.titulo || "Cota contemplada";
+    document.getElementById("checklistContemplacao").innerHTML = (contemplacao.etapas || []).map((etapa, indice) => `
+        <div class="contemplation-step ${etapa.concluida ? "done" : ""}">
+            <span>${etapa.concluida ? '<i class="fa-solid fa-check"></i>' : indice + 1}</span><strong>${escaparContrato(etapa.nome)}</strong>
+        </div>`).join("");
+}
+
+function formatarDataHora(data) {
+    if (!data) return "";
+    return new Date(data).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+}
+
+function escaparContrato(valor) {
+    return String(valor ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

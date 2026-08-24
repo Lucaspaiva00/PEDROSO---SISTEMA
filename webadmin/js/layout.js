@@ -1,3 +1,16 @@
+function garantirMenuInadimplencia() {
+    const lista = document.querySelector("#sidebar ul");
+    if (!lista || lista.querySelector('a[href="inadimplentes.html"]')) return;
+
+    const item = document.createElement("li");
+    if (location.pathname.endsWith("inadimplentes.html")) item.classList.add("active");
+    item.innerHTML = '<a href="inadimplentes.html"><i class="fa-solid fa-triangle-exclamation"></i><span>Inadimplência</span></a>';
+
+    const config = [...lista.querySelectorAll("li")].find(li => li.querySelector('a[href="configuracoes.html"]'));
+    if (config) lista.insertBefore(item, config);
+    else lista.appendChild(item);
+}
+
 function decorateStackedTables(root = document) {
     let tables = [];
 
@@ -31,6 +44,7 @@ function decorateStackedTables(root = document) {
 window.decorateStackedTables = decorateStackedTables;
 
 document.addEventListener("DOMContentLoaded", () => {
+    garantirMenuInadimplencia();
     decorateStackedTables();
 
     const sidebar = document.getElementById("sidebar");

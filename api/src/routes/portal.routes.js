@@ -27,4 +27,6 @@ router.post("/contratos/:contratoId/situacao", auth, PortalController.alterarSit
 
 router.get("/parcelas/:parcelaId/boleto", auth, PortalController.boleto);
 
+router.get("/documentos", auth, PortalController.documentos);
+
 module.exports = router;

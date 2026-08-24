@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inadimplência • Pedroso Consórcios</title>
+    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+<div class="layout">
+    <aside class="sidebar" id="sidebar"><div class="sidebar-logo"><img src="../img/logo.png" alt="Pedroso Consórcios"></div><ul>
+        <li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+        <li><a href="clientes.html"><i class="fa-solid fa-users"></i><span>Clientes</span></a></li>
+        <li><a href="planos.html"><i class="fa-solid fa-layer-group"></i><span>Planos</span></a></li>
+        <li><a href="contratos.html"><i class="fa-solid fa-file-signature"></i><span>Contratos</span></a></li>
+        <li><a href="assembleias.html"><i class="fa-solid fa-calendar-check"></i><span>Assembleias</span></a></li>
+        <li><a href="lances.html"><i class="fa-solid fa-hand-holding-dollar"></i><span>Lances</span></a></li>
+        <li class="active"><a href="inadimplentes.html"><i class="fa-solid fa-triangle-exclamation"></i><span>Inadimplência</span></a></li>
+        <li><a href="configuracoes.html"><i class="fa-solid fa-gears"></i><span>Configurações</span></a></li>
+    </ul></aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
+    <main class="content">
+        <header class="topbar"><div class="topbar-start"><button type="button" class="btn-menu" id="btnMenu"><i class="fa-solid fa-bars"></i></button><div><h2>Inadimplência</h2><span>Clientes e parcelas que exigem atenção.</span></div></div></header>
+        <section class="page">
+            <div id="feedbackInadimplentes" class="alert alert-info" hidden></div>
+            <section class="cards executive-kpis compact-kpis">
+                <div class="card"><h3 id="qtdClientes">—</h3><span>Clientes em atraso</span></div>
+                <div class="card"><h3 id="qtdParcelas">—</h3><span>Parcelas vencidas</span></div>
+                <div class="card danger-kpi"><h3 id="valorTotal">—</h3><span>Valor em atraso</span></div>
+            </section>
+            <div class="box">
+                <div class="box-heading-row"><div><h3 class="box-title">Cobranças pendentes</h3><p>Use o boleto atualizado ou envie uma cobrança pelo WhatsApp.</p></div><input class="input table-search" id="buscaInadimplente" placeholder="Buscar cliente, contrato ou grupo"></div>
+                <div class="table-responsive">
+                    <table class="table table-stack"><thead><tr><th>Cliente</th><th>Contrato</th><th>Parcela</th><th>Vencimento</th><th>Atraso</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="listaInadimplentes"></tbody></table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+<script src="../js/api.js"></script><script src="../js/feedback.js"></script><script src="../js/layout.js"></script><script src="../js/inadimplentes.js"></script>
+</body>
+</html>

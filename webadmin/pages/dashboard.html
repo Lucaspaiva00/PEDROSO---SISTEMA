@@ -1,260 +1,115 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Painel Administrativo • Pedroso Consórcios</title>
-
+    <title>Painel Executivo • Pedroso Consórcios</title>
     <link rel="stylesheet" href="../css/app.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
-
 <body>
+<div class="layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><img src="../img/logo.png" alt="Pedroso Consórcios"></div>
+        <ul>
+            <li class="active"><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+            <li><a href="clientes.html"><i class="fa-solid fa-users"></i><span>Clientes</span></a></li>
+            <li><a href="planos.html"><i class="fa-solid fa-layer-group"></i><span>Planos</span></a></li>
+            <li><a href="contratos.html"><i class="fa-solid fa-file-signature"></i><span>Contratos</span></a></li>
+            <li><a href="assembleias.html"><i class="fa-solid fa-calendar-check"></i><span>Assembleias</span></a></li>
+            <li><a href="lances.html"><i class="fa-solid fa-hand-holding-dollar"></i><span>Lances</span></a></li>
+            <li><a href="configuracoes.html"><i class="fa-solid fa-gears"></i><span>Configurações</span></a></li>
+        </ul>
+    </aside>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
 
-    <div class="layout">
-
-        <aside class="sidebar" id="sidebar">
-
-            <div class="sidebar-logo">
-
-                <img src="../img/logo.png" alt="Pedroso Consórcios">
-
-            </div>
-
-            <ul>
-
-                <li class="active">
-
-                    <a href="dashboard.html">
-
-                        <i class="fa-solid fa-chart-line"></i>
-
-                        <span>Dashboard</span>
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="clientes.html">
-
-                        <i class="fa-solid fa-users"></i>
-
-                        <span>Clientes</span>
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="planos.html">
-
-                        <i class="fa-solid fa-layer-group"></i>
-
-                        <span>Planos</span>
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="contratos.html">
-
-                        <i class="fa-solid fa-file-signature"></i>
-
-                        <span>Contratos</span>
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="assembleias.html">
-
-                        <i class="fa-solid fa-calendar-check"></i>
-
-                        <span>Assembleias</span>
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="lances.html">
-
-                        <i class="fa-solid fa-hand-holding-dollar"></i>
-
-                        <span>Lances</span>
-
-                    </a>
-
-                </li>
-
-                <li>
-
-                    <a href="configuracoes.html">
-
-                        <i class="fa-solid fa-gears"></i>
-
-                        <span>Configurações</span>
-
-                    </a>
-
-                </li>
-
-            </ul>
-
-        </aside>
-
-        <div class="sidebar-backdrop" id="sidebarBackdrop" hidden></div>
-
-        <main class="content">
-
-            <header class="topbar">
-
-                <div class="topbar-start">
-
-                    <button type="button" class="btn-menu" id="btnMenu" aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menu">
-
-                        <i class="fa-solid fa-bars" aria-hidden="true"></i>
-
-                    </button>
-
-                    <div>
-
-                        <h2>Dashboard</h2>
-
-                        <span>Bem-vindo ao sistema.</span>
-
-                    </div>
-
+    <main class="content">
+        <header class="topbar">
+            <div class="topbar-start">
+                <button type="button" class="btn-menu" id="btnMenu" aria-expanded="false" aria-controls="sidebar" aria-label="Abrir menu"><i class="fa-solid fa-bars"></i></button>
+                <div>
+                    <h2>Painel Executivo</h2>
+                    <span>Visão geral da operação, carteira e recebimentos.</span>
                 </div>
+            </div>
+            <button type="button" class="btn btn-secondary" id="btnLogout"><i class="fa-solid fa-right-from-bracket"></i>Sair</button>
+        </header>
 
-                <button type="button" class="btn btn-secondary" id="btnLogout">
+        <section class="page">
+            <div id="feedbackDashboard" class="alert alert-info" role="status" aria-live="polite" hidden></div>
 
-                    <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
-
-                    Sair
-
-                </button>
-
-            </header>
-
-            <section class="page">
-
-                <div id="feedbackDashboard" class="alert alert-info" role="status" aria-live="polite" hidden tabindex="-1"></div>
-
-                <section class="cards">
-
-                    <div class="card">
-
-                        <h3 id="clientes">—</h3>
-
-                        <span>Clientes</span>
-
-                    </div>
-
-                    <div class="card">
-
-                        <h3 id="planos">—</h3>
-
-                        <span>Planos</span>
-
-                    </div>
-
-                    <div class="card">
-
-                        <h3 id="contratos">—</h3>
-
-                        <span>Contratos</span>
-
-                    </div>
-
-                    <div class="card">
-
-                        <h3 id="parcelas">—</h3>
-
-                        <span>Parcelas Pendentes</span>
-
-                    </div>
-
-                </section>
-
-                <section class="dashboard-grid">
-
-                    <div class="box">
-
-                        <h3 class="box-title">Contratos por mês</h3>
-
-                        <div class="chart-wrap">
-
-                        <canvas id="graficoContratos" role="img" aria-labelledby="tituloGraficoContratos"></canvas>
-
-                        </div>
-
-                        <p id="tituloGraficoContratos" class="sr-only">Gráfico de contratos por mês</p>
-
-                        <p id="resumoGraficoContratos" class="sr-only"></p>
-
-                    </div>
-
-                    <div>
-
-                        <h3 class="box-title">Últimos contratos</h3>
-
-                        <div class="table-responsive">
-
-                        <table class="table table-stack" aria-label="Últimos contratos">
-
-                                <thead>
-
-                                    <tr>
-
-                                        <th>Cliente</th>
-
-                                        <th>Plano</th>
-
-                                        <th>Valor</th>
-
-                                        <th>Status</th>
-
-                                    </tr>
-
-                                </thead>
-
-                                <tbody id="ultimosContratos"></tbody>
-
-                            </table>
-
-                        </div>
-
-                    </div>
-
-                </section>
-
+            <section class="executive-hero">
+                <div>
+                    <span class="eyebrow">Carteira administrada</span>
+                    <strong id="valorCartas">—</strong>
+                    <small id="resumoCarteira">Carregando carteira…</small>
+                </div>
+                <a class="btn btn-primary" href="inadimplentes.html"><i class="fa-solid fa-triangle-exclamation"></i>Ver inadimplência</a>
             </section>
 
-        </main>
+            <section class="cards executive-kpis">
+                <div class="card"><span class="kpi-icon"><i class="fa-solid fa-users"></i></span><h3 id="clientes">—</h3><span>Clientes</span></div>
+                <div class="card"><span class="kpi-icon"><i class="fa-solid fa-file-signature"></i></span><h3 id="contratos">—</h3><span>Contratos</span></div>
+                <div class="card"><span class="kpi-icon"><i class="fa-solid fa-money-bill-trend-up"></i></span><h3 id="recebidoMes">—</h3><span>Recebido no mês</span></div>
+                <div class="card"><span class="kpi-icon"><i class="fa-solid fa-clock"></i></span><h3 id="previstoMes">—</h3><span>Previsto no mês</span></div>
+                <div class="card danger-kpi"><span class="kpi-icon"><i class="fa-solid fa-circle-exclamation"></i></span><h3 id="inadimplenciaValor">—</h3><span>Em atraso</span></div>
+                <div class="card"><span class="kpi-icon"><i class="fa-solid fa-percent"></i></span><h3 id="taxaInadimplencia">—</h3><span>Taxa de inadimplência</span></div>
+            </section>
 
-    </div>
+            <section class="status-strip" aria-label="Situação dos contratos">
+                <div><span>Ativos</span><strong id="ativos">—</strong></div>
+                <div><span>Contemplados</span><strong id="contemplados">—</strong></div>
+                <div><span>Pausados</span><strong id="pausados">—</strong></div>
+                <div><span>Cancelados</span><strong id="cancelados">—</strong></div>
+            </section>
 
-    <script src="../js/api.js"></script>
-    <script src="../js/feedback.js"></script>
-    <script src="../js/layout.js"></script>
-    <script src="../js/dashboard.js"></script>
+            <section class="dashboard-grid executive-grid">
+                <div class="box">
+                    <div class="box-heading-row"><div><h3 class="box-title">Recebimentos</h3><p>Últimos 6 meses</p></div></div>
+                    <div class="chart-wrap"><canvas id="graficoRecebimentos"></canvas></div>
+                </div>
 
+                <div class="box">
+                    <div class="box-heading-row"><div><h3 class="box-title">Saúde financeira</h3><p>Visão do mês atual</p></div></div>
+                    <div class="financial-health">
+                        <div><span>Previsto</span><strong id="saudePrevisto">—</strong></div>
+                        <div><span>Recebido</span><strong id="saudeRecebido">—</strong></div>
+                        <div><span>Em aberto</span><strong id="saudeAberto">—</strong></div>
+                        <div><span>Clientes em atraso</span><strong id="clientesAtraso">—</strong></div>
+                    </div>
+                    <div class="health-progress"><div id="barraRecebido"></div></div>
+                    <small id="percentualRecebido">—</small>
+                </div>
+            </section>
+
+            <section class="dashboard-grid executive-grid">
+                <div class="box">
+                    <div class="box-heading-row"><div><h3 class="box-title">Próximas assembleias</h3><p>Agenda operacional</p></div><a href="assembleias.html">Ver todas</a></div>
+                    <div id="proximasAssembleias" class="agenda-list"></div>
+                </div>
+
+                <div class="box">
+                    <div class="box-heading-row"><div><h3 class="box-title">Últimos contratos</h3><p>Entradas recentes na carteira</p></div><a href="contratos.html">Ver todos</a></div>
+                    <div class="table-responsive">
+                        <table class="table table-stack" aria-label="Últimos contratos">
+                            <thead><tr><th>Cliente</th><th>Plano</th><th>Valor</th><th>Status</th></tr></thead>
+                            <tbody id="ultimosContratos"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="box" style="margin-top:22px;">
+                <div class="box-heading-row"><div><h3 class="box-title">Atividade recente</h3><p>Movimentações importantes da operação</p></div></div>
+                <div id="atividadesRecentes" class="activity-feed"></div>
+            </section>
+        </section>
+    </main>
+</div>
+<script src="../js/api.js"></script>
+<script src="../js/feedback.js"></script>
+<script src="../js/layout.js"></script>
+<script src="../js/dashboard.js"></script>
 </body>
-
 </html>

@@ -4,6 +4,23 @@ const LanceRepository = require("../repositories/lance.repository");
 
 class LanceService {
 
+    mapearHistorico(contrato) {
+        return (contrato.lances || []).slice(0, 8).map(lance => ({
+            id: lance.id,
+            valor: Number(lance.valor),
+            percentualCarta: Number(contrato.valorCarta) > 0
+                ? Number(((Number(lance.valor) / Number(contrato.valorCarta)) * 100).toFixed(2))
+                : 0,
+            status: lance.status,
+            criadoEm: lance.criadoEm,
+            assembleia: lance.assembleia ? {
+                id: lance.assembleia.id,
+                titulo: lance.assembleia.titulo,
+                dataAssembleia: lance.assembleia.dataAssembleia
+            } : null
+        }));
+    }
+
     async validarContratoDoCliente(usuarioLogado, contratoId) {
 
         const usuario = await UsuarioRepository.findPortalByUserId(
@@ -56,7 +73,8 @@ class LanceService {
 
                     podeDarLance: false,
 
-                    motivoBloqueio: "Contrato sem grupo cadastrado."
+                    motivoBloqueio: "Contrato sem grupo cadastrado.",
+                    historico: this.mapearHistorico(contrato)
 
                 }
 
@@ -92,7 +110,8 @@ class LanceService {
 
                     podeDarLance: false,
 
-                    motivoBloqueio: "Nenhuma rodada de lances aberta para este grupo."
+                    motivoBloqueio: "Nenhuma rodada de lances aberta para este grupo.",
+                    historico: this.mapearHistorico(contrato)
 
                 }
 
@@ -176,8 +195,13 @@ class LanceService {
                     totalLances,
                     maiorValor: lances[0]
                         ? Number(lances[0].valor)
+                        : null,
+                    maiorPercentualCarta: lances[0] && Number(contrato.valorCarta) > 0
+                        ? Number(((Number(lances[0].valor) / Number(contrato.valorCarta)) * 100).toFixed(2))
                         : null
                 },
+
+                historico: this.mapearHistorico(contrato),
 
                 podeDarLance,
 

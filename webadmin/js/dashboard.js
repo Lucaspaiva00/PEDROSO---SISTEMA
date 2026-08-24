@@ -1,245 +1,127 @@
-let graficoInstancia = null;
+let graficoRecebimentos = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     verificarLogin();
     document.getElementById("btnLogout")?.addEventListener("click", logout);
-    carregarDashboardAdmin();
+    carregarDashboardExecutivo();
 });
 
-async function carregarDashboardAdmin() {
-    definirKpi("clientes", "—");
-    definirKpi("planos", "—");
-    definirKpi("contratos", "—");
-    definirKpi("parcelas", "—");
-    preencherTabelaCarregando();
-
+async function carregarDashboardExecutivo() {
     try {
-        const [resClientes, resPlanos, resContratos] = await Promise.all([
-            http.get("/clientes"),
-            http.get("/planos"),
-            http.get("/contratos")
-        ]);
-
-        if ([resClientes, resPlanos, resContratos].some(r => r.response.status === 401)) {
-            return;
-        }
-
-        const jsonClientes = resClientes.data;
-        const jsonPlanos = resPlanos.data;
-        const jsonContratos = resContratos.data;
-
-        if (!jsonClientes.sucesso || !jsonPlanos.sucesso || !jsonContratos.sucesso) {
-            throw new Error("Não foi possível carregar os indicadores.");
-        }
-
-        const clientes = jsonClientes.clientes || [];
-        const planos = jsonPlanos.planos || [];
-        const contratos = jsonContratos.contratos || [];
-
-        definirKpi("clientes", clientes.length);
-        definirKpi("planos", planos.length);
-        definirKpi("contratos", contratos.length);
-        definirKpi("parcelas", contarParcelasPendentes(contratos));
-
-        renderizarUltimosContratos(contratos.slice(0, 5));
-        renderizarGrafico(contratos);
-        atualizarResumoGrafico(contratos);
+        const { response, data } = await http.get("/dashboard/executivo");
+        if (response.status === 401) return;
+        if (!response.ok || !data?.sucesso) throw new Error(data?.mensagem || "Não foi possível carregar o painel executivo.");
+        renderizarDashboard(data.dados);
     } catch (erro) {
         console.error(erro);
-        mostrarFeedback("feedbackDashboard", "error", "Erro", erro.message || "Falha ao carregar o dashboard.");
-        preencherTabelaErro();
+        mostrarFeedback?.("feedbackDashboard", "error", "Erro", erro.message || "Falha ao carregar o dashboard.");
     }
 }
 
-function contarParcelasPendentes(contratos) {
-    return contratos.reduce((total, contrato) => {
-        const parcelas = contrato.parcelas || [];
-        return total + parcelas.filter(p => p.status === "PENDENTE").length;
-    }, 0);
+function renderizarDashboard(dados) {
+    const carteira = dados.carteira || {};
+    const financeiro = dados.financeiro || {};
+
+    setText("valorCartas", moeda(carteira.valorCartas));
+    setText("resumoCarteira", `${carteira.contratos || 0} contratos • ${carteira.clientes || 0} clientes`);
+    setText("clientes", carteira.clientes || 0);
+    setText("contratos", carteira.contratos || 0);
+    setText("recebidoMes", moeda(financeiro.recebidoMes));
+    setText("previstoMes", moeda(financeiro.previstoMes));
+    setText("inadimplenciaValor", moeda(financeiro.valorInadimplente));
+    setText("taxaInadimplencia", `${Number(financeiro.taxaInadimplencia || 0).toLocaleString("pt-BR")} %`);
+    setText("ativos", carteira.ativos || 0);
+    setText("contemplados", carteira.contemplados || 0);
+    setText("pausados", carteira.pausados || 0);
+    setText("cancelados", carteira.cancelados || 0);
+    setText("saudePrevisto", moeda(financeiro.previstoMes));
+    setText("saudeRecebido", moeda(financeiro.recebidoMes));
+    setText("saudeAberto", moeda(financeiro.abertoMes));
+    setText("clientesAtraso", financeiro.clientesInadimplentes || 0);
+
+    const percentual = financeiro.previstoMes > 0
+        ? Math.min(100, Math.round((financeiro.recebidoMes / financeiro.previstoMes) * 100))
+        : 0;
+    const barra = document.getElementById("barraRecebido");
+    if (barra) barra.style.width = `${percentual}%`;
+    setText("percentualRecebido", `${percentual}% do previsto para o mês já recebido`);
+
+    renderizarGrafico(dados.recebimentos || []);
+    renderizarAssembleias(dados.proximasAssembleias || []);
+    renderizarContratos(dados.ultimosContratos || []);
+    renderizarAtividades(dados.atividades || []);
 }
 
-function definirKpi(id, valor) {
-    const el = document.getElementById(id);
-
-    if (el) {
-        el.textContent = valor;
-    }
-}
-
-function preencherTabelaCarregando() {
-    const tbody = document.getElementById("ultimosContratos");
-
-    if (!tbody) {
-        return;
-    }
-
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="4" class="table-state-cell">
-                <span class="empty-inline">
-                    <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                    Carregando contratos…
-                </span>
-            </td>
-        </tr>
-    `;
-    window.decorateStackedTables?.(tbody.closest("table"));
-}
-
-function preencherTabelaErro() {
-    const tbody = document.getElementById("ultimosContratos");
-
-    if (!tbody) {
-        return;
-    }
-
-    tbody.innerHTML = `
-        <tr>
-            <td colspan="4" class="table-state-cell">
-                <span class="empty-inline">Não foi possível listar os contratos.</span>
-            </td>
-        </tr>
-    `;
-    window.decorateStackedTables?.(tbody.closest("table"));
-}
-
-function esc(texto) {
-    return String(texto ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-}
-
-function formatarMoeda(valor) {
-    return Number(valor || 0).toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL"
-    });
-}
-
-function renderizarUltimosContratos(contratos) {
-    const tbody = document.getElementById("ultimosContratos");
-
-    if (!tbody) {
-        return;
-    }
-
-    if (!contratos.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4" class="table-state-cell">
-                    <span class="empty-inline">
-                        <i class="fa-solid fa-inbox" aria-hidden="true"></i>
-                        Nenhum contrato cadastrado.
-                    </span>
-                </td>
-            </tr>
-        `;
-        window.decorateStackedTables?.(tbody.closest("table"));
-        return;
-    }
-
-    tbody.innerHTML = contratos.map(contrato => {
-        const cliente = esc(contrato.cliente?.nome || "—");
-        const plano = esc(contrato.plano?.nome || "—");
-        const valor = formatarMoeda(contrato.valorCarta);
-        const status = esc(contrato.status || "—");
-        const badge = contrato.status === "ATIVO" ? "badge-success" : "badge-warning";
-
-        return `
-            <tr>
-                <td>${cliente}</td>
-                <td>${plano}</td>
-                <td>${valor}</td>
-                <td><span class="badge ${badge}">${status}</span></td>
-            </tr>
-        `;
-    }).join("");
-    window.decorateStackedTables?.(tbody.closest("table"));
-}
-
-function renderizarGrafico(contratos) {
-    const canvas = document.getElementById("graficoContratos");
-
-    if (!canvas || typeof Chart === "undefined") {
-        return;
-    }
-
-    const { labels, valores } = agruparContratosPorMes(contratos);
-
-    if (graficoInstancia) {
-        graficoInstancia.destroy();
-    }
-
-    graficoInstancia = new Chart(canvas, {
+function renderizarGrafico(itens) {
+    const canvas = document.getElementById("graficoRecebimentos");
+    if (!canvas || typeof Chart === "undefined") return;
+    if (graficoRecebimentos) graficoRecebimentos.destroy();
+    graficoRecebimentos = new Chart(canvas, {
         type: "bar",
         data: {
-            labels,
-            datasets: [{
-                label: "Contratos",
-                data: valores,
-                backgroundColor: "rgba(13, 78, 166, 0.75)",
-                borderRadius: 8
-            }]
+            labels: itens.map(i => i.label),
+            datasets: [{ label: "Recebido", data: itens.map(i => i.valor), borderRadius: 8 }]
         },
         options: {
             responsive: true,
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { precision: 0 }
-                }
-            }
+            plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => moeda(ctx.raw) } } },
+            scales: { y: { beginAtZero: true, ticks: { callback: valor => `R$ ${Number(valor).toLocaleString("pt-BR")}` } } }
         }
     });
 }
 
-function agruparContratosPorMes(contratos) {
-    const meses = [];
-
-    for (let i = 5; i >= 0; i -= 1) {
-        const data = new Date();
-        data.setDate(1);
-        data.setHours(0, 0, 0, 0);
-        data.setMonth(data.getMonth() - i);
-        meses.push({
-            chave: `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}`,
-            label: data.toLocaleDateString("pt-BR", { month: "short", year: "2-digit" })
-        });
-    }
-
-    const contagem = Object.fromEntries(meses.map(m => [m.chave, 0]));
-
-    contratos.forEach(contrato => {
-        if (!contrato.criadoEm) {
-            return;
-        }
-
-        const data = new Date(contrato.criadoEm);
-        const chave = `${data.getFullYear()}-${String(data.getMonth() + 1).padStart(2, "0")}`;
-
-        if (chave in contagem) {
-            contagem[chave] += 1;
-        }
-    });
-
-    return {
-        labels: meses.map(m => m.label),
-        valores: meses.map(m => contagem[m.chave])
-    };
-}
-
-function atualizarResumoGrafico(contratos) {
-    const el = document.getElementById("resumoGraficoContratos");
-
-    if (!el) {
+function renderizarAssembleias(itens) {
+    const el = document.getElementById("proximasAssembleias");
+    if (!el) return;
+    if (!itens.length) {
+        el.innerHTML = '<div class="empty-inline">Nenhuma assembleia futura cadastrada.</div>';
         return;
     }
+    el.innerHTML = itens.map(item => `
+        <a class="agenda-item" href="assembleias.html">
+            <span class="agenda-date"><strong>${new Date(item.dataAssembleia).toLocaleDateString("pt-BR", { day: "2-digit" })}</strong><small>${new Date(item.dataAssembleia).toLocaleDateString("pt-BR", { month: "short" })}</small></span>
+            <div><strong>${esc(item.titulo || `Grupo ${item.grupo}`)}</strong><span>Grupo ${esc(item.grupo)} • ${item.totalLances} lance(s)</span></div>
+            <i class="fa-solid fa-chevron-right"></i>
+        </a>
+    `).join("");
+}
 
-    const { labels, valores } = agruparContratosPorMes(contratos);
-    const partes = labels.map((label, i) => `${label}: ${valores[i]}`);
-    el.textContent = `Contratos nos últimos 6 meses — ${partes.join(", ")}.`;
+function renderizarContratos(itens) {
+    const tbody = document.getElementById("ultimosContratos");
+    if (!tbody) return;
+    if (!itens.length) {
+        tbody.innerHTML = '<tr><td colspan="4" class="table-state-cell">Nenhum contrato cadastrado.</td></tr>';
+        return;
+    }
+    tbody.innerHTML = itens.map(item => `
+        <tr>
+            <td><a href="cliente-detalhe.html?id=${item.clienteId}"><strong>${esc(item.cliente || "—")}</strong></a></td>
+            <td>${esc(item.plano || "—")}</td>
+            <td>${moeda(item.valorCarta)}</td>
+            <td><span class="badge ${classeStatus(item.status)}">${esc(item.status)}</span></td>
+        </tr>
+    `).join("");
+    window.decorateStackedTables?.(tbody.closest("table"));
+}
+
+function classeStatus(status) {
+    if (["ATIVO", "CONTEMPLADO", "QUITADO"].includes(status)) return "badge-success";
+    if (["CANCELADO", "INADIMPLENTE"].includes(status)) return "badge-danger";
+    return "badge-warning";
+}
+
+function setText(id, valor) { const el = document.getElementById(id); if (el) el.textContent = valor; }
+function moeda(valor) { return Number(valor || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
+function esc(texto) { return String(texto ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+function renderizarAtividades(itens) {
+    const el = document.getElementById("atividadesRecentes");
+    if (!el) return;
+    if (!itens.length) { el.innerHTML = '<div class="empty-inline">Nenhuma movimentação recente.</div>'; return; }
+    el.innerHTML = itens.map(item => `
+        <div class="activity-item">
+            <span class="activity-icon"><i class="fa-solid fa-${esc(item.icone || "circle-info")}"></i></span>
+            <div><strong>${esc(item.titulo)}</strong><span>${esc(item.descricao)}</span></div>
+            <time>${new Date(item.data).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" })}</time>
+        </div>`).join("");
 }

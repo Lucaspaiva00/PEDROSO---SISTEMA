@@ -342,6 +342,31 @@
 
             </section>
 
+            <section class="card financial-snapshot">
+                <span class="card-label">Resumo Financeiro</span>
+                <div class="financial-snapshot-grid">
+                    <div><span>Total pago</span><strong id="totalPagoContrato">R$ 0,00</strong></div>
+                    <div><span>Saldo em parcelas</span><strong id="saldoRestanteContrato">R$ 0,00</strong></div>
+                    <div><span>Progresso</span><strong id="percentualContrato">0%</strong></div>
+                    <div><span>Em atraso</span><strong id="atrasoContrato">R$ 0,00</strong></div>
+                </div>
+            </section>
+
+            <section class="card" id="cardProximaAssembleiaContrato" hidden>
+                <span class="card-label">Próxima Assembleia</span>
+                <div class="timeline-highlight"><div class="timeline-highlight-icon"><i class="fa-solid fa-calendar-check"></i></div><div><strong id="tituloAssembleiaContrato">Assembleia</strong><p id="dataAssembleiaContrato" class="card-text"></p></div></div>
+            </section>
+
+            <section class="card contemplation-card" id="cardContemplacao" hidden>
+                <div class="contemplation-title"><i class="fa-solid fa-trophy"></i><div><span class="card-label">Contemplação</span><h3 id="tituloContemplacao">Parabéns!</h3></div></div>
+                <div id="checklistContemplacao" class="contemplation-steps"></div>
+            </section>
+
+            <section class="card">
+                <span class="card-label">Linha do tempo do consórcio</span>
+                <div id="timelineContrato" class="contract-timeline"><div class="card-loading"><i class="fa-solid fa-spinner fa-spin"></i> Carregando histórico…</div></div>
+            </section>
+
             <!-- =========================
                  AÇÕES
             ========================== -->

@@ -2,6 +2,7 @@
 verificarLogin();
 
 let clienteId = null;
+let clienteAtualAdmin = null;
 
 document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
@@ -15,12 +16,22 @@ document.addEventListener("DOMContentLoaded", () => {
     carregarDetalhe();
 
     document.getElementById("listaContratosCliente")?.addEventListener("click", async (event) => {
-        const botao = event.target.closest("[data-boleto-parcela]");
-        if (!botao) return;
+        const botaoBoleto = event.target.closest("[data-boleto-parcela]");
+        if (botaoBoleto) {
+            const contratoId = Number(botaoBoleto.dataset.contratoId);
+            const parcelaId = Number(botaoBoleto.dataset.boletoParcela);
+            await abrirBoletoAdmin(contratoId, parcelaId, botaoBoleto);
+            return;
+        }
 
-        const contratoId = Number(botao.dataset.contratoId);
-        const parcelaId = Number(botao.dataset.boletoParcela);
-        await abrirBoletoAdmin(contratoId, parcelaId, botao);
+        const botaoWhatsapp = event.target.closest("[data-whatsapp-parcela]");
+        if (botaoWhatsapp) {
+            const contratoId = Number(botaoWhatsapp.dataset.contratoId);
+            const parcelaId = Number(botaoWhatsapp.dataset.whatsappParcela);
+            const numeroParcela = Number(botaoWhatsapp.dataset.numeroParcela);
+            const valor = Number(botaoWhatsapp.dataset.valorParcela);
+            await enviarBoletoWhatsAppAdmin(contratoId, parcelaId, numeroParcela, valor, botaoWhatsapp);
+        }
     });
 });
 
@@ -68,6 +79,7 @@ function mostrarPainel() {
 }
 
 function renderizarCliente(cliente, contratos) {
+    clienteAtualAdmin = cliente;
     document.getElementById("tituloCliente").textContent = cliente.nome;
     document.getElementById("subtituloCliente").textContent =
         `${cliente.cpfCnpj || ""} • ${contratos.length} consórcio(s)`;
@@ -222,6 +234,10 @@ function renderParcelasContrato(contrato) {
                             <i class="fa-solid fa-file-invoice-dollar" aria-hidden="true"></i>
                             Baixar boleto
                         </button>
+                        <button type="button" class="btn btn-sm btn-success" data-whatsapp-parcela="${parcela.id}" data-contrato-id="${contrato.id}" data-numero-parcela="${parcela.numero}" data-valor-parcela="${parcela.valor}">
+                            <i class="fa-brands fa-whatsapp" aria-hidden="true"></i>
+                            WhatsApp
+                        </button>
                     ` : "—"}
                 </td>
             </tr>
@@ -276,4 +292,33 @@ function esc(texto) {
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
+}
+
+async function enviarBoletoWhatsAppAdmin(contratoId, parcelaId, numeroParcela, valor, botao) {
+    const telefone = String(clienteAtualAdmin?.telefone || "").replace(/\D/g, "");
+    if (!telefone) {
+        mostrarFeedback("feedbackCliente", "error", "WhatsApp", "Este cliente não possui telefone cadastrado.");
+        return;
+    }
+
+    const original = botao.innerHTML;
+    botao.disabled = true;
+    botao.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Preparando';
+
+    try {
+        const { response, data } = await http.get(`/contratos/${contratoId}/parcelas/${parcelaId}/boleto`);
+        if (!response.ok || !data?.sucesso || !data?.dados?.url) {
+            throw new Error(data?.mensagem || "Não foi possível gerar a segunda via.");
+        }
+
+        const numero = telefone.startsWith("55") ? telefone : `55${telefone}`;
+        const nome = clienteAtualAdmin?.nome || "cliente";
+        const texto = `Olá, ${nome}. Segue a segunda via atualizada da parcela ${numeroParcela}, no valor de ${formatarMoedaLance(valor)}: ${data.dados.url}`;
+        window.open(`https://wa.me/${numero}?text=${encodeURIComponent(texto)}`, "_blank", "noopener,noreferrer");
+    } catch (erro) {
+        mostrarFeedback("feedbackCliente", "error", "WhatsApp", erro.message || "Não foi possível preparar o boleto.");
+    } finally {
+        botao.disabled = false;
+        botao.innerHTML = original;
+    }
 }

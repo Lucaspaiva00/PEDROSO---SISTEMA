@@ -2069,3 +2069,73 @@ RESPONSIVIDADE
 .contrato-cliente-valores strong {
     font-size: 14px;
 }
+/* ==========================================================
+   PAINEL EXECUTIVO / INADIMPLÊNCIA
+========================================================== */
+.executive-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 30px;
+    margin-bottom: 22px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--primary), #123f77);
+    color: #fff;
+    box-shadow: var(--shadow);
+}
+.executive-hero .eyebrow { display:block; opacity:.78; font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; }
+.executive-hero strong { display:block; margin:8px 0 4px; font-size:clamp(30px,5vw,46px); line-height:1; }
+.executive-hero small { opacity:.82; }
+.executive-hero .btn { background:#fff; color:var(--primary); border-color:#fff; }
+.executive-kpis { grid-template-columns: repeat(6, minmax(150px, 1fr)); }
+.executive-kpis .card { position:relative; overflow:hidden; }
+.executive-kpis .card h3 { font-size:clamp(20px,2vw,28px); }
+.kpi-icon { position:absolute; right:18px; top:18px; width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:#eef5ff; color:var(--primary); }
+.danger-kpi .kpi-icon { background:#fff0f0; color:#c0392b; }
+.status-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:0 0 24px; }
+.status-strip > div { background:#fff; border:1px solid var(--border); border-radius:14px; padding:16px 18px; display:flex; justify-content:space-between; gap:12px; box-shadow:var(--shadow-sm,0 4px 16px rgba(0,0,0,.04)); }
+.status-strip span { color:var(--text-light); font-size:13px; }
+.status-strip strong { color:var(--primary); font-size:20px; }
+.executive-grid { align-items:stretch; }
+.box-heading-row { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:18px; }
+.box-heading-row .box-title { margin-bottom:4px; }
+.box-heading-row p { color:var(--text-light); font-size:13px; }
+.box-heading-row a { color:var(--primary); font-weight:700; font-size:13px; }
+.financial-health { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.financial-health div { background:#f7f9fc; border:1px solid var(--border); border-radius:14px; padding:16px; }
+.financial-health span { display:block; color:var(--text-light); font-size:12px; margin-bottom:6px; }
+.financial-health strong { font-size:18px; }
+.health-progress { height:10px; background:#e9edf3; border-radius:999px; overflow:hidden; margin:20px 0 8px; }
+.health-progress > div { height:100%; width:0; background:var(--primary); transition:width .35s ease; }
+.agenda-list { display:flex; flex-direction:column; gap:10px; }
+.agenda-item { display:flex; align-items:center; gap:14px; padding:13px; border:1px solid var(--border); border-radius:14px; color:inherit; transition:.2s; }
+.agenda-item:hover { border-color:#b7cbea; transform:translateY(-1px); }
+.agenda-date { width:50px; height:50px; border-radius:13px; background:#eef5ff; color:var(--primary); display:flex; flex-direction:column; align-items:center; justify-content:center; flex-shrink:0; }
+.agenda-date strong { font-size:18px; line-height:1; }
+.agenda-date small { font-size:11px; text-transform:uppercase; margin-top:3px; }
+.agenda-item > div { flex:1; min-width:0; }
+.agenda-item > div strong, .agenda-item > div span { display:block; }
+.agenda-item > div span { color:var(--text-light); font-size:12px; margin-top:4px; }
+.compact-kpis { grid-template-columns:repeat(3,minmax(180px,1fr)); }
+.table-search { max-width:320px; }
+.action-row { display:flex; flex-wrap:wrap; gap:6px; }
+.btn-success { background:#20a35a; color:#fff; border-color:#20a35a; }
+@media (max-width: 1250px) { .executive-kpis { grid-template-columns:repeat(3,1fr); } }
+@media (max-width: 760px) {
+    .executive-hero { align-items:flex-start; flex-direction:column; }
+    .executive-kpis,.compact-kpis { grid-template-columns:1fr 1fr; }
+    .status-strip { grid-template-columns:1fr 1fr; }
+    .financial-health { grid-template-columns:1fr; }
+    .box-heading-row { flex-direction:column; }
+    .table-search { width:100%; max-width:none; }
+}
+@media (max-width: 480px) { .executive-kpis,.compact-kpis,.status-strip { grid-template-columns:1fr; } }
+.activity-feed { display:flex; flex-direction:column; }
+.activity-item { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:12px; padding:13px 0; border-bottom:1px solid var(--border); }
+.activity-item:last-child { border-bottom:0; }
+.activity-icon { width:38px; height:38px; display:grid; place-items:center; border-radius:12px; background:#eef5ff; color:var(--primary); }
+.activity-item strong,.activity-item span { display:block; }
+.activity-item > div span { color:var(--text-light); font-size:12px; margin-top:3px; }
+.activity-item time { color:var(--text-light); font-size:11px; white-space:nowrap; }
+@media (max-width:600px){ .activity-item { grid-template-columns:auto 1fr; } .activity-item time { grid-column:2; } }

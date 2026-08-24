@@ -124,6 +124,11 @@ class UsuarioRepository {
 
                                     }
 
+                                },
+
+                                lances: {
+                                    orderBy: { criadoEm: "desc" },
+                                    include: { assembleia: true }
                                 }
 
                             }

@@ -58,6 +58,25 @@
                     </div>
                 </section>
 
+                <section class="card simulator-card" id="cardSimulador" hidden aria-labelledby="labelSimulador">
+                    <span class="card-label" id="labelSimulador">Simulador de lance</span>
+                    <p class="card-text">Veja o percentual da carta e compare seu valor com o maior lance atual antes de enviar.</p>
+                    <label class="card-label" for="inputValorSimulado" style="margin-top:14px;">Valor que deseja simular (R$)</label>
+                    <input type="number" id="inputValorSimulado" class="input" min="0.01" step="0.01" inputmode="decimal" placeholder="0,00">
+                    <div class="simulator-grid">
+                        <div><span>Percentual da carta</span><strong id="percentualSimulado">0%</strong></div>
+                        <div><span>Maior lance atual</span><strong id="maiorLanceSimulador">—</strong></div>
+                        <div><span>Diferença para o maior</span><strong id="diferencaSimulada">—</strong></div>
+                        <div><span>Leitura rápida</span><strong id="leituraSimulada">Informe um valor</strong></div>
+                    </div>
+                    <button type="button" class="btn btn-secondary" id="btnUsarValorSimulado">Usar este valor no lance</button>
+                </section>
+
+                <section class="card" id="cardHistoricoLances" hidden>
+                    <span class="card-label">Histórico de lances</span>
+                    <div id="historicoLances" class="bid-history"></div>
+                </section>
+
                 <section class="card" id="cardMeuLance" hidden aria-labelledby="labelMeuLance">
                     <span class="card-label" id="labelMeuLance">Seu lance registrado</span>
                     <p id="badgeStatusLance" class="status-lance badge badge-warning" aria-hidden="false"></p>

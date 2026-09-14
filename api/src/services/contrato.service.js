@@ -73,8 +73,8 @@ class ContratoService {
       await AuthService.criarUsuarioCliente(cliente);
     } catch (erro) {
       avisoAcesso = erro.code === "P2002"
-        ? "O e-mail já possui um usuário. Regularize o acesso ao portal em Usuários."
-        : (erro.code ? "Não foi possível criar o acesso ao portal. Verifique o cadastro em Usuários." : erro.message);
+        ? "Já existe um acesso com este e-mail. Entre no portal com o CPF e a senha já cadastrada para recuperar o vínculo."
+        : (erro.code ? "Não foi possível criar o acesso ao portal. Contate o suporte." : erro.message);
       console.error("Falha ao preparar acesso do cliente", {
         clienteId: cliente.id,
         codigo: erro.code || "ACESSO_CLIENTE",

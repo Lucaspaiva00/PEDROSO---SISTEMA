@@ -63,7 +63,24 @@ class ContratoService {
 
     const contrato = await ContratoRepository.cadastrar(dadosContrato);
 
-    await AuthService.criarUsuarioCliente(cliente);
+    return await this.concluirCadastro(contrato, cliente);
+  }
+
+  // O acesso ao portal e a emissão financeira têm resultados independentes.
+  async concluirCadastro(contrato, cliente) {
+    let avisoAcesso = null;
+    try {
+      await AuthService.criarUsuarioCliente(cliente);
+    } catch (erro) {
+      avisoAcesso = erro.code === "P2002"
+        ? "O e-mail já possui um usuário. Regularize o acesso ao portal em Usuários."
+        : (erro.code ? "Não foi possível criar o acesso ao portal. Verifique o cadastro em Usuários." : erro.message);
+      console.error("Falha ao preparar acesso do cliente", {
+        clienteId: cliente.id,
+        codigo: erro.code || "ACESSO_CLIENTE",
+        mensagem: avisoAcesso
+      });
+    }
 
     let integracaoAsaas = null;
 
@@ -113,6 +130,7 @@ class ContratoService {
       ...contratoAtualizado,
 
       integracaoAsaas,
+      avisoAcesso,
     };
   }
 
@@ -181,6 +199,14 @@ class ContratoService {
       contratoAtual.id,
       dadosAtualizacao,
     );
+
+    // Recupera contratos que ficaram sem parcelas por erro de criação do usuário.
+    // Não regerar nem modificar parcelas de contratos que já possuem histórico.
+    if (contrato.parcelas.length === 0 &&
+        !["PAUSADO", "CANCELADO", "QUITADO"].includes(contrato.status)) {
+      const cliente = await ClienteRepository.buscarPorId(contrato.clienteId);
+      return await this.concluirCadastro(contrato, cliente);
+    }
 
     return contrato;
   }

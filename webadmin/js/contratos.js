@@ -787,6 +787,16 @@ async function salvarContrato(event) {
             mostrarFeedback("feedbackContratos", "success", "Sucesso", json.mensagem);
         }
 
+        if (json.contrato?.avisoAcesso) {
+            const avisoIntegracao = integracao?.sucesso === false
+                ? `Falha no Asaas: ${integracao.erro || integracao.mensagem}. `
+                : (integracao?.emAndamento ? "Cobranças sendo geradas. " : "");
+            mostrarFeedback("feedbackContratos",
+                integracao?.sucesso === false ? "error" : "info",
+                "Contrato salvo — acesso ao portal pendente",
+                avisoIntegracao + json.contrato.avisoAcesso);
+        }
+
         contratoEditando = null;
 
         fecharModal();

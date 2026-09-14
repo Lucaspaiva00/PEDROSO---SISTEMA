@@ -66,37 +66,40 @@ class AuthService {
     }
 
     async criarUsuarioCliente(cliente) {
+        const validarVinculo = usuario => {
+            // Nunca transferir acesso entre clientes apenas porque o e-mail coincide.
+            if (usuario.role !== "CLIENTE" || Number(usuario.clienteId) !== Number(cliente.id)) {
+                throw new Error("O e-mail informado já pertence a outro usuário. O acesso ao portal precisa ser regularizado em Usuários.");
+            }
+            return usuario;
+        };
+        const existente = await UsuarioRepository.findByClienteId(cliente.id);
+        if (existente) return validarVinculo(existente);
 
-        const usuarioExistente = await UsuarioRepository.findByClienteId(cliente.id);
-
-        if (usuarioExistente) {
-
-            return usuarioExistente;
-
+        const email = String(cliente.email || "").trim();
+        if (!email) {
+            throw new Error("Informe um e-mail para criar o acesso ao portal do cliente.");
         }
+        const porEmail = await UsuarioRepository.findByEmail(email);
+        if (porEmail) return validarVinculo(porEmail);
 
         const cpf = somenteNumeros(cliente.cpfCnpj);
-
-        const senhaInicial = cpf.substring(0, 6);
-
-        const senhaCriptografada = await bcrypt.hash(senhaInicial, 10);
-
-        const usuario = await UsuarioRepository.create({
-
-            nome: cliente.nome,
-
-            email: cliente.email,
-
-            senha: senhaCriptografada,
-
-            role: "CLIENTE",
-
-            clienteId: cliente.id
-
-        });
-
-        return usuario;
-
+        const senhaCriptografada = await bcrypt.hash(cpf.substring(0, 6), 10);
+        try {
+            return await UsuarioRepository.create({
+                nome: cliente.nome,
+                email,
+                senha: senhaCriptografada,
+                role: "CLIENTE",
+                clienteId: cliente.id
+            });
+        } catch (erro) {
+            if (erro.code !== "P2002") throw erro;
+            // Outro pedido pode ter criado o mesmo acesso enquanto calculávamos o hash.
+            const concorrente = await UsuarioRepository.findByEmail(email);
+            if (concorrente) return validarVinculo(concorrente);
+            throw erro;
+        }
     }
 
     async login(dados) {

@@ -69,7 +69,7 @@ class AuthService {
         const validarVinculo = usuario => {
             // Nunca transferir acesso entre clientes apenas porque o e-mail coincide.
             if (usuario.role !== "CLIENTE" || Number(usuario.clienteId) !== Number(cliente.id)) {
-                throw new Error("O e-mail informado já pertence a outro usuário. O acesso ao portal precisa ser regularizado em Usuários.");
+                throw new Error("Já existe um acesso com este e-mail. Entre no portal com o CPF e a senha já cadastrada para recuperar o vínculo.");
             }
             return usuario;
         };
@@ -119,6 +119,7 @@ class AuthService {
         }
 
         let usuario;
+        let clienteParaVincular = null;
 
         if (login.includes("@")) {
 
@@ -135,7 +136,18 @@ class AuthService {
                 const cliente = await ClienteRepository.buscarPorCpf(cpf);
 
                 if (cliente) {
-                    usuario = await this.criarUsuarioCliente(cliente);
+                    const email = String(cliente.email || "").trim();
+                    const acesso = email ? await UsuarioRepository.findByEmail(email) : null;
+                    if (acesso) {
+                        if (acesso.role !== "CLIENTE" ||
+                            (acesso.clienteId !== null && Number(acesso.clienteId) !== Number(cliente.id))) {
+                            return { sucesso: false, mensagem: "O acesso está vinculado a outro cadastro. Contate o suporte." };
+                        }
+                        usuario = acesso;
+                        if (acesso.clienteId === null) clienteParaVincular = cliente;
+                    } else {
+                        usuario = await this.criarUsuarioCliente(cliente);
+                    }
                 }
 
             }
@@ -181,6 +193,14 @@ class AuthService {
 
             };
 
+        }
+
+        if (clienteParaVincular) {
+            // Somente após validar a senha existente. Nunca redefinir senha ou perfil.
+            usuario = await UsuarioRepository.recuperarVinculoCliente(usuario, clienteParaVincular);
+            if (!usuario) {
+                return { sucesso: false, mensagem: "Não foi possível recuperar o vínculo. O cadastro foi alterado ou o e-mail está em mais de um cliente. Contate o suporte." };
+            }
         }
 
         const token = gerarToken(usuario);

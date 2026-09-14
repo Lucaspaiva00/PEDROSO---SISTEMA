@@ -96,6 +96,36 @@ class UsuarioRepository {
 
     }
 
+    async recuperarVinculoCliente(usuario, cliente) {
+        return prisma.$transaction(async tx => {
+            // E-mail de cliente não é único no schema: recusar associação ambígua.
+            const clientes = await tx.cliente.findMany({
+                where: { email: usuario.email },
+                select: { id: true },
+                take: 2
+            });
+            if (clientes.length !== 1 || clientes[0].id !== Number(cliente.id)) return null;
+
+            const resultado = await tx.usuario.updateMany({
+                where: {
+                    id: usuario.id,
+                    email: usuario.email,
+                    senha: usuario.senha,
+                    role: "CLIENTE",
+                    ativo: true,
+                    clienteId: null
+                },
+                data: { clienteId: Number(cliente.id) }
+            });
+            const atual = await tx.usuario.findUnique({ where: { id: usuario.id } });
+            if (resultado.count === 0 &&
+                (!atual || atual.clienteId !== Number(cliente.id))) return null;
+            if (!atual || atual.role !== "CLIENTE" || !atual.ativo ||
+                atual.email !== usuario.email || atual.senha !== usuario.senha) return null;
+            return atual;
+        });
+    }
+
     async findPortalByUserId(id) {
 
         return await prisma.usuario.findUnique({

@@ -49,8 +49,6 @@ const tipo = document.getElementById("tipo");
 
 const valorCarta = document.getElementById("valorCarta");
 
-const valorEntrada = document.getElementById("valorEntrada");
-
 const valorParcela = document.getElementById("valorParcela");
 
 const quantidadeParcelas = document.getElementById("quantidadeParcelas");
@@ -573,8 +571,6 @@ function editarContrato(id) {
 
     cota.value = contrato.cota || "";
 
-    valorEntrada.value = contrato.valorEntrada || "";
-
     parcelasPagas.value = contrato.parcelasPagas;
 
     primeiroVencimento.value = contrato.primeiroVencimento
@@ -672,12 +668,6 @@ async function salvarContrato(event) {
         tipo: tipo.value,
 
         valorCarta: Number(valorCarta.value),
-
-        valorEntrada:
-
-            valorEntrada.value
-                ? Number(valorEntrada.value)
-                : null,
 
         valorParcela: Number(valorParcela.value),
 

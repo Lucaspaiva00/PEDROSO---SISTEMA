@@ -418,6 +418,14 @@ function renderizarTabela(lista) {
                         ${contrato.status}
 
                     </span>
+                    <small style="display:block;margin-top:6px">
+                        ${!contrato.sincronizarAsaas ? "Asaas desativado" : ({
+                            SINCRONIZANDO: "Asaas: gerando cobranças",
+                            SINCRONIZADO: "Asaas: sincronizado",
+                            SINCRONIZADO_PARCIALMENTE: "Asaas: falha em uma ou mais cobranças",
+                            ERRO_SINCRONIZACAO: "Asaas: erro na integração"
+                        }[contrato.asaasStatus] || "Asaas: sincronização pendente")}
+                    </small>
 
                 </td>
 
@@ -768,7 +776,16 @@ async function salvarContrato(event) {
 
         }
 
-        mostrarFeedback("feedbackContratos", "success", "Sucesso", json.mensagem);
+        const integracao = json.contrato?.integracaoAsaas;
+        if (integracao?.sucesso === false) {
+            mostrarFeedback("feedbackContratos", "error", "Contrato salvo; falha no Asaas",
+                integracao.erro || integracao.mensagem);
+        } else if (integracao?.emAndamento) {
+            mostrarFeedback("feedbackContratos", "info", "Cobranças em processamento",
+                "Contrato salvo. A geração no Asaas ainda não terminou. Consulte o status na lista; não recrie o contrato.");
+        } else {
+            mostrarFeedback("feedbackContratos", "success", "Sucesso", json.mensagem);
+        }
 
         contratoEditando = null;
 

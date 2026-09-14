@@ -349,8 +349,13 @@ class AsaasService {
             );
         }
 
+        let resultadoSincronizacao = null;
         if (!parcela.asaasPaymentId && parcela.contrato.sincronizarAsaas) {
-            await this.sincronizarContrato(parcela.contratoId);
+            try {
+                resultadoSincronizacao = await this.sincronizarContrato(parcela.contratoId);
+            } catch (erro) {
+                throw new Error(this.obterMensagemErro(erro));
+            }
 
             parcela = await prisma.parcela.findUnique({
                 where: { id: Number(parcelaId) },
@@ -359,7 +364,12 @@ class AsaasService {
         }
 
         if (!parcela?.asaasPaymentId) {
-            throw new Error("Esta parcela ainda não possui cobrança no Asaas.");
+            const falha = resultadoSincronizacao?.resultados?.find(
+                item => item.parcelaId === Number(parcelaId) && item.sucesso === false
+            );
+            throw new Error(falha?.erro
+                ? `Não foi possível gerar o boleto: ${falha.erro}`
+                : "Esta parcela não possui cobrança vinculada. Verifique se a sincronização Asaas está habilitada no contrato.");
         }
 
         let cobranca;
@@ -383,7 +393,11 @@ class AsaasService {
                     }
                 });
 
-                await this.sincronizarContrato(parcela.contratoId);
+                try {
+                    resultadoSincronizacao = await this.sincronizarContrato(parcela.contratoId);
+                } catch (erro) {
+                    throw new Error(this.obterMensagemErro(erro));
+                }
 
                 parcela = await prisma.parcela.findUnique({
                     where: { id: Number(parcelaId) },
@@ -391,7 +405,12 @@ class AsaasService {
                 });
 
                 if (!parcela?.asaasPaymentId) {
-                    throw new Error("Não foi possível recriar a cobrança desta parcela no Asaas.");
+                    const falha = resultadoSincronizacao?.resultados?.find(
+                        item => item.parcelaId === Number(parcelaId) && item.sucesso === false
+                    );
+                    throw new Error(falha?.erro
+                        ? `Não foi possível recuperar o boleto: ${falha.erro}`
+                        : "Não foi possível recriar a cobrança desta parcela no Asaas.");
                 }
 
                 cobranca = await this.consultarCobranca(parcela.asaasPaymentId);
@@ -794,25 +813,22 @@ class AsaasService {
                             contrato.asaasBillingType
 
                     });
-                console.log("COBRANÇA ASAAS:");
-                console.log(cobranca);
-
-                const pix =
-                    await this.tentarObterPix(
-                        cobranca.id
-                    );
-                console.log("PIX:");
-                console.log(pix);
-
-                console.log("SALVANDO PARCELA", parcela.id);
-
-                console.log({
-                    paymentId: cobranca.id,
-                    invoiceUrl: cobranca.invoiceUrl,
-                    bankSlipUrl: cobranca.bankSlipUrl,
-                    pixQrCode: pix?.encodedImage,
-                    pixPayload: pix?.payload
+                // Persistir o vínculo antes de consultar o PIX (opcional).
+                // Se o processo parar durante o PIX, o boleto continua vinculado.
+                if (!cobranca?.id) {
+                    throw new Error("O Asaas não retornou o identificador da cobrança.");
+                }
+                await prisma.parcela.update({
+                    where: { id: parcela.id },
+                    data: {
+                        asaasPaymentId: cobranca.id,
+                        asaasInvoiceUrl: cobranca.invoiceUrl || null,
+                        asaasBankSlipUrl: cobranca.bankSlipUrl || null,
+                        asaasNossoNumero: cobranca.nossoNumero || null,
+                        asaasStatus: cobranca.status || null
+                    }
                 });
+                const pix = await this.tentarObterPix(cobranca.id);
                 await prisma.parcela.update({
 
                     where: {
@@ -1035,7 +1051,14 @@ class AsaasService {
 
         try {
 
-            await this.sincronizarContrato(contratoId);
+            const resultado = await this.sincronizarContrato(contratoId);
+            if (resultado.sucesso === false) {
+                console.error("Falha na sincronização Asaas", {
+                    contratoId,
+                    erros: resultado.resultados.filter(item => item.sucesso === false)
+                        .map(item => ({ parcelaId: item.parcelaId, erro: item.erro }))
+                });
+            }
 
         } catch (erro) {
 
@@ -1264,6 +1287,9 @@ class AsaasService {
 
     }) {
 
+        if (!sucesso) {
+            console.error("Falha na integração Asaas", { acao, entidade, entidadeId, erro });
+        }
         try {
 
             await prisma.logIntegracaoAsaas.create({
